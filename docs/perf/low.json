@@ -1,0 +1,14 @@
+{
+  "preset": "LOW",
+  "durationMs": 60016.700000047684,
+  "frames": 3602,
+  "averageMs": 16.663686840650705,
+  "worstMs": 17.400000035762787,
+  "drawCalls": 123,
+  "triangles": 11364,
+  "gpuMs": 4.428385,
+  "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x000046A3) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "softwareRendering": false,
+  "resolution": [1280, 720],
+  "textureMiB": 25
+}

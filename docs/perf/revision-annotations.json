@@ -1,0 +1,31 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "viewport": {
+        "width": 714,
+        "height": 715
+      },
+      "movement": 5.083333333333336,
+      "dragLook": true,
+      "pauseResume": true,
+      "panelResume": true,
+      "blurStopsMovement": true,
+      "exclusiveVote": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "movement": 5.083333333333336,
+      "dragLook": true,
+      "pauseResume": true,
+      "panelResume": true,
+      "blurStopsMovement": true,
+      "exclusiveVote": true,
+      "errors": []
+    }
+  ]
+}

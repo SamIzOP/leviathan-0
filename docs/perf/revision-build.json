@@ -1,0 +1,37 @@
+{
+  "initialFiles": [
+    {
+      "path": "assets/index-BDPdDTXH.js",
+      "bytes": 2475,
+      "gzip": 1243
+    },
+    {
+      "path": "assets/main-CB_Pes30.js",
+      "bytes": 245989,
+      "gzip": 87138
+    },
+    {
+      "path": "assets/world-materials-6VDPUoM4.css",
+      "bytes": 16029,
+      "gzip": 4115
+    },
+    {
+      "path": "assets/world-materials-DLWshPgj.js",
+      "bytes": 652365,
+      "gzip": 169598
+    },
+    {
+      "path": "index.html",
+      "bytes": 858,
+      "gzip": 445
+    }
+  ],
+  "initialJavaScriptBytes": 900829,
+  "initialJavaScriptGzipBytes": 257979,
+  "initialCodeBytes": 917716,
+  "initialCodeGzipBytes": 262539,
+  "allStaticBytes": 14445581,
+  "optionalGeneratedModelBytes": 12075736,
+  "optionalGeneratedModels": 189,
+  "serverBytes": 179677
+}

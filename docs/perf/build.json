@@ -1,0 +1,8 @@
+{
+  "unitTests": 42,
+  "testFiles": 3,
+  "clientDistributionBytes": 2267480,
+  "clientJavaScriptRawKB": 849.59,
+  "clientJavaScriptGzipKB": 240.03,
+  "movementSHA256": "CE1D1C69F6361EF75DDB7E099F7D6E78D561AF23A025F23322A9FDE5F1A27491"
+}

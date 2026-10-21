@@ -1,0 +1,174 @@
+{
+  "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x000046A3) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "shots": {
+    "composition": {
+      "preset": "MEDIUM",
+      "drawCalls": 120,
+      "triangles": 11932,
+      "textureMiB": 84.8,
+      "gpuMs": 5.098593,
+      "frameMs": 47.10576923076923,
+      "particles": 826,
+      "geometries": 117,
+      "textures": 35,
+      "mode": "composition",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "spawn": {
+      "preset": "MEDIUM",
+      "drawCalls": 125,
+      "triangles": 12136,
+      "textureMiB": 84.8,
+      "gpuMs": 6.594791,
+      "frameMs": 16.664444444245763,
+      "particles": 826,
+      "geometries": 119,
+      "textures": 35,
+      "mode": "spawn",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "van": {
+      "preset": "MEDIUM",
+      "drawCalls": 94,
+      "triangles": 9964,
+      "textureMiB": 84.8,
+      "gpuMs": 7.641197,
+      "frameMs": 16.663333333200878,
+      "particles": 826,
+      "geometries": 119,
+      "textures": 35,
+      "mode": "van",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "containers": {
+      "preset": "MEDIUM",
+      "drawCalls": 45,
+      "triangles": 6610,
+      "textureMiB": 84.8,
+      "gpuMs": 6.587083,
+      "frameMs": 16.664444444245763,
+      "particles": 826,
+      "geometries": 119,
+      "textures": 35,
+      "mode": "containers",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "stacks": {
+      "preset": "MEDIUM",
+      "drawCalls": 60,
+      "triangles": 7538,
+      "textureMiB": 84.8,
+      "gpuMs": 3.81,
+      "frameMs": 16.664999999933773,
+      "particles": 826,
+      "geometries": 119,
+      "textures": 35,
+      "mode": "stacks",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "hall": {
+      "preset": "MEDIUM",
+      "drawCalls": 54,
+      "triangles": 3914,
+      "textureMiB": 84.8,
+      "gpuMs": 5.885052,
+      "frameMs": 16.664444444576898,
+      "particles": 826,
+      "geometries": 119,
+      "textures": 35,
+      "mode": "hall",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "puddle": {
+      "preset": "HIGH",
+      "drawCalls": 182,
+      "triangles": 23600,
+      "textureMiB": 90.1,
+      "gpuMs": 9.222083,
+      "frameMs": 31.308333333333334,
+      "particles": 1786,
+      "geometries": 120,
+      "textures": 37,
+      "mode": "puddle",
+      "ready": true,
+      "loadedAt": 779.2999999523163,
+      "level": "foundry-row",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    },
+    "factory-2": {
+      "preset": "MEDIUM",
+      "drawCalls": 120,
+      "triangles": 11932,
+      "textureMiB": 84.8,
+      "gpuMs": 6.740781,
+      "frameMs": 16.666666666666668,
+      "particles": 826,
+      "geometries": 117,
+      "textures": 35,
+      "mode": "composition",
+      "ready": true,
+      "loadedAt": 24185.799999952316,
+      "level": "foundry-row-overcast",
+      "assets": {
+        "prop.crate": "procedural",
+        "prop.container": "procedural",
+        "prop.car": "procedural",
+        "prop.van": "procedural"
+      }
+    }
+  },
+  "errors": []
+}

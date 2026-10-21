@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: leviathan-0
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEV_SOLO
+        value: 'false'
+      - key: DEV_TOOLS
+        value: 'false'
+      - key: TICK_RATE
+        value: '60'
+      - key: SNAPSHOT_RATE
+        value: '30'

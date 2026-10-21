@@ -1,0 +1,30 @@
+{
+  "pass": true,
+  "freeCameraPlayerStationary": true,
+  "reconnectIdentityAndLevel": true,
+  "audio": {
+    "interiorHz": 550.365478515625,
+    "exteriorHz": 3499.4140625,
+    "roofGain": 0.054405029863119125,
+    "events": {
+      "footstep": 4,
+      "footstep.asphalt": 1,
+      "splash": 4,
+      "footstep.metal": 1,
+      "footstep.wood": 1,
+      "footstep.concrete": 1
+    },
+    "sources": 7,
+    "busGain": 0.20000000298023224,
+    "remaining": 0,
+    "assetsPlayed": 1
+  },
+  "asset": {
+    "status": {
+      "prop.crate": "/assets/models/verification.gltf"
+    },
+    "min": [-5.45, 0, 41.35],
+    "max": [-4.1499999999999995, 0.7, 42.65]
+  },
+  "errors": []
+}

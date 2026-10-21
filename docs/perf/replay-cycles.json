@@ -1,0 +1,84 @@
+{
+  "pass": true,
+  "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x000046A3) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "samples": [
+    {
+      "cycle": 0,
+      "geometries": 117,
+      "textures": 35,
+      "heap": 6641588,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 1,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 6867988,
+      "level": "foundry-row-overcast"
+    },
+    {
+      "cycle": 2,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7046344,
+      "level": "foundry-row-overcast"
+    },
+    {
+      "cycle": 3,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7173948,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 4,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7251984,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 5,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7384804,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 6,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7328652,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 7,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7361352,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 8,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7396012,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 9,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7409836,
+      "level": "foundry-row"
+    },
+    {
+      "cycle": 10,
+      "geometries": 115,
+      "textures": 35,
+      "heap": 7426112,
+      "level": "foundry-row"
+    }
+  ],
+  "errors": []
+}

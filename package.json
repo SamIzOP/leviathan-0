@@ -1,0 +1,41 @@
+{
+  "name": "leviathan-0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,client \"npm run dev -w @leviathan/server\" \"npm run dev -w @leviathan/client\"",
+    "build": "npm run typecheck && npm run build -w @leviathan/client && npm run build -w @leviathan/server",
+    "start": "node --env-file-if-exists=.env packages/server/dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint . && prettier --check . && npm run typecheck",
+    "format": "prettier --write .",
+    "bots": "tsx scripts/bots.ts",
+    "test:browser": "tsx scripts/browser-test.ts",
+    "level:check": "tsx scripts/level-check.ts",
+    "assets:check": "tsx scripts/assets-check.ts",
+    "forge:export": "tsx scripts/forge-export.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^22.0.0",
+    "@types/three": "^0.180.0",
+    "@types/ws": "^8.18.0",
+    "concurrently": "^9.2.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.39.0",
+    "globals": "^16.4.0",
+    "playwright": "^1.56.0",
+    "prettier": "^3.6.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^4.1.12"
+  }
+}

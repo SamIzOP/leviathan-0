@@ -1,0 +1,17 @@
+{
+  "ui_click": { "path": "/audio/ui_click.wav", "bus": "sfx" },
+  "player_join": { "path": "/audio/player_join.wav", "bus": "sfx" },
+  "player_leave": { "path": "/audio/player_leave.wav", "bus": "sfx" },
+  "countdown_tick": { "path": "/audio/countdown_tick.wav", "bus": "sfx" },
+  "match_start": { "path": "/audio/match_start.wav", "bus": "sfx" },
+  "match_end": { "path": "/audio/match_end.wav", "bus": "sfx" },
+  "jump": { "path": "/audio/jump.wav", "bus": "sfx" },
+  "footstep": { "path": "/audio/footstep.wav", "bus": "sfx" },
+  "vote_cast": { "path": "/audio/vote_cast.wav", "bus": "sfx" },
+  "rain_ambient": {
+    "path": "/audio/rain_ambient.wav",
+    "bus": "music",
+    "loop": true,
+    "gain": 0.12
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "pass": true,
+  "timeoutFallback": true,
+  "noticeDismissible": true,
+  "stairClimb": {
+    "before": {
+      "id": "938944e2fc4ce1ce",
+      "type": "player",
+      "position": {
+        "x": 42.10000000000011,
+        "y": 0,
+        "z": -26.16666666666633
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "yaw": 0,
+      "pitch": 0,
+      "health": 100,
+      "flags": 1
+    },
+    "after": {
+      "id": "938944e2fc4ce1ce",
+      "type": "player",
+      "position": {
+        "x": 42.10000000000011,
+        "y": 5.454545454545455,
+        "z": -35.15
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "yaw": 0,
+      "pitch": 0,
+      "health": 100,
+      "flags": 1
+    }
+  },
+  "galleryVariants": 189,
+  "seedControl": true,
+  "errors": []
+}

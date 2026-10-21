@@ -1,0 +1,59 @@
+{
+  "pass": true,
+  "qualitySamples": [
+    {
+      "preset": "HIGH",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11114288
+    },
+    {
+      "preset": "LOW",
+      "textureMiB": 12.7,
+      "textures": 19,
+      "heap": 11173452
+    },
+    {
+      "preset": "MEDIUM",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11311324
+    },
+    {
+      "preset": "HIGH",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11249536
+    },
+    {
+      "preset": "LOW",
+      "textureMiB": 12.7,
+      "textures": 19,
+      "heap": 11323592
+    },
+    {
+      "preset": "MEDIUM",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11392720
+    },
+    {
+      "preset": "HIGH",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11356624
+    },
+    {
+      "preset": "LOW",
+      "textureMiB": 12.7,
+      "textures": 19,
+      "heap": 11432180
+    },
+    {
+      "preset": "MEDIUM",
+      "textureMiB": 36.6,
+      "textures": 19,
+      "heap": 11392900
+    }
+  ]
+}
