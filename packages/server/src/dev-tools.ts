@@ -4,7 +4,7 @@ import {
   DEFAULT_TUNING,
   makeEntity,
   spawnEntity,
-  missionLevel,
+  traversalInput,
 } from '@leviathan/shared';
 import type { ClientMessage, DevState } from '@leviathan/shared';
 import type { Game, Peer, Player, Room } from './game';
@@ -99,7 +99,7 @@ export function handleDev(
           entity: spawnEntity(
             id,
             room.players.length,
-            missionLevel(room.mission),
+            game.level(room),
             room.players.map((p) => p.entity),
           ),
           queue: [],
@@ -144,7 +144,7 @@ export function handleDev(
       const spawn = spawnEntity(
         player.id,
         room.players.indexOf(player),
-        missionLevel(room.mission),
+        game.level(room),
       );
       player.entity =
         message.action === 'reset-player'
@@ -161,7 +161,7 @@ export function handleDev(
     }
     case 'tune':
       if (!message.tuning) throw new Error('Missing tuning values.');
-      state.tuning = { ...message.tuning };
+      state.tuning = { ...state.tuning, ...message.tuning };
       sendDev(game, room, true);
       break;
     case 'reset-tuning':
@@ -180,19 +180,26 @@ export function devTick(game: Game, room: Room) {
       room.deadline = game.now() + state.remainingMs;
     else state.remainingMs = Math.max(0, room.deadline - game.now());
   }
-  for (const p of room.players)
-    if (p.bot) {
-      const phase = parseInt(p.id.slice(0, 4), 16) / 1024;
-      const input = {
-        seq: p.ack + 1,
-        tick: game.tick,
-        x: Math.sin(game.tick / 60 + phase),
-        z: Math.cos(game.tick / 87 + phase),
-        yaw: Math.sin(game.tick / 180 + phase),
-        pitch: 0,
-        buttons: game.tick % 240 === 0 ? 1 : 0,
-      };
-      p.queue = [input];
-      p.received = input.seq;
-    }
+  room.players.forEach((p, index) => {
+    if (!p.bot) return;
+    const phase = parseInt(p.id.slice(0, 4), 16) / 1024;
+    // Alternate bots run the traversal routine; the rest keep the original wander.
+    const input =
+      index % 2
+        ? {
+            ...traversalInput(game.tick + Math.floor(phase * 97), phase),
+            seq: p.ack + 1,
+          }
+        : {
+            seq: p.ack + 1,
+            tick: game.tick,
+            x: Math.sin(game.tick / 60 + phase),
+            z: Math.cos(game.tick / 87 + phase),
+            yaw: Math.sin(game.tick / 180 + phase),
+            pitch: 0,
+            buttons: game.tick % 240 === 0 ? 1 : 0,
+          };
+    p.queue = [input];
+    p.received = input.seq;
+  });
 }

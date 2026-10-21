@@ -1,5 +1,39 @@
 export type Vec3 = { x: number; y: number; z: number };
 export type EntityType = 'player' | 'robot' | 'projectile' | 'pickup';
+export type MoveMode =
+  'GROUND' | 'CROUCH' | 'SLIDE' | 'AIR' | 'WALLRUN' | 'MANTLE';
+/** Wall-run contact. `dir` points from the player into the wall along `axis`. */
+export interface WallContact {
+  id: string;
+  axis: 'x' | 'z';
+  dir: 1 | -1;
+  plane: number;
+  run: 1 | -1;
+  ticks: number;
+  rise: number;
+}
+export interface MantleState {
+  ticks: number;
+  total: number;
+  from: Vec3;
+  to: Vec3;
+  axis: 'x' | 'z';
+  dir: 1 | -1;
+}
+/** Complete deterministic movement sub-state; prediction reconciles every field. */
+export interface MoveState {
+  mode: MoveMode;
+  buttons: number;
+  airJumps: number;
+  coyote: number;
+  buffer: number;
+  crouched: boolean;
+  slideTicks: number;
+  slideCooldown: number;
+  wall: WallContact | null;
+  lockouts: { id: string; ticks: number }[];
+  mantle: MantleState | null;
+}
 export interface Entity {
   id: string;
   type: EntityType;
@@ -9,6 +43,10 @@ export interface Entity {
   pitch: number;
   health: number;
   flags: number;
+  /** Compact MOTION bits, replicated in snapshots for remote poses. */
+  motion?: number;
+  /** Full movement state. Stripped from snapshot entities; sent to its owner only. */
+  move?: MoveState;
 }
 export interface Input {
   seq: number;
@@ -22,7 +60,15 @@ export interface Input {
 export interface Box {
   min: Vec3;
   max: Vec3;
+  /** Optional level metadata carried by collider boxes. */
+  id?: string;
+  wallRunnable?: boolean;
+  /** Optional per-face restriction, named by outward normal ('+x' is the max-x face). */
+  runFaces?: RunFace[];
+  mantleable?: boolean;
+  surface?: string;
 }
+export type RunFace = '+x' | '-x' | '+z' | '-z';
 export interface World {
   floor: number;
   boxes: readonly Box[];
@@ -61,6 +107,8 @@ export interface Snapshot {
   time: number;
   entities: Entity[];
   acks: Record<string, number>;
+  /** The recipient's own full movement state, for exact reconciliation. */
+  move?: MoveState;
 }
 export type ServerMessage =
   | {

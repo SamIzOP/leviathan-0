@@ -1,13 +1,23 @@
 import * as THREE from 'three';
-import { CONFIG, FLAG, METRICS } from '@leviathan/shared';
+import { CONFIG, FLAG, MOTION, moveMode } from '@leviathan/shared';
 import { WorldView } from './world';
 import { graphics } from './graphics';
+import { CameraFeel } from './camera-feel';
 import type { Entity, Snapshot, Vec3 } from '@leviathan/shared';
+/** Placeholder pose parameters, eased per avatar from the compact motion bits. */
+interface Pose {
+  height: number;
+  lean: number;
+  side: number;
+  stretch: number;
+  heading: number;
+}
 interface Avatar {
   group: THREE.Group;
   body: THREE.Mesh<THREE.CapsuleGeometry, THREE.MeshStandardMaterial>;
   label: THREE.Sprite;
   name: string;
+  pose: Pose;
 }
 export class Renderer {
   scene = new THREE.Scene();
@@ -17,10 +27,12 @@ export class Renderer {
   snapshots: Snapshot[] = [];
   offset = 0;
   world?: WorldView;
+  feel = new CameraFeel();
   private loadVersion = 0;
   private loading = document.createElement('section');
   private cameraY = NaN;
   private cameraAt = performance.now();
+  private poseAt = performance.now();
   setLevel(id?: string, seed?: number) {
     if (id && this.world?.level.id === id && this.world.level.seed === seed)
       return;
@@ -34,7 +46,9 @@ export class Renderer {
     }
     this.loading.className = 'world-loading slab';
     this.loading.innerHTML =
-      '<div class="eyebrow">KAINOS // ENVIRONMENT UPLINK</div><h2>FOUNDRY ROW</h2><p>PREPARING DISTRICT</p><progress max="1" value="0.05"></progress>';
+      '<div class="eyebrow">KAINOS // ENVIRONMENT UPLINK</div><h2></h2><p>PREPARING DISTRICT</p><progress max="1" value="0.05"></progress>';
+    this.loading.querySelector('h2')!.textContent =
+      id === 'movement-lab' ? 'MOVEMENT LAB' : 'FOUNDRY ROW';
     this.loading.hidden = false;
     if (!this.loading.isConnected) document.body.append(this.loading);
     setTimeout(() => {
@@ -100,12 +114,59 @@ export class Renderer {
     sprite.position.y = 2.2;
     return sprite;
   }
+  /** Lower hull when crouched/sliding, lean back in a slide, lean toward a wall,
+   * quick vertical stretch while mantling. Name tags ride above the hull. */
+  private pose(v: Avatar, e: Entity, dt: number) {
+    const bits = e.motion ?? 0,
+      mode = moveMode(bits);
+    const speed = Math.hypot(e.velocity.x, e.velocity.z);
+    const target: Pose = {
+      height: bits & MOTION.crouch ? 1 / 1.8 : 1,
+      lean: bits & MOTION.slide ? 0.45 : 0,
+      side: mode === 'WALLRUN' ? (bits & MOTION.wallRight ? -0.28 : 0.28) : 0,
+      stretch: mode === 'MANTLE' ? 1 : 0,
+      heading:
+        bits & MOTION.slide && speed > 0.5
+          ? Math.atan2(-e.velocity.x, -e.velocity.z)
+          : e.yaw,
+    };
+    const k = 1 - Math.exp(-dt / 0.08);
+    const p = v.pose;
+    p.height += (target.height - p.height) * k;
+    p.lean += (target.lean - p.lean) * k;
+    p.side += (target.side - p.side) * k;
+    p.stretch += (target.stretch - p.stretch) * (1 - Math.exp(-dt / 0.05));
+    let turn = target.heading - p.heading;
+    turn = Math.atan2(Math.sin(turn), Math.cos(turn));
+    p.heading += turn * k;
+    const height = 1.8 * p.height * (1 + 0.12 * p.stretch);
+    v.body.scale.set(
+      1 - 0.1 * p.stretch,
+      p.height * (1 + 0.12 * p.stretch),
+      1 - 0.1 * p.stretch,
+    );
+    v.body.position.y = height / 2;
+    v.body.rotation.set(p.lean, p.heading, p.side, 'YXZ');
+    v.label.position.y = height + 0.4;
+  }
+  poses() {
+    return [...this.avatars].map(([id, a]) => ({
+      id,
+      height: a.pose.height,
+      lean: a.pose.lean,
+      side: a.pose.side,
+      stretch: a.pose.stretch,
+    }));
+  }
   render(
     local: Entity | undefined,
     localId: string,
     names: Map<string, string>,
     correction: Vec3,
   ) {
+    const now = performance.now(),
+      poseDt = Math.min(0.1, (now - this.poseAt) / 1000);
+    this.poseAt = now;
     const latest = this.snapshots.at(-1);
     if (latest) {
       const target = Date.now() - this.offset - CONFIG.interpolationMs;
@@ -149,7 +210,13 @@ export class Renderer {
           const label = this.label(name);
           group.add(body, label);
           this.scene.add(group);
-          v = { group, body, label, name };
+          v = {
+            group,
+            body,
+            label,
+            name,
+            pose: { height: 1, lean: 0, side: 0, stretch: 0, heading: e.yaw },
+          };
           this.avatars.set(e.id, v);
         }
         const from = a.entities.find((x) => x.id === e.id) ?? e;
@@ -159,12 +226,13 @@ export class Renderer {
           from.position.y + (to.position.y - from.position.y) * alpha,
           from.position.z + (to.position.z - from.position.z) * alpha,
         );
+        // Interpolation is unchanged; the pose follows the interpolated sample's bits.
+        this.pose(v, alpha < 0.5 ? from : to, poseDt);
         v.body.material.opacity = e.flags & FLAG.disconnected ? 0.25 : 1;
       }
     }
     if (local && (!this.world || this.world.mode === 'player')) {
-      const now = performance.now(),
-        targetY = local.position.y + correction.y;
+      const targetY = local.position.y + correction.y;
       const stair =
         !!(local.flags & FLAG.grounded) &&
         Number.isFinite(this.cameraY) &&
@@ -174,13 +242,11 @@ export class Renderer {
           (targetY - this.cameraY) * (1 - Math.exp(-(now - this.cameraAt) / 95))
         : targetY;
       this.cameraAt = now;
-      this.camera.position.set(
-        local.position.x + correction.x,
-        this.cameraY + METRICS.eye,
-        local.position.z + correction.z,
-      );
-      this.camera.rotation.order = 'YXZ';
-      this.camera.rotation.set(local.pitch, local.yaw, 0);
+      this.feel.apply(this.camera, local, {
+        x: local.position.x + correction.x,
+        y: this.cameraY,
+        z: local.position.z + correction.z,
+      });
     }
     if (this.world?.ready) this.world.render(this.camera);
   }

@@ -5,55 +5,55 @@
       "preset": "HIGH",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11114288
+      "heap": 12138644
     },
     {
       "preset": "LOW",
       "textureMiB": 12.7,
       "textures": 19,
-      "heap": 11173452
+      "heap": 12346808
     },
     {
       "preset": "MEDIUM",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11311324
+      "heap": 12333756
     },
     {
       "preset": "HIGH",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11249536
+      "heap": 12322924
     },
     {
       "preset": "LOW",
       "textureMiB": 12.7,
       "textures": 19,
-      "heap": 11323592
+      "heap": 12481556
     },
     {
       "preset": "MEDIUM",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11392720
+      "heap": 12446040
     },
     {
       "preset": "HIGH",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11356624
+      "heap": 12390572
     },
     {
       "preset": "LOW",
       "textureMiB": 12.7,
       "textures": 19,
-      "heap": 11432180
+      "heap": 12468144
     },
     {
       "preset": "MEDIUM",
       "textureMiB": 36.6,
       "textures": 19,
-      "heap": 11392900
+      "heap": 12559144
     }
   ]
 }

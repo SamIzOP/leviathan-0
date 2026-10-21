@@ -20,7 +20,11 @@
     "test:browser": "tsx scripts/browser-test.ts",
     "level:check": "tsx scripts/level-check.ts",
     "assets:check": "tsx scripts/assets-check.ts",
-    "forge:export": "tsx scripts/forge-export.ts"
+    "forge:export": "tsx scripts/forge-export.ts",
+    "movement:harness": "tsx scripts/movement-harness.ts",
+    "movement:perf": "tsx scripts/movement-perf.ts",
+    "test:boundary": "tsx scripts/boundary-test.ts",
+    "test:movement": "tsx scripts/movement-browser.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

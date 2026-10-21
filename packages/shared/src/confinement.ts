@@ -2,6 +2,7 @@ import type { Level } from './level';
 import { spatialWorld } from './spatial-grid';
 import { METRICS } from './metrics';
 import { makeEntity, stepPlayer } from './movement';
+import { BUTTON, FLAG } from './config';
 /** One-metre multilayer flood graph, capsule clearance at every sampled surface.
  * Adjacent cells permit the existing <=80%-jump ascent and ordinary stair steps.
  * Narrow barriers are tested along the connecting segment as well as at endpoints.
@@ -166,7 +167,10 @@ export function confinement(level: Level) {
                 z: 1,
                 yaw: (direction * Math.PI) / 4,
                 pitch: 0,
-                buttons: 3,
+                // Placeholder rule: sprint and jump again on every landing (no air jump).
+                buttons:
+                  BUTTON.sprint |
+                  (entity.flags & FLAG.grounded ? BUTTON.jump : 0),
               },
               1 / 60,
               world,

@@ -180,8 +180,7 @@ const loop = setInterval(() => {
     snapshotAccumulator += dt;
     if (snapshotAccumulator >= 1000 / game.settings.snapshotRate) {
       snapshotAccumulator -= 1000 / game.settings.snapshotRate;
-      for (const room of game.rooms.values())
-        game.broadcast(room, game.snapshot(room));
+      for (const room of game.rooms.values()) game.sendSnapshots(room);
     }
   }
 }, 4);

@@ -23,9 +23,12 @@ const colliderSchema = box.extend({
   id: z.string(),
   surface: surfaceSchema,
   wallRunnable: z.boolean(),
+  runFaces: z.array(z.enum(['+x', '-x', '+z', '-z'])).optional(),
   mantleable: z.boolean(),
   climbable: z.boolean(),
   decor: z.boolean().optional(),
+  /** Collision-only volume: blocks movement, never rendered (debug wireframes only). */
+  clip: z.boolean().optional(),
   platform: z.boolean(),
   prop: z.string().optional(),
 });
@@ -155,7 +158,15 @@ export const MISSION_LEVELS = [
   'foundry-row',
   'foundry-row',
 ];
-export const getLevel = (id = 'foundry-row') => LEVELS[id] ?? first;
+// Development-only levels (the Movement Lab) register at runtime from dev entry
+// points, so production bundles and mission lists never contain them.
+const devLevels = new Map<string, Level>();
+export function registerLevel(level: Level) {
+  devLevels.set(level.id, levelSchema.parse(level));
+}
+export const getLevel = (id = 'foundry-row') =>
+  LEVELS[id] ?? devLevels.get(id) ?? first;
+export const hasLevel = (id: string) => !!LEVELS[id] || devLevels.has(id);
 export const missionLevel = (mission: number) =>
   getLevel(MISSION_LEVELS[mission]);
 const worlds = new Map<string, World>();

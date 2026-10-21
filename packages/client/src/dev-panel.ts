@@ -1,11 +1,94 @@
-import { DEFAULT_TUNING } from '@leviathan/shared';
-import type { ClientMessage, DevState, RoomView } from '@leviathan/shared';
+import { DEFAULT_TUNING, MOVE_LIMITS, TUNING_PRESETS } from '@leviathan/shared';
+import type {
+  ClientMessage,
+  DevState,
+  DevTuning,
+  RoomView,
+} from '@leviathan/shared';
 export interface DrawFlags {
   colliders: boolean;
   ghost: boolean;
   raw: boolean;
   velocity: boolean;
+  movement: boolean;
+  speedGraph: boolean;
 }
+/** Tuning sliders grouped for the service terminal; every MOVE constant appears once. */
+const TUNING_GROUPS: [string, (keyof DevTuning)[]][] = [
+  [
+    'GROUND',
+    [
+      'walk',
+      'sprint',
+      'crouch',
+      'groundAccel',
+      'sprintAccel',
+      'groundDecel',
+      'overspeedDecel',
+    ],
+  ],
+  [
+    'AIR',
+    [
+      'gravity',
+      'jumpHeight',
+      'doubleJump',
+      'doubleJumpSteer',
+      'airAccel',
+      'airSpeed',
+      'maxSpeed',
+      'coyoteTime',
+      'jumpBuffer',
+    ],
+  ],
+  [
+    'SLIDE',
+    [
+      'slideMinStart',
+      'slideBase',
+      'slideBoost',
+      'slideMaxEntry',
+      'slideDecel',
+      'slideEnd',
+      'slideCooldown',
+      'slideSteer',
+      'slideJumpBoost',
+    ],
+  ],
+  [
+    'WALL-RUN',
+    [
+      'wallRunMinSpeed',
+      'wallRunSpeed',
+      'wallRunAccel',
+      'wallRunMaxAngle',
+      'wallRunMinHeight',
+      'wallRunReach',
+      'wallRunRise',
+      'wallRunRiseTime',
+      'wallRunGravity',
+      'wallRunSink',
+      'wallRunTime',
+      'wallRunEndSpeed',
+      'wallRunLockout',
+      'wallJumpAway',
+      'wallJumpUp',
+    ],
+  ],
+  [
+    'MANTLE',
+    [
+      'mantleMin',
+      'mantleMax',
+      'mantleTime',
+      'mantleExit',
+      'mantleFacing',
+      'mantleReach',
+    ],
+  ],
+];
+const stepFor = (min: number, max: number) =>
+  max - min <= 1.5 ? 0.01 : max - min <= 6 ? 0.05 : max - min <= 40 ? 0.1 : 0.5;
 interface Preferences {
   draw: DrawFlags;
   lag: number;
@@ -21,7 +104,14 @@ export class DevPanel {
   enabled = false;
   state?: DevState;
   preferences: Preferences = {
-    draw: { colliders: false, ghost: false, raw: false, velocity: false },
+    draw: {
+      colliders: false,
+      ghost: false,
+      raw: false,
+      velocity: false,
+      movement: false,
+      speedGraph: false,
+    },
     lag: 0,
     loss: 0,
     sections: { MATCH: true, PLAYERS: true },
@@ -301,42 +391,56 @@ export class DevPanel {
         () => this.command('reset-player'),
       ),
     );
-    const tuning = { ...(this.state?.tuning ?? DEFAULT_TUNING) };
-    for (const [key, label, min, max, step] of [
-      ['walk', 'WALK SPEED', 1, 15, 0.5],
-      ['sprint', 'SPRINT SPEED', 1, 25, 0.5],
-      ['jumpHeight', 'JUMP HEIGHT', 0.1, 8, 0.1],
-      ['gravity', 'GRAVITY', 2, 40, 1],
-    ] as const) {
-      this.slider(
-        player,
-        label,
-        key,
-        min,
-        max,
-        step,
-        tuning[key],
-        'Dev-only room tuning; applied by the same server and client adapter.',
-        (v) => {
-          this.command('tune', {
-            tuning: { ...(this.state?.tuning ?? DEFAULT_TUNING), [key]: v },
-          });
-        },
+    const movement = this.section('MOVEMENT TUNING');
+    const presets = document.createElement('div');
+    presets.className = 'dev-presets';
+    for (const name of ['DEFAULT', 'FLOATY', 'HEAVY'] as const)
+      presets.append(
+        this.button(
+          name,
+          `Apply the ${name.toLowerCase()} movement preset to this dev room.`,
+          () =>
+            this.command('tune', {
+              tuning: { ...DEFAULT_TUNING, ...TUNING_PRESETS[name] },
+            }),
+        ),
       );
-    }
-    player.append(
+    presets.append(
       this.button(
-        'RESET TO DEFAULTS',
-        'Restore all four placeholder movement values.',
+        'RESET',
+        'Restore every movement constant to its default.',
         () => this.command('reset-tuning'),
       ),
     );
+    movement.append(presets);
+    const tuning = { ...(this.state?.tuning ?? DEFAULT_TUNING) };
+    for (const [group, keys] of TUNING_GROUPS) {
+      const heading = document.createElement('h4');
+      heading.textContent = group;
+      movement.append(heading);
+      for (const key of keys) {
+        const [min, max] = MOVE_LIMITS[key];
+        this.slider(
+          movement,
+          key.replace(/([A-Z])/g, ' $1').toUpperCase(),
+          key,
+          min,
+          max,
+          stepFor(min, max),
+          tuning[key],
+          'Dev-only room tuning; the server and client prediction step with the same values.',
+          (v) => this.command('tune', { tuning: { [key]: v } }),
+        );
+      }
+    }
     const draw = this.section('DEBUG DRAW');
     for (const [key, label] of Object.entries({
       colliders: 'COLLIDER WIREFRAMES',
       ghost: 'AUTHORITATIVE GHOST',
       raw: 'RAW REMOTE POSITIONS',
       velocity: 'VELOCITY VECTORS',
+      movement: 'MOVEMENT STATE / PROBES',
+      speedGraph: 'SPEED GRAPH (10 S)',
     }))
       this.checkbox(
         draw,

@@ -101,7 +101,11 @@ export class WorldWeather {
     this.rain.visible = !this.level.interiors.some((b) =>
       inside(camera.position, b),
     );
-    this.smoke.visible = smoke;
+    // Stack smoke and boiler steam belong to levels that author them.
+    this.smoke.visible = smoke && this.level.atmosphere.smoke > 0;
+    this.steam.visible = this.level.audio.emitters.some(
+      (e) => e.kind === 'steam',
+    );
     this.ripples.visible = this.rain.visible && camera.position.y < 12;
     for (const m of this.materials) {
       m.uniforms.time!.value = time;

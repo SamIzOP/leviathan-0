@@ -46,7 +46,8 @@ const start = () => ({
 describe('Grounded stair motion', () => {
   const world = spatialWorld(0, stairRun(1.8));
   it('walks up 0.18 m risers without jumping and stays grounded', () => {
-    const states = walk(world, start(), 40);
+    // Walking now accelerates (no instant 5 m/s), so allow ten more ticks.
+    const states = walk(world, start(), 50);
     expect(states.at(-1)!.position.y).toBeCloseTo(1.8);
     expect(states.every((s) => !!(s.flags & FLAG.grounded))).toBe(true);
   });

@@ -1,11 +1,20 @@
 import * as THREE from 'three';
-import { getLevel, levelWorld } from '@leviathan/shared';
-import type { Entity } from '@leviathan/shared';
+import {
+  MOVE,
+  PHYSICS,
+  getLevel,
+  levelWorld,
+  mantleCandidates,
+  wallCandidates,
+} from '@leviathan/shared';
+import type { Entity, MoveTuning } from '@leviathan/shared';
 import type { DrawFlags } from './dev-panel';
 export class DebugDraw {
   levelId = 'foundry-row';
   canvas = document.createElement('canvas');
   ctx: CanvasRenderingContext2D;
+  tuning: MoveTuning = MOVE;
+  private speeds: { at: number; speed: number }[] = [];
   constructor() {
     this.canvas.id = 'debug-draw';
     this.canvas.setAttribute('aria-hidden', 'true');
@@ -20,7 +29,16 @@ export class DebugDraw {
     enabled: boolean,
     predicted?: Entity,
   ) {
-    const c = this.ctx;
+    const c = this.ctx,
+      now = performance.now();
+    if (predicted) {
+      this.speeds.push({
+        at: now,
+        speed: Math.hypot(predicted.velocity.x, predicted.velocity.z),
+      });
+      while (this.speeds.length && now - this.speeds[0]!.at > 10000)
+        this.speeds.shift();
+    }
     if (!enabled || !Object.values(flags).some(Boolean)) {
       this.canvas.hidden = true;
       return;
@@ -53,23 +71,25 @@ export class DebugDraw {
       c.lineTo(b.x, b.y);
       c.stroke();
     };
+    const box = (min: THREE.Vector3Like, max: THREE.Vector3Like) => {
+      const corners = Array.from({ length: 8 }, (_, i) =>
+        project(
+          i & 1 ? max.x : min.x,
+          i & 2 ? max.y : min.y,
+          i & 4 ? max.z : min.z,
+        ),
+      );
+      for (let i = 0; i < 8; i++)
+        for (const bit of [1, 2, 4])
+          if (!(i & bit)) line(corners[i]!, corners[i | bit]!);
+    };
     c.lineWidth = 2;
     c.strokeStyle = '#d3d9db';
     c.fillStyle = '#d3d9db';
     c.font = '12px monospace';
     if (flags.colliders)
-      for (const box of levelWorld(getLevel(this.levelId)).boxes) {
-        const corners = Array.from({ length: 8 }, (_, i) =>
-          project(
-            i & 1 ? box.max.x : box.min.x,
-            i & 2 ? box.max.y : box.min.y,
-            i & 4 ? box.max.z : box.min.z,
-          ),
-        );
-        for (let i = 0; i < 8; i++)
-          for (const bit of [1, 2, 4])
-            if (!(i & bit)) line(corners[i]!, corners[i | bit]!);
-      }
+      for (const b of levelWorld(getLevel(this.levelId)).boxes)
+        box(b.min, b.max);
     for (const e of entities) {
       const p = e.position;
       if (
@@ -100,6 +120,9 @@ export class DebugDraw {
         );
       }
     }
+    if (flags.movement && predicted)
+      this.movement(camera, predicted, project, line, box);
+    if (flags.speedGraph) this.graph();
     // The first-person camera sits inside the player's capsule. A top-down inset
     // keeps the authoritative ghost visible even when it lies behind the camera.
     const self = entities.find((e) => e.id === localId);
@@ -130,5 +153,152 @@ export class DebugDraw {
       const delta = Math.hypot(dx, dz, self.position.y - predicted.position.y);
       c.fillText(`DELTA ${delta.toFixed(3)}m`, left + 12, top + 174);
     }
+  }
+  /** State label, velocity arrow, wall/mantle probes and ground contact for the local operator. */
+  private movement(
+    camera: THREE.Camera,
+    e: Entity,
+    project: (
+      x: number,
+      y: number,
+      z: number,
+    ) => { x: number; y: number; visible: boolean },
+    line: (
+      a: ReturnType<typeof project>,
+      b: ReturnType<typeof project>,
+    ) => void,
+    box: (min: THREE.Vector3Like, max: THREE.Vector3Like) => void,
+  ) {
+    const c = this.ctx,
+      m = e.move,
+      p = e.position,
+      r = PHYSICS.radius;
+    const world = levelWorld(getLevel(this.levelId));
+    const near =
+      world.query?.(p.x - 2.5, p.z - 2.5, p.x + 2.5, p.z + 2.5) ?? world.boxes;
+    // Velocity arrow anchored two metres ahead of the eye so it is always in view.
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    const anchor = camera.position
+      .clone()
+      .addScaledVector(forward, 2)
+      .add(new THREE.Vector3(0, -0.45, 0));
+    c.strokeStyle = '#d3d9db';
+    c.lineWidth = 2;
+    const tip = anchor
+      .clone()
+      .addScaledVector(
+        new THREE.Vector3(e.velocity.x, e.velocity.y, e.velocity.z),
+        0.08,
+      );
+    line(project(anchor.x, anchor.y, anchor.z), project(tip.x, tip.y, tip.z));
+    // Wall probe rays at chest height and the contact normal.
+    c.strokeStyle = '#8a98a1';
+    c.lineWidth = 1;
+    const chest = p.y + 1;
+    for (const w of wallCandidates(near, p, 1.2)) {
+      const hit = { x: p.x, z: p.z };
+      hit[w.axis] = w.plane;
+      line(project(p.x, chest, p.z), project(hit.x, chest, hit.z));
+      const n = { x: 0, z: 0 };
+      n[w.axis] = -w.dir * 0.6;
+      c.strokeStyle = m?.wall?.id === w.box.id ? '#d3d9db' : '#8a98a1';
+      c.lineWidth = m?.wall?.id === w.box.id ? 3 : 1;
+      line(
+        project(hit.x, chest, hit.z),
+        project(hit.x + n.x, chest, hit.z + n.z),
+      );
+    }
+    // Mantle probe rays along the facing cone and candidate targets.
+    const facing = { x: -Math.sin(e.yaw), z: -Math.cos(e.yaw) };
+    c.strokeStyle = '#8a98a1';
+    c.lineWidth = 1;
+    for (const h of [0.6, 1.45, 2.3])
+      line(
+        project(p.x, p.y + h, p.z),
+        project(
+          p.x + facing.x * (r + this.tuning.mantleReach),
+          p.y + h,
+          p.z + facing.z * (r + this.tuning.mantleReach),
+        ),
+      );
+    const target = m?.mantle?.to;
+    const candidates = target
+      ? []
+      : mantleCandidates(near, p, facing, this.tuning);
+    c.strokeStyle = '#c9b458';
+    c.lineWidth = 2;
+    for (const t of target
+      ? [target]
+      : candidates.slice(0, 1).map((m) => m.target))
+      box(
+        { x: t.x - r, y: t.y, z: t.z - r },
+        { x: t.x + r, y: t.y + 0.05, z: t.z + r },
+      );
+    // Ground contact cross under the feet.
+    const grounded = m ? ['GROUND', 'CROUCH', 'SLIDE'].includes(m.mode) : true;
+    c.strokeStyle = grounded ? '#d3d9db' : '#4b4137';
+    c.lineWidth = 2;
+    line(project(p.x - r, p.y + 0.01, p.z), project(p.x + r, p.y + 0.01, p.z));
+    line(project(p.x, p.y + 0.01, p.z - r), project(p.x, p.y + 0.01, p.z + r));
+    // State label.
+    const rows = [
+      `STATE ${m?.mode ?? 'GROUND'}${m?.crouched ? ' / CROUCHED' : ''}`,
+      `SPEED ${Math.hypot(e.velocity.x, e.velocity.z).toFixed(2)} m/s  VY ${e.velocity.y.toFixed(2)}`,
+      `CONTACT ${grounded ? 'GROUND' : 'AIR'}  AIR JUMPS ${m?.airJumps ?? 1}`,
+      `COYOTE ${m?.coyote ?? 0}  BUFFER ${m?.buffer ?? 0}`,
+      `SLIDE ${m?.slideTicks ?? 0}t  COOLDOWN ${m?.slideCooldown ?? 0}t`,
+      m?.wall
+        ? `WALL ${m.wall.id} ${m.wall.axis}${m.wall.dir > 0 ? '+' : '-'} ${m.wall.ticks}t`
+        : `WALL — LOCKOUTS ${m?.lockouts.length ?? 0}`,
+      m?.mantle
+        ? `MANTLE ${m.mantle.ticks}/${m.mantle.total}t`
+        : `MANTLE TARGETS ${candidates.length}`,
+    ];
+    const left = 24,
+      top = innerHeight - 224 - rows.length * 16 - 24;
+    c.fillStyle = '#0a0e11';
+    c.fillRect(left, top, 320, rows.length * 16 + 16);
+    c.strokeStyle = '#d3d9db';
+    c.lineWidth = 2;
+    c.strokeRect(left, top, 320, rows.length * 16 + 16);
+    c.fillStyle = '#d3d9db';
+    c.font = '11px "IBM Plex Mono", monospace';
+    rows.forEach((row, i) => c.fillText(row, left + 10, top + 20 + i * 16));
+  }
+  /** Horizontal speed over the last ten seconds, with walk/sprint/slide-cap guides. */
+  private graph() {
+    const c = this.ctx,
+      w = 280,
+      h = 96,
+      left = innerWidth - w - 24,
+      top = innerHeight - h - 24,
+      now = performance.now(),
+      max = 16;
+    c.fillStyle = '#0a0e11';
+    c.fillRect(left, top, w, h);
+    c.strokeStyle = '#3a4a56';
+    c.lineWidth = 1;
+    for (const v of [5, 8, 11]) {
+      const y = top + h - (v / max) * h;
+      c.beginPath();
+      c.moveTo(left, y);
+      c.lineTo(left + w, y);
+      c.stroke();
+    }
+    c.strokeStyle = '#d3d9db';
+    c.lineWidth = 2;
+    c.beginPath();
+    this.speeds.forEach((s, i) => {
+      const x = left + w - ((now - s.at) / 10000) * w,
+        y = top + h - (Math.min(max, s.speed) / max) * h;
+      if (i) c.lineTo(x, y);
+      else c.moveTo(x, y);
+    });
+    c.stroke();
+    c.strokeRect(left, top, w, h);
+    c.fillStyle = '#8a98a1';
+    c.font = '10px "IBM Plex Mono", monospace';
+    c.fillText('SPEED / 10 S  (5 · 8 · 11 M/S)', left + 8, top + 14);
   }
 }

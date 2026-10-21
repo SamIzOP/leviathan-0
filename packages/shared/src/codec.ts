@@ -1,8 +1,22 @@
 import { z } from 'zod';
-import { CONFIG } from './config';
+import { CONFIG, MOVE_LIMITS, type MoveTuning } from './config';
 import type { ServerMessage } from './types';
 import { DEV_ACTIONS } from './dev';
 const finite = z.number().finite();
+// Any subset of movement constants, each inside its dev bounds.
+const tuning = z
+  .object(
+    Object.fromEntries(
+      Object.entries(MOVE_LIMITS).map(([key, [min, max]]) => [
+        key,
+        z.number().min(min).max(max),
+      ]),
+    ) as Record<keyof MoveTuning, z.ZodNumber>,
+  )
+  .partial()
+  .strict();
+/** Dev-only test levels selectable from a solo entry. */
+export const DEV_LEVELS = { lab: 'movement-lab' } as const;
 const input = z
   .object({
     seq: z.number().int().min(1).max(Number.MAX_SAFE_INTEGER),
@@ -20,6 +34,7 @@ export const clientSchema = z.discriminatedUnion('type', [
       type: z.literal('dev-solo'),
       protocol: z.number().int(),
       name: z.string().max(64),
+      level: z.enum(['lab']).optional(),
     })
     .strict(),
   z
@@ -28,15 +43,7 @@ export const clientSchema = z.discriminatedUnion('type', [
       action: z.enum(DEV_ACTIONS),
       enabled: z.boolean().optional(),
       count: z.number().int().min(1).max(10).optional(),
-      tuning: z
-        .object({
-          walk: z.number().min(1).max(15),
-          sprint: z.number().min(1).max(25),
-          jumpHeight: z.number().min(0.1).max(8),
-          gravity: z.number().min(2).max(40),
-        })
-        .strict()
-        .optional(),
+      tuning: tuning.optional(),
     })
     .strict(),
   z

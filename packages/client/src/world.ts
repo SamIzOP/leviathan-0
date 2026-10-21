@@ -140,17 +140,23 @@ export class WorldView {
     this.reflection.rotation.x = -Math.PI / 2;
     this.reflection.position.set(0, 0.022, 35);
     this.root.add(this.reflection);
-    this.reflection.visible = this.preset === 'HIGH';
+    this.reflection.visible = this.preset === 'HIGH' && this.hasStreet;
     this.root.add(this.spawnGroup);
     scene.add(this.root);
     this.resize();
   }
+  /** Street dressing and the road reflector belong to the street levels only. */
+  get hasStreet() {
+    return this.level.buildings.length > 0;
+  }
   build() {
-    const street = streetDetails(this.level);
-    this.root.add(...street.objects);
-    this.geometries.push(...street.geometries);
-    this.extraMaterials.push(...street.materials);
-    this.materials.textures.push(street.texture);
+    if (this.hasStreet) {
+      const street = streetDetails(this.level);
+      this.root.add(...street.objects);
+      this.geometries.push(...street.geometries);
+      this.extraMaterials.push(...street.materials);
+      this.materials.textures.push(street.texture);
+    }
     const buckets = new Map<
       string,
       {
@@ -232,6 +238,7 @@ export class WorldView {
     });
     this.extraMaterials.push(shadow);
     for (const b of this.level.colliders) {
+      if (b.clip) continue;
       source = b.prop ? b.id : '';
       const size = {
           x: b.max.x - b.min.x,
@@ -564,7 +571,10 @@ export class WorldView {
     (this.scene.fog as T.FogExp2).density = this.fog;
     this.spawnGroup.visible = this.spawns;
     this.reflection.visible =
-      this.preset === 'HIGH' && this.puddles && camera.position.z > 0;
+      this.preset === 'HIGH' &&
+      this.puddles &&
+      this.hasStreet &&
+      camera.position.z > 0;
     this.weather.update(time, camera, this.rain, this.smoke);
     this.lamps.forEach(
       (l, i) =>

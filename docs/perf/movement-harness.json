@@ -1,0 +1,166 @@
+{
+  "pass": true,
+  "radius": 0.4,
+  "rows": [
+    {
+      "measure": "walkTopSpeed",
+      "value": 5,
+      "unit": "m/s",
+      "range": "4.95–5.05",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "sprintTopSpeed",
+      "value": 8,
+      "unit": "m/s",
+      "range": "7.95–8.05",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "sprintAccelSeconds",
+      "value": 0.25,
+      "unit": "s",
+      "range": "0.2–0.32",
+      "result": "PASS",
+      "note": "walk → 8 m/s"
+    },
+    {
+      "measure": "jumpApex",
+      "value": 1.279,
+      "unit": "m",
+      "range": "1.2–1.35",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "doubleJumpApex",
+      "value": 2.265,
+      "unit": "m",
+      "range": "2.2–2.6",
+      "result": "PASS",
+      "note": "press at apex"
+    },
+    {
+      "measure": "sprintJumpDistance",
+      "value": 5.333,
+      "unit": "m",
+      "range": "4.8–6.2",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "slideEntrySpeed",
+      "value": 9.138,
+      "unit": "m/s",
+      "range": "9–9.4",
+      "result": "PASS",
+      "note": "from 8 m/s sprint"
+    },
+    {
+      "measure": "slideSeconds",
+      "value": 1.4,
+      "unit": "s",
+      "range": "1.2–1.6",
+      "result": "PASS",
+      "note": "decays to 4 m/s"
+    },
+    {
+      "measure": "slideDistance",
+      "value": 9.277,
+      "unit": "m",
+      "range": "8–12",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "slideJumpSpeed",
+      "value": 9.275,
+      "unit": "m/s",
+      "range": "9–12.5",
+      "result": "PASS",
+      "note": "jump 0.25 s into slide"
+    },
+    {
+      "measure": "wallRunSeconds",
+      "value": 2.2,
+      "unit": "s",
+      "range": "2–2.25",
+      "result": "PASS",
+      "note": "to time limit"
+    },
+    {
+      "measure": "wallRunExitSpeed",
+      "value": 9,
+      "unit": "m/s",
+      "range": "8.5–9.5",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "wallRunPeakRise",
+      "value": 0.875,
+      "unit": "m",
+      "range": "0.3–1",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "wallJumpAway",
+      "value": 4.903,
+      "unit": "m/s",
+      "range": "4.5–5.5",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "wallJumpUp",
+      "value": 6.8,
+      "unit": "m/s",
+      "range": "6.5–7.5",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "wallJumpAlong",
+      "value": 9.053,
+      "unit": "m/s",
+      "range": "8–9.5",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "mantleSeconds",
+      "value": 0.45,
+      "unit": "s",
+      "range": "0.43–0.48",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "measure": "mantleInset",
+      "value": 0.45,
+      "unit": "m",
+      "range": "0.4–0.5",
+      "result": "PASS",
+      "note": "top y=1.500"
+    },
+    {
+      "measure": "lowCeilingCrouched",
+      "value": 1,
+      "unit": "bool",
+      "range": "1–1",
+      "result": "PASS",
+      "note": "93 ticks under"
+    },
+    {
+      "measure": "stairStepUp",
+      "value": 1.8,
+      "unit": "m",
+      "range": "1.79–1.81",
+      "result": "PASS",
+      "note": "grounded throughout"
+    }
+  ]
+}

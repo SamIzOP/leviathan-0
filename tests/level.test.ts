@@ -6,7 +6,10 @@ import {
   spawnEntity,
   stepPlayer,
   reconcile,
-  PHYSICS,
+  PLACEHOLDER,
+  MOVE,
+  basePlaceholderJumpHeight,
+  CONFIG,
   METRICS,
   levelSchema,
   inside,
@@ -84,14 +87,21 @@ describe('Foundry Row level contract', () => {
     expect(validateLevel(level)).toContain('Unreachable platform isolated');
   });
   it('keeps step heights below 80 percent of the existing jump', () => {
+    // Validators keep the retired placeholder jump; the new jump may not be lower.
     expect(METRICS.stepHeight).toBeCloseTo(0.98);
-    expect(PHYSICS.jump).toBe(7);
-    expect(PHYSICS.gravity).toBe(20);
+    expect(PLACEHOLDER.jump).toBe(7);
+    expect(PLACEHOLDER.gravity).toBe(20);
+    expect(basePlaceholderJumpHeight).toBeCloseTo(1.225);
+    expect(MOVE.jumpHeight).toBeGreaterThanOrEqual(basePlaceholderJumpHeight);
   });
   it('uses free spawns and recovers below-map and out-of-bounds players', () => {
     const game = new Game({ devTools: true }),
       peer: Peer = { id: 'test', send: () => {}, close: () => {} };
-    game.handle(peer, { type: 'dev-solo', protocol: 1, name: 'Tester' });
+    game.handle(peer, {
+      type: 'dev-solo',
+      protocol: CONFIG.protocol,
+      name: 'Tester',
+    });
     const level = missionLevel(0);
     for (const position of [
       { x: 0, y: -10, z: 0 },
