@@ -8,6 +8,7 @@ import {
   stepPlayer,
   getLevel,
   levelWorld,
+  traversalInput,
 } from '@leviathan/shared';
 import type { ClientMessage, Entity, Input, RoomView } from '@leviathan/shared';
 import { writeFile, mkdir } from 'node:fs/promises';
@@ -30,6 +31,8 @@ const memories: number[] = [];
 const started = Date.now();
 const snapshotDigests = new Map<number, string>();
 let syncComparisons = 0;
+// Odd bots run the traversal routine (sprint, slide, slide-jump, air jump); even bots wander.
+const statesReached = new Set<string>();
 class Bot {
   ws?: WebSocket;
   token = '';
@@ -70,15 +73,24 @@ class Bot {
     ws.on('open', () =>
       this.send(
         this.token
-          ? { type: 'resume', protocol: 1, code: roomCode, token: this.token }
+          ? {
+              type: 'resume',
+              protocol: CONFIG.protocol,
+              code: roomCode,
+              token: this.token,
+            }
           : roomCode
             ? {
                 type: 'join',
-                protocol: 1,
+                protocol: CONFIG.protocol,
                 code: roomCode,
                 name: `Bot ${this.index + 1}`,
               }
-            : { type: 'create', protocol: 1, name: `Bot ${this.index + 1}` },
+            : {
+                type: 'create',
+                protocol: CONFIG.protocol,
+                name: `Bot ${this.index + 1}`,
+              },
       ),
     );
     ws.on('message', (raw) => {
@@ -152,7 +164,9 @@ class Bot {
             this.snapshots++;
             this.first ||= Date.now();
             this.last = Date.now();
-            const authoritative = m.entities.find((e) => e.id === this.id);
+            const entity = m.entities.find((e) => e.id === this.id);
+            const authoritative =
+              entity && m.move ? { ...entity, move: m.move } : entity;
             if (authoritative) {
               const result = reconcile(
                 authoritative,
@@ -201,15 +215,22 @@ class Bot {
           this.room?.phase !== 'PLAYING'
         )
           return;
-        const i: Input = {
-          seq: ++this.seq,
-          tick: this.tick,
-          x: Math.sin(this.seq / 75 + this.index),
-          z: Math.cos(this.seq / 90),
-          yaw: this.index,
-          pitch: 0,
-          buttons: this.seq % 240 === 0 ? 1 : 0,
-        };
+        const i: Input =
+          this.index % 2
+            ? {
+                ...traversalInput(this.seq, this.index / 8),
+                seq: ++this.seq,
+                tick: this.tick,
+              }
+            : {
+                seq: ++this.seq,
+                tick: this.tick,
+                x: Math.sin(this.seq / 75 + this.index),
+                z: Math.cos(this.seq / 90),
+                yaw: this.index,
+                pitch: 0,
+                buttons: this.seq % 240 === 0 ? 1 : 0,
+              };
         this.pending.push(i);
         this.pending = this.pending.slice(-240);
         this.state = stepPlayer(
@@ -218,6 +239,7 @@ class Bot {
           1 / this.tickRate,
           levelWorld(getLevel(this.room?.levelId)),
         );
+        statesReached.add(this.state.move?.mode ?? 'GROUND');
         this.send({
           type: 'inputs',
           inputs: this.pending.slice(-CONFIG.maxBatch),
@@ -286,6 +308,8 @@ const report = {
   memoryMiB: memories.map((x) => x / 1048576),
   memoryGrowthMiB: memoryGrowth / 1048576,
   predictionErrorP95: errors[Math.floor(errors.length * 0.95)],
+  predictionErrorMax: errors.at(-1),
+  statesReached: [...statesReached],
   failure,
   pass:
     !failure &&

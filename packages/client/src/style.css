@@ -1169,3 +1169,67 @@ body[data-phase='COUNTDOWN'] .scene-caption {
   line-height: 1.8;
   white-space: pre-wrap;
 }
+/* Movement stage: optional speed readout and movement settings controls. */
+.speedometer {
+  position: fixed;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  min-width: 112px;
+  padding: 6px 12px;
+  background: var(--ink);
+  border: 2px solid var(--steel);
+  border-left: 6px solid var(--pale);
+  color: var(--pale);
+  font:
+    12px/1.4 'IBM Plex Mono',
+    monospace;
+  letter-spacing: 0.08em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.speedometer[hidden] {
+  display: none;
+}
+.settings-grid .toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+  font-size: 11px;
+}
+.settings-grid fieldset label:not(.toggle) {
+  display: block;
+}
+.settings-grid select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+}
+.settings-note {
+  display: block;
+  color: var(--warning);
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+#dev-panel h4 {
+  margin: 16px 0 4px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--mist);
+  border-bottom: 2px solid var(--steel);
+  padding-bottom: 4px;
+}
+.dev-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.dev-presets button {
+  min-height: 32px;
+  padding: 4px;
+  font-size: 10px;
+}

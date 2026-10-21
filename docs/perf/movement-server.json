@@ -1,0 +1,24 @@
+{
+  "machine": {
+    "cpu": "AMD Ryzen 7 9850X3D 8-Core Processor           ",
+    "threads": 16,
+    "node": "v24.18.0"
+  },
+  "players": 8,
+  "ticksMeasured": 3600,
+  "statesReached": ["GROUND", "AIR", "SLIDE", "CROUCH", "WALLRUN", "MANTLE"],
+  "serverStep": {
+    "meanMs": 0.061102861111110775,
+    "p95Ms": 0.1119000000000483,
+    "p99Ms": 0.21429999999998017,
+    "maxMs": 2.446399999999983
+  },
+  "movementOnly": {
+    "meanMs": 0.05438002777777639,
+    "p95Ms": 0.1107000000000653,
+    "p99Ms": 0.2036000000000513,
+    "maxMs": 3.5217999999999847
+  },
+  "budgetMs": 1,
+  "pass": true
+}

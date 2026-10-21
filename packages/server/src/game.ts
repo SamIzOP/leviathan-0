@@ -1,11 +1,14 @@
 import { randomBytes, randomInt } from 'node:crypto';
 import {
   missionLevel,
+  getLevel,
+  hasLevel,
   levelWorld,
   spawnEntity,
   inside,
   CODE_ALPHABET,
   CONFIG,
+  DEV_LEVELS,
   FLAG,
   MISSIONS,
   makeEntity,
@@ -20,6 +23,7 @@ import type {
   Phase,
   RoomView,
   ServerMessage,
+  Snapshot,
   Vote,
   DevState,
 } from '@leviathan/shared';
@@ -60,7 +64,21 @@ export interface Room {
   result: RoomView['result'];
   lastVote: RoomView['lastVote'];
   started: number;
+  /** Dev-only level override (the Movement Lab); missions select levels otherwise. */
+  levelId?: string;
 }
+/** Snapshot entities carry compact motion bits; the full sub-state goes to its owner. */
+const publicEntity = (e: Entity): Entity => ({
+  id: e.id,
+  type: e.type,
+  position: e.position,
+  velocity: e.velocity,
+  yaw: e.yaw,
+  pitch: e.pitch,
+  health: e.health,
+  flags: e.flags,
+  motion: e.motion ?? 0,
+});
 export interface Settings {
   tickRate: number;
   snapshotRate: number;
@@ -113,14 +131,17 @@ export class Game {
   ) {
     this.settings = { ...defaults, ...settings };
   }
+  level(r: Room) {
+    return r.levelId ? getLevel(r.levelId) : missionLevel(r.mission);
+  }
   view(r: Room): RoomView {
     return {
       code: r.code,
       hostId: r.hostId,
       phase: r.phase,
       mission: r.mission,
-      levelId: missionLevel(r.mission).id,
-      levelSeed: missionLevel(r.mission).seed,
+      levelId: this.level(r).id,
+      levelSeed: this.level(r).seed,
       deadline: r.deadline,
       players: r.players.map((p) => ({
         id: p.id,
@@ -140,14 +161,22 @@ export class Game {
   update(r: Room) {
     this.broadcast(r, { type: 'room', room: this.view(r) });
   }
-  snapshot(r: Room) {
+  snapshot(r: Room, recipient?: Player): Snapshot {
     return {
       type: 'snapshot' as const,
       tick: this.tick,
       time: this.now(),
-      entities: [...r.players.map((p) => p.entity), ...r.robots],
+      entities: [...r.players.map((p) => p.entity), ...r.robots].map(
+        publicEntity,
+      ),
       acks: Object.fromEntries(r.players.map((p) => [p.id, p.ack])),
+      ...(recipient?.entity.move ? { move: recipient.entity.move } : {}),
     };
+  }
+  sendSnapshots(r: Room) {
+    const base = this.snapshot(r);
+    for (const p of r.players)
+      p.peer?.send(p.entity.move ? { ...base, move: p.entity.move } : base);
   }
   handle(peer: Peer, m: ClientMessage) {
     try {
@@ -171,6 +200,9 @@ export class Game {
       if (m.type === 'dev-solo') {
         if (peer.room && peer.player && peer.room.hostId !== peer.player.id)
           throw new Error('Solo restart requires the host.');
+        const levelId = m.level ? DEV_LEVELS[m.level] : undefined;
+        if (levelId && !hasLevel(levelId))
+          throw new Error('That test level is not available on this server.');
         if (!peer.room)
           this.handle(peer, {
             type: 'create',
@@ -178,6 +210,7 @@ export class Game {
             name: m.name || 'TESTER',
           });
         if (peer.room && peer.player) {
+          peer.room.levelId = levelId;
           const state = devState(peer.room);
           state.solo = true;
           state.timerEnabled = false;
@@ -229,7 +262,7 @@ export class Game {
           entity: spawnEntity(
             id,
             r.players.length,
-            missionLevel(r.mission),
+            this.level(r),
             r.players.map((p) => p.entity),
           ),
           queue: [],
@@ -342,7 +375,7 @@ export class Game {
     });
     if (this.settings.devTools)
       peer.send({ type: 'dev-state', state: devState(r) });
-    peer.send(this.snapshot(r));
+    peer.send(this.snapshot(r, p));
   }
   resume(peer: Peer, code: string, token: string) {
     if (peer.player) throw new Error('Already connected.');
@@ -394,7 +427,7 @@ export class Game {
     r.robots = [];
     r.result = null;
     for (const [i, p] of r.players.entries()) {
-      p.entity = spawnEntity(p.id, i, missionLevel(r.mission));
+      p.entity = spawnEntity(p.id, i, this.level(r));
       if (!p.peer) p.entity.flags |= FLAG.disconnected;
       p.queue = [];
       p.received = p.ack;
@@ -436,7 +469,7 @@ export class Game {
         if (this.settings.devTools) devTick(this, r);
         for (const p of r.players) {
           if (!p.peer) continue;
-          const level = missionLevel(r.mission);
+          const level = this.level(r);
           if (
             p.entity.position.y < level.killY ||
             !inside(p.entity.position, level.bounds)
@@ -455,11 +488,12 @@ export class Game {
               p.entity,
               i,
               1 / this.settings.tickRate,
-              levelWorld(missionLevel(r.mission)),
+              levelWorld(this.level(r)),
               this.settings.devTools ? r.dev?.tuning : undefined,
             );
             p.ack = i.seq;
           } else {
+            // Missing input: zero axes, but held buttons persist so no false edges appear.
             const idle: Input = {
               seq: p.ack,
               tick: this.tick,
@@ -467,19 +501,19 @@ export class Game {
               z: 0,
               yaw: p.entity.yaw,
               pitch: p.entity.pitch,
-              buttons: 0,
+              buttons: p.entity.move?.buttons ?? 0,
             };
             p.entity = stepDev(
               p.entity,
               idle,
               1 / this.settings.tickRate,
-              levelWorld(missionLevel(r.mission)),
+              levelWorld(this.level(r)),
               this.settings.devTools ? r.dev?.tuning : undefined,
             );
           }
         }
         for (const p of r.players) {
-          const level = missionLevel(r.mission);
+          const level = this.level(r);
           if (
             p.peer &&
             (p.entity.position.y < level.killY ||
@@ -509,7 +543,7 @@ export class Game {
               buttons: 0,
             },
             1 / this.settings.tickRate,
-            levelWorld(missionLevel(r.mission)),
+            levelWorld(this.level(r)),
           );
         }
         if (

@@ -1,0 +1,138 @@
+[
+  {
+    "level": "foundry-row",
+    "errors": [],
+    "reach": {
+      "mantle": 4.571875,
+      "wallRun": 3.892708333333333,
+      "runLength": 19.8
+    },
+    "mantleRoutes": 180,
+    "wallRunRoutes": 149,
+    "zones": [
+      {
+        "zone": "entrance",
+        "mantleRoutes": 11,
+        "wallRunRoutes": 5,
+        "platformsWithAdvancedEntry": 7,
+        "examples": [
+          "row--1-0-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-1-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-2-fire-escape-cross-2 -> row--1-0 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "rooftops",
+        "mantleRoutes": 47,
+        "wallRunRoutes": 73,
+        "platformsWithAdvancedEntry": 38,
+        "examples": [
+          "row--1-0-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-2 -> row--1-1-fire-escape-landing-5 (+3.6 m)",
+          "row--1-2-fire-escape-landing-4 -> row--1-1-fire-escape-landing-5 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "containers",
+        "mantleRoutes": 20,
+        "wallRunRoutes": 0,
+        "platformsWithAdvancedEntry": 20,
+        "examples": [
+          "container-0-2-1 -> container-0-2-2 (+2.6 m)",
+          "container-0-2-1 -> container-landing-0-2 (+2.6 m)",
+          "container-1-1-1 -> container-1-1-2 (+2.6 m)"
+        ]
+      },
+      {
+        "zone": "stacks",
+        "mantleRoutes": 16,
+        "wallRunRoutes": 16,
+        "platformsWithAdvancedEntry": 18,
+        "examples": [
+          "row--1-4-fire-escape-cross-4 -> row--1-4 (+3.6 m)",
+          "row--1-5-fire-escape-cross-2 -> row--1-5 (+3.6 m)",
+          "row--1-2 -> row--1-4 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "hall",
+        "mantleRoutes": 10,
+        "wallRunRoutes": 1,
+        "platformsWithAdvancedEntry": 6,
+        "examples": [
+          "ground-south -> stack-base0 (+3.6 m)",
+          "ground-south -> stack-landing0 (+3.6 m)",
+          "ground-south -> stack-base1 (+3.6 m)"
+        ]
+      }
+    ]
+  },
+  {
+    "level": "foundry-row-overcast",
+    "errors": [],
+    "reach": {
+      "mantle": 4.571875,
+      "wallRun": 3.892708333333333,
+      "runLength": 19.8
+    },
+    "mantleRoutes": 180,
+    "wallRunRoutes": 149,
+    "zones": [
+      {
+        "zone": "entrance",
+        "mantleRoutes": 11,
+        "wallRunRoutes": 5,
+        "platformsWithAdvancedEntry": 7,
+        "examples": [
+          "row--1-0-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-1-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-2-fire-escape-cross-2 -> row--1-0 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "rooftops",
+        "mantleRoutes": 47,
+        "wallRunRoutes": 73,
+        "platformsWithAdvancedEntry": 38,
+        "examples": [
+          "row--1-0-fire-escape-cross-2 -> row--1-0 (+3.6 m)",
+          "row--1-2 -> row--1-1-fire-escape-landing-5 (+3.6 m)",
+          "row--1-2-fire-escape-landing-4 -> row--1-1-fire-escape-landing-5 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "containers",
+        "mantleRoutes": 20,
+        "wallRunRoutes": 0,
+        "platformsWithAdvancedEntry": 20,
+        "examples": [
+          "container-0-2-1 -> container-0-2-2 (+2.6 m)",
+          "container-0-2-1 -> container-landing-0-2 (+2.6 m)",
+          "container-1-1-1 -> container-1-1-2 (+2.6 m)"
+        ]
+      },
+      {
+        "zone": "stacks",
+        "mantleRoutes": 16,
+        "wallRunRoutes": 16,
+        "platformsWithAdvancedEntry": 18,
+        "examples": [
+          "row--1-4-fire-escape-cross-4 -> row--1-4 (+3.6 m)",
+          "row--1-5-fire-escape-cross-2 -> row--1-5 (+3.6 m)",
+          "row--1-2 -> row--1-4 (+3.6 m)"
+        ]
+      },
+      {
+        "zone": "hall",
+        "mantleRoutes": 10,
+        "wallRunRoutes": 1,
+        "platformsWithAdvancedEntry": 6,
+        "examples": [
+          "ground-south -> stack-base0 (+3.6 m)",
+          "ground-south -> stack-landing0 (+3.6 m)",
+          "ground-south -> stack-base1 (+3.6 m)"
+        ]
+      }
+    ]
+  }
+]

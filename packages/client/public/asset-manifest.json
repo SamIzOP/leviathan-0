@@ -114,6 +114,16 @@
     "footstep.asphalt": "/assets/audio/footstep-asphalt.ogg",
     "footstep.concrete": "/assets/audio/footstep-concrete.ogg",
     "footstep.metal": "/assets/audio/footstep-metal.ogg",
-    "footstep.wood": "/assets/audio/footstep-wood.ogg"
+    "footstep.wood": "/assets/audio/footstep-wood.ogg",
+    "movement.slide": "/assets/audio/movement-slide.ogg",
+    "movement.wallstep": "/assets/audio/movement-wallstep.ogg",
+    "movement.doublejump": "/assets/audio/movement-thrust.ogg",
+    "movement.walljump": "/assets/audio/movement-walljump.ogg",
+    "movement.mantle": "/assets/audio/movement-mantle.ogg",
+    "movement.handslap": "/assets/audio/movement-handslap.ogg",
+    "movement.land": "/assets/audio/movement-land.ogg",
+    "movement.wind": "/assets/audio/movement-wind.ogg",
+    "movement.crouch": "/assets/audio/movement-crouch.ogg",
+    "movement.stand": "/assets/audio/movement-stand.ogg"
   }
 }

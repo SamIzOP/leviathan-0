@@ -1,24 +1,31 @@
 import './style.css';
 import {
   CONFIG,
-  FLAG,
-  reconcile,
-  stepPlayer,
+  DEV_LEVELS,
   getLevel,
   levelWorld,
-  stepDev,
-  reconcileDev,
+  predictionMatches,
+  resolveTuning,
+  stepPlayer,
 } from '@leviathan/shared';
-import type { Entity, Input, RoomView, ServerMessage } from '@leviathan/shared';
+import type {
+  Entity,
+  Input,
+  MoveMode,
+  RoomView,
+  ServerMessage,
+} from '@leviathan/shared';
 import { applyTheme } from './theme';
 import { Network } from './network';
-import { InputReader } from './input';
+import { InputReader, type InjectedInput } from './input';
 import { Renderer } from './renderer';
 import { AudioManager } from './audio';
 import { MenuBackground } from './menu-background';
 import { DevPanel } from './dev-panel';
 import { DebugDraw } from './debug-draw';
 import { WorldAudio } from './world-audio';
+import { MovementAudio } from './movement-audio';
+import { movementSettings } from './movement-settings';
 import { worldControls } from './world-controls';
 import { renderInterface, toast } from './ui';
 applyTheme();
@@ -29,10 +36,14 @@ const audio = new AudioManager(),
   renderer = new Renderer(canvas);
 const background = new MenuBackground(),
   debugDraw = new DebugDraw();
+const urlParams = new URLSearchParams(location.search);
+// Dev-only test level for a solo entry (/?solo=1&level=lab).
+const soloLevel = urlParams.get('level') === 'lab' ? 'lab' : undefined;
 let controlsOpen = false,
-  soloEntry = new URLSearchParams(location.search).get('solo') === '1',
+  soloEntry = urlParams.get('solo') === '1',
   everLocked = false,
-  soloRequested = false;
+  soloRequested = false,
+  levelRequested = false;
 let room: RoomView | undefined,
   playerId = '',
   predicted: Entity | undefined,
@@ -52,6 +63,12 @@ let predictionError = 0,
   missingSnapshots = 0,
   totalSnapshots = 0,
   snapshotTimes: number[] = [];
+// Predicted state after each command, for exact mismatch detection on acknowledgement.
+let history = new Map<number, Entity>();
+let reconciliations = 0,
+  matchedSnapshots = 0,
+  maxPredictionError = 0;
+const reached = new Set<MoveMode>();
 let restoreLook = false;
 const correction = { x: 0, y: 0, z: 0 };
 const input = new InputReader(
@@ -80,12 +97,34 @@ devPanel.extend = () =>
   worldControls(devPanel, renderer, input, () => toggleOverlay('dev'));
 let cameraAppliedTo: unknown;
 let worldAudio: WorldAudio | undefined;
+let movementAudio: MovementAudio | undefined;
 // Explicit legacy URL fault settings retain precedence over saved dev defaults.
-const faultParams = new URLSearchParams(location.search);
-const urlFaults = faultParams.has('lag') || faultParams.has('loss');
+const urlFaults = urlParams.has('lag') || urlParams.has('loss');
 if (urlFaults) {
   devPanel.preferences.lag = network.lag;
   devPanel.preferences.loss = network.loss;
+}
+const world = () => levelWorld(getLevel(room?.levelId));
+/** The one shared step, with the room's dev tuning when present. */
+function step(state: Entity, command: Input) {
+  return stepPlayer(
+    state,
+    command,
+    1 / tickRate,
+    world(),
+    dev && devPanel.state ? resolveTuning(devPanel.state.tuning) : undefined,
+  );
+}
+function resetPrediction() {
+  pending = [];
+  history = new Map();
+  correction.x = correction.y = correction.z = 0;
+}
+function disposeAudio() {
+  worldAudio?.dispose();
+  worldAudio = undefined;
+  movementAudio?.dispose();
+  movementAudio = undefined;
 }
 function toggleOverlay(kind: 'dev' | 'controls') {
   if (kind === 'dev') {
@@ -113,6 +152,7 @@ function startSolo(name: string) {
     type: 'dev-solo',
     protocol: CONFIG.protocol,
     name: name.trim() || 'TESTER',
+    ...(soloLevel ? { level: soloLevel } : {}),
   });
 }
 function draw() {
@@ -148,8 +188,7 @@ function draw() {
       network.clear();
       room = undefined;
       renderer.setLevel();
-      worldAudio?.dispose();
-      worldAudio = undefined;
+      disposeAudio();
       predicted = undefined;
       soloEntry = false;
       draw();
@@ -184,21 +223,21 @@ function setRoom(value: RoomView) {
         })
       : '';
   const changed = comparable(room) !== comparable(value);
+  const levelChanged = room?.levelId !== value.levelId;
   room = value;
   renderer.setLevel(
     value.phase === 'PLAYING' ? (value.levelId ?? 'foundry-row') : undefined,
     value.levelSeed,
   );
   debugDraw.levelId = value.levelId ?? 'foundry-row';
+  if (levelChanged) disposeAudio();
   if (old !== value.phase) {
-    pending = [];
-    correction.x = correction.y = correction.z = 0;
+    resetPrediction();
     if (value.phase === 'PLAYING') {
       void audio.play('match_start');
     } else {
       input.pause();
-      worldAudio?.dispose();
-      worldAudio = undefined;
+      disposeAudio();
       if (document.pointerLockElement) document.exitPointerLock();
     }
     if (value.phase === 'ENDED') void audio.play('match_end');
@@ -210,6 +249,20 @@ function setRoom(value: RoomView) {
       if (status) status.textContent = `${p.ping}ms`;
     });
   }
+}
+/** A solo URL decides the level: ?level=lab enters the lab; plain ?solo=1 leaves it. */
+function wantsLevel(r: RoomView) {
+  const mismatch = soloLevel
+    ? r.levelId !== DEV_LEVELS[soloLevel]
+    : r.levelId === DEV_LEVELS.lab;
+  return (
+    dev &&
+    soloEntry &&
+    urlParams.get('solo') === '1' &&
+    mismatch &&
+    !levelRequested &&
+    r.hostId === playerId
+  );
 }
 function receive(m: ServerMessage) {
   switch (m.type) {
@@ -226,12 +279,12 @@ function receive(m: ServerMessage) {
       devPanel.enable(dev, !urlFaults);
       draw();
       if (dev && soloEntry && !network.session && !soloRequested)
-        startSolo(new URLSearchParams(location.search).get('name') ?? 'TESTER');
+        startSolo(urlParams.get('name') ?? 'TESTER');
       break;
     case 'welcome':
       playerId = m.playerId;
       seq = m.seq;
-      pending = [];
+      resetPrediction();
       restoreLook = true;
       renderer.snapshots = [];
       lastSnapshotTick = 0;
@@ -240,11 +293,16 @@ function receive(m: ServerMessage) {
       network.save({ token: m.token, code: m.room.code });
       setRoom(m.room);
       if (dev && soloEntry && m.room.phase !== 'PLAYING' && !soloRequested)
-        startSolo(new URLSearchParams(location.search).get('name') ?? 'TESTER');
+        startSolo(urlParams.get('name') ?? 'TESTER');
+      else if (wantsLevel(m.room)) {
+        levelRequested = true;
+        startSolo(urlParams.get('name') ?? 'TESTER');
+      }
       break;
     case 'dev-state':
       if (!dev) break;
       devPanel.update(m.state);
+      debugDraw.tuning = resolveTuning(m.state.tuning);
       if (m.state.solo && !soloEntry) {
         soloEntry = true;
         draw();
@@ -254,6 +312,7 @@ function receive(m: ServerMessage) {
         if (reset) {
           predicted = reset.entity;
           pending = pending.filter((i) => i.seq > reset.ack);
+          history = new Map();
           correction.x = correction.y = correction.z = 0;
         }
       }
@@ -263,6 +322,7 @@ function receive(m: ServerMessage) {
       break;
     case 'snapshot': {
       renderer.push(m);
+      movementAudio?.remote(m.entities, playerId);
       tick = m.tick;
       const now = performance.now();
       snapshotTimes.push(now);
@@ -276,42 +336,46 @@ function receive(m: ServerMessage) {
       }
       lastSnapshotTick = m.tick;
       totalSnapshots++;
-      const authoritative = m.entities.find((e) => e.id === playerId);
-      if (authoritative) {
+      const entity = m.entities.find((e) => e.id === playerId);
+      if (entity) {
+        const authoritative: Entity = m.move
+          ? { ...entity, move: m.move }
+          : entity;
         if (restoreLook) {
           input.yaw = authoritative.yaw;
           input.pitch = authoritative.pitch;
           restoreLook = false;
         }
-        const result =
-          dev && devPanel.state
-            ? reconcileDev(
-                authoritative,
-                m.acks[playerId] ?? 0,
-                pending,
-                1 / tickRate,
-                levelWorld(getLevel(room?.levelId)),
-                devPanel.state.tuning,
-              )
-            : reconcile(
-                authoritative,
-                m.acks[playerId] ?? 0,
-                pending,
-                1 / tickRate,
-                levelWorld(getLevel(room?.levelId)),
-              );
-        if (predicted && room?.phase === 'PLAYING') {
-          predictionError = Math.hypot(
-            predicted.position.x - result.state.position.x,
-            predicted.position.y - result.state.position.y,
-            predicted.position.z - result.state.position.z,
-          );
-          for (const axis of ['x', 'y', 'z'] as const)
-            correction[axis] +=
-              predicted.position[axis] - result.state.position[axis];
+        const ack = m.acks[playerId] ?? 0;
+        const local = history.get(ack);
+        pending = pending.filter((i) => i.seq > ack);
+        for (const key of history.keys()) if (key <= ack) history.delete(key);
+        const playing = !!predicted && room?.phase === 'PLAYING';
+        if (playing && local && predictionMatches(local, authoritative)) {
+          matchedSnapshots++;
+          predictionError = 0;
+        } else {
+          // Any mismatch, including a sub-state field: rewind to authority and replay.
+          let state = authoritative;
+          history = new Map();
+          for (const command of pending) {
+            state = step(state, command);
+            history.set(command.seq, state);
+          }
+          if (playing && predicted) {
+            predictionError = Math.hypot(
+              predicted.position.x - state.position.x,
+              predicted.position.y - state.position.y,
+              predicted.position.z - state.position.z,
+            );
+            maxPredictionError = Math.max(maxPredictionError, predictionError);
+            reconciliations++;
+            for (const axis of ['x', 'y', 'z'] as const)
+              correction[axis] +=
+                predicted.position[axis] - state.position[axis];
+          }
+          predicted = state;
         }
-        predicted = result.state;
-        pending = result.pending;
       }
       break;
     }
@@ -322,9 +386,7 @@ function receive(m: ServerMessage) {
         predicted = undefined;
         if (dev && soloEntry && !soloRequested)
           startSolo(
-            new URLSearchParams(location.search).get('name') ??
-              localStorage.getItem('name') ??
-              'TESTER',
+            urlParams.get('name') ?? localStorage.getItem('name') ?? 'TESTER',
           );
       }
       draw();
@@ -332,8 +394,7 @@ function receive(m: ServerMessage) {
       break;
     case 'replaced':
       input.pause();
-      worldAudio?.dispose();
-      worldAudio = undefined;
+      disposeAudio();
       if (document.pointerLockElement) document.exitPointerLock();
       room = undefined;
       renderer.setLevel();
@@ -356,6 +417,8 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement === canvas) everLocked = true;
   draw();
 });
+const modeOf = (e?: Entity) => e?.move?.mode ?? 'GROUND';
+const hspeed = (e?: Entity) => (e ? Math.hypot(e.velocity.x, e.velocity.z) : 0);
 let previous = performance.now(),
   accumulator = 0;
 let previousSimulation = performance.now();
@@ -373,7 +436,7 @@ setInterval(() => {
       !network.replaced
     ) {
       if (pending.length >= CONFIG.maxPending) {
-        pending = [];
+        resetPrediction();
         toast('Uplink delayed. Resynchronizing.');
       }
       const command = input.command(++seq, tick + pending.length + 1);
@@ -386,28 +449,23 @@ setInterval(() => {
       }
       pending.push(command);
       const before = predicted;
-      predicted =
-        dev && devPanel.state
-          ? stepDev(
-              predicted,
-              command,
-              1 / tickRate,
-              levelWorld(getLevel(room?.levelId)),
-              devPanel.state.tuning,
-            )
-          : stepPlayer(
-              predicted,
-              command,
-              1 / tickRate,
-              levelWorld(getLevel(room?.levelId)),
-            );
+      predicted = step(predicted, command);
+      history.set(command.seq, predicted);
       network.send({ type: 'inputs', inputs: pending.slice(-CONFIG.maxBatch) });
-      if (command.buttons & 1 && before.flags & FLAG.grounded)
+      const was = modeOf(before),
+        is = modeOf(predicted);
+      reached.add(is);
+      renderer.feel.tick(before, predicted);
+      movementAudio?.local(before, predicted);
+      if (was !== 'AIR' && is === 'AIR' && predicted.velocity.y > 5)
         void audio.play('jump', { position: predicted.position });
+      const interval =
+        is === 'CROUCH' ? 480 : hspeed(predicted) > 6 ? 290 : 350;
       if (
         (command.x || command.z) &&
-        predicted.flags & FLAG.grounded &&
-        now - lastFootstep > 350
+        (is === 'GROUND' || is === 'CROUCH') &&
+        hspeed(predicted) > 0.5 &&
+        now - lastFootstep > interval
       ) {
         lastFootstep = now;
         worldAudio?.footstep(predicted.position);
@@ -431,13 +489,18 @@ function frame(now: number) {
     background.stop();
     if (dev && renderer.world?.ready && cameraAppliedTo !== renderer.world) {
       cameraAppliedTo = renderer.world;
-      const params = new URLSearchParams(location.search),
-        mode = params.get('perf') === '1' ? 'perf' : params.get('camera');
+      const mode =
+        urlParams.get('perf') === '1' ? 'perf' : urlParams.get('camera');
       if (mode) renderer.world.cameraView(mode, renderer.camera);
     }
     if (renderer.world?.ready && !worldAudio)
       worldAudio = new WorldAudio(audio, renderer.world.level);
-    if (predicted) worldAudio?.update(predicted.position);
+    if (renderer.world?.ready && !movementAudio)
+      movementAudio = new MovementAudio(audio, renderer.world.level);
+    if (predicted) {
+      worldAudio?.update(predicted.position);
+      movementAudio?.frame(predicted);
+    }
     renderer.world?.control(input, renderer.camera, elapsed);
     renderer.render(
       room?.phase === 'PLAYING' ? predicted : undefined,
@@ -497,8 +560,15 @@ function frame(now: number) {
       );
     }
   }
+  const speed = hspeed(predicted),
+    mode = modeOf(predicted);
+  const speedometer = app.querySelector<HTMLElement>('.speedometer');
+  if (speedometer) {
+    speedometer.hidden = !movementSettings.speedometer;
+    speedometer.textContent = `${speed.toFixed(1)} M/S`;
+  }
   debug.hidden = !input.debug;
-  debug.textContent = `SERVER TICK ${tick}\nSNAPSHOTS ${(snapshotTimes.length / 2).toFixed(1)} / ${snapshotRate} Hz\nPING ${room?.players.find((p) => p.id === playerId)?.ping ?? 0} ms\nLOSS EST. ${((100 * missingSnapshots) / Math.max(1, totalSnapshots + missingSnapshots)).toFixed(1)}%\nPREDICTION ERROR ${predictionError.toFixed(4)} m\nUNACKNOWLEDGED ${pending.length}\nENTITIES ${renderer.snapshots.at(-1)?.entities.length ?? 0}`;
+  debug.textContent = `SERVER TICK ${tick}\nSNAPSHOTS ${(snapshotTimes.length / 2).toFixed(1)} / ${snapshotRate} Hz\nPING ${room?.players.find((p) => p.id === playerId)?.ping ?? 0} ms\nLOSS EST. ${((100 * missingSnapshots) / Math.max(1, totalSnapshots + missingSnapshots)).toFixed(1)}%\nPREDICTION ERROR ${predictionError.toFixed(4)} m\nUNACKNOWLEDGED ${pending.length}\nENTITIES ${renderer.snapshots.at(-1)?.entities.length ?? 0}\nMOVE STATE ${mode}${predicted?.move?.crouched ? ' / CROUCHED' : ''}\nSPEED ${speed.toFixed(2)} m/s\nRECONCILED ${reconciliations} / MATCHED ${matchedSnapshots}`;
   requestAnimationFrame(frame);
 }
 // Read-only diagnostics used by the browser acceptance harness and future netcode tools.
@@ -533,6 +603,18 @@ Object.defineProperty(window, 'leviathan', {
       nodes: worldAudio?.nodes.length,
       filterHz: worldAudio?.filter?.frequency.value,
     },
+    movement: {
+      mode: modeOf(predicted),
+      crouched: !!predicted?.move?.crouched,
+      speed: hspeed(predicted),
+      reached: [...reached],
+      reconciliations,
+      matchedSnapshots,
+      maxPredictionError,
+      camera: renderer.feel.stats(),
+      audio: movementAudio?.stats(),
+      poses: renderer.poses(),
+    },
     perf: renderer.world?.perfReport,
     worldDebug: dev
       ? {
@@ -548,6 +630,26 @@ Object.defineProperty(window, 'leviathan', {
         }
       : undefined,
   }),
+});
+// Dev-only test hook: scripted input steps drive the real client without pointer lock.
+Object.defineProperty(window, 'leviathanTest', {
+  get: () =>
+    dev
+      ? {
+          inject: (steps: InjectedInput[]) => {
+            input.injected.push(...steps.map((s) => ({ ...s })));
+          },
+          clear: () => {
+            input.injected = [];
+          },
+          remaining: () => input.injected.reduce((sum, s) => sum + s.ticks, 0),
+          resetStats: () => {
+            reached.clear();
+            reconciliations = matchedSnapshots = 0;
+            maxPredictionError = 0;
+          },
+        }
+      : undefined,
 });
 draw();
 network.connect();

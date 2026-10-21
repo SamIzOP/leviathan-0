@@ -24,7 +24,11 @@ function setup(devTools: boolean) {
     send: (m) => messages.push(structuredClone(m)),
     close: () => {},
   };
-  game.handle(peer, { type: 'create', protocol: 1, name: 'TESTER' });
+  game.handle(peer, {
+    type: 'create',
+    protocol: CONFIG.protocol,
+    name: 'TESTER',
+  });
   return {
     game,
     peer,
@@ -58,7 +62,7 @@ describe('dev authorization', () => {
     });
   it('refuses solo and legacy debug with DEV_TOOLS off', () => {
     const { send, messages, peer } = setup(false);
-    send({ type: 'dev-solo', protocol: 1, name: 'TESTER' });
+    send({ type: 'dev-solo', protocol: CONFIG.protocol, name: 'TESTER' });
     expect(messages.at(-1)?.type).toBe('error');
     send({ type: 'debug', action: 'robot' });
     expect(peer.room!.robots).toHaveLength(0);
@@ -89,7 +93,7 @@ describe('dev authorization', () => {
       decodeClient(
         JSON.stringify({
           type: 'create',
-          protocol: 1,
+          protocol: CONFIG.protocol,
           name: 'TESTER',
           devTools: true,
         }),
@@ -104,7 +108,7 @@ describe('dev-only room controls', () => {
     const second: Peer = { id: 'second', send: () => {}, close: () => {} };
     game.handle(second, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       name: 'SECOND',
       code: peer.room!.code,
     });
@@ -131,7 +135,7 @@ describe('dev-only room controls', () => {
   });
   it('disables, freezes, resumes and expires the timer', () => {
     const { send, peer, advance } = setup(true);
-    send({ type: 'dev-solo', protocol: 1, name: 'TESTER' });
+    send({ type: 'dev-solo', protocol: CONFIG.protocol, name: 'TESTER' });
     advance(10000);
     expect(peer.room!.phase).toBe('PLAYING');
     send({ type: 'dev', action: 'timer', enabled: true });
@@ -147,7 +151,7 @@ describe('dev-only room controls', () => {
   });
   it('applies room tuning identically to server and client without changing production defaults', () => {
     const { send, peer, game } = setup(true);
-    send({ type: 'dev-solo', protocol: 1, name: 'TESTER' });
+    send({ type: 'dev-solo', protocol: CONFIG.protocol, name: 'TESTER' });
     const tuning = { walk: 9, sprint: 12, jumpHeight: 2.5, gravity: 15 };
     const original = { ...PHYSICS };
     send({ type: 'dev', action: 'tune', tuning });
@@ -186,7 +190,7 @@ describe('dev-only room controls', () => {
   });
   it('spawns at the operator, clears dummies, resets player and returns to lobby', () => {
     const { send, peer } = setup(true);
-    send({ type: 'dev-solo', protocol: 1, name: 'TESTER' });
+    send({ type: 'dev-solo', protocol: CONFIG.protocol, name: 'TESTER' });
     peer.player!.entity.position = { x: 5, y: 3, z: 2 };
     send({ type: 'dev', action: 'spawn-dummies', count: 10 });
     expect(peer.room!.robots).toHaveLength(10);

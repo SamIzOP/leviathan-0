@@ -4,6 +4,54 @@ import { buildings } from './buildings';
 import { stairRun, placeStairs } from './stairs';
 import { seeded } from './forge-data';
 const v = (x: number, y: number, z: number): Vec3 => ({ x, y, z });
+// Traversal audit (data only). Wall-run faces: street facades (interrupted by the
+// 2.5 m alleys), the long run walls, container-yard stacks and the hall walls that
+// flank the catwalks. Mantle ledges: real tops a person could pull onto (roofs,
+// containers, crates and machinery, vehicles, barricades, catwalks, landings and
+// bridges). Never flagged: the perimeter, gates and shutters, roof barriers,
+// pillars, stair treads (step-up handles them), ground slabs and decor.
+const WALL_RUN = [
+  /^row-(-1|1)-\d+$/,
+  /^run-wall-/,
+  /^container-\d+-\d+-\d+$/,
+  /^hall-(west|east|back|front)/,
+];
+const MANTLE = [
+  /^row-(-1|1)-\d+$/,
+  /^row-.*-roof-access$/,
+  /^container-\d+-\d+-\d+$/,
+  /^container-landing-/,
+  /^utility-\d+$/,
+  /^(car-\d|white-van)$/,
+  /^vehicle-bridge-/,
+  /^barricade-(-1|1)-\d+$/,
+  /^stack-(base|landing)\d$/,
+  /^(conveyor|vat|vat-landing)-?\d+$/,
+  /^catwalk-/,
+  /^crane-gantry$/,
+  /^gantry-access-(cross|bridge)$/,
+  /-(landing|cross)-\d+$/,
+  /^hall-(landing|return)-/,
+  /^hall-roof-bridge\d$/,
+  /^boiler(-bridge)?$/,
+];
+// Hall side and back walls run on their interior faces only: the exterior faces lead
+// along the hall into the narrow perimeter corridor, where a run could carry an
+// operator from roof height over the twelve-metre wall.
+const RUN_FACES: Record<string, NonNullable<Collider['runFaces']>> = {
+  'hall-west': ['+x'],
+  'hall-east': ['-x'],
+  'hall-back': ['+z'],
+};
+function auditTraversal(colliders: Collider[]) {
+  for (const c of colliders) {
+    if (c.decor) continue;
+    c.wallRunnable = WALL_RUN.some((rule) => rule.test(c.id));
+    c.mantleable = MANTLE.some((rule) => rule.test(c.id));
+    const faces = RUN_FACES[c.id];
+    if (faces) c.runFaces = faces;
+  }
+}
 export function buildFoundry(): Level {
   const colliders: Collider[] = [],
     decor: Level['decor'] = [],
@@ -26,8 +74,8 @@ export function buildFoundry(): Level {
       max: v(x + w / 2, y + h, z + d / 2),
       surface,
       platform,
-      wallRunnable: h >= 10 && Math.max(w, d) >= 30,
-      mantleable: h <= 1.5,
+      wallRunnable: false,
+      mantleable: false,
       climbable: false,
       ...(prop ? { prop } : {}),
     });
@@ -77,7 +125,7 @@ export function buildFoundry(): Level {
         surface: 'metal',
         platform: true,
         wallRunnable: false,
-        mantleable: true,
+        mantleable: false,
         climbable: false,
       });
     // Rail posts and handrails are ornamental; all walking surfaces use shared forge treads.
@@ -184,6 +232,17 @@ export function buildFoundry(): Level {
     add(`compound-wall-x${x}`, x, 0, 0, 2, 12, 178, 'concrete', false);
   for (const z of [-88, 88])
     add(`compound-wall-z${z}`, 0, 0, z, 218, 12, 2, 'concrete', false);
+  // Movement-stage seal: chained slide-jumps plus the air jump can carry an operator
+  // from the tallest towers and roofs over the 12 m wall. Collision-only clips stacked
+  // on the same footprints keep the visible wall unchanged (see DECISIONS.md).
+  for (const x of [-108, 108]) {
+    add(`compound-clip-x${x}`, x, 12, 0, 2, 52, 178, 'concrete', false);
+    colliders.at(-1)!.clip = true;
+  }
+  for (const z of [-88, 88]) {
+    add(`compound-clip-z${z}`, 0, 12, z, 218, 52, 2, 'concrete', false);
+    colliders.at(-1)!.clip = true;
+  }
   add(
     'entrance-blast-door',
     0,
@@ -615,6 +674,7 @@ export function buildFoundry(): Level {
     }
   for (let i = 0; i < 4; i++)
     detail('haze' + i, 'haze', 0, 35, -105 - i * 48, 500, 120, 1, 'glass');
+  auditTraversal(colliders);
   return {
     id: 'foundry-row',
     name: 'Foundry Row',

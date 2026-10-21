@@ -7,6 +7,7 @@ import {
   CONFIG,
   FLAG,
   decodeClient,
+  levelWorld,
   makeEntity,
   reconcile,
   stepPlayer,
@@ -58,7 +59,7 @@ describe('rooms and identity', () => {
     const unknown = peer();
     game.handle(unknown, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       name: 'Beta',
       code: 'ZZZZ',
     });
@@ -69,7 +70,7 @@ describe('rooms and identity', () => {
     for (let i = 0; i < 7; i++)
       game.handle(peer(), {
         type: 'join',
-        protocol: 1,
+        protocol: CONFIG.protocol,
         name: 'Alpha',
         code: r.code.toLowerCase(),
       });
@@ -78,7 +79,7 @@ describe('rooms and identity', () => {
     const extra = peer();
     game.handle(extra, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       name: 'Extra',
       code: r.code,
     });
@@ -86,7 +87,7 @@ describe('rooms and identity', () => {
     r.phase = 'PLAYING';
     game.handle(extra, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       name: 'Extra',
       code: r.code,
     });
@@ -109,7 +110,7 @@ describe('rooms and identity', () => {
     const second = peer();
     game.handle(second, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       name: 'Beta',
       code: r.code,
     });
@@ -132,7 +133,7 @@ describe('reconnect and voting', () => {
     const late = peer();
     game.handle(late, {
       type: 'join',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       code: room.code,
       name: 'Late operator',
     });
@@ -150,11 +151,21 @@ describe('reconnect and voting', () => {
     expect(p.entity.flags & FLAG.disconnected).toBeTruthy();
     expect(p.entity.position).toEqual(position);
     const resume = peer();
-    game.handle(resume, { type: 'resume', protocol: 1, code: r.code, token });
+    game.handle(resume, {
+      type: 'resume',
+      protocol: CONFIG.protocol,
+      code: r.code,
+      token,
+    });
     expect(resume.player).toBe(p);
     expect(resume.messages.some((m) => m.type === 'snapshot')).toBe(true);
     const newest = peer();
-    game.handle(newest, { type: 'resume', protocol: 1, code: r.code, token });
+    game.handle(newest, {
+      type: 'resume',
+      protocol: CONFIG.protocol,
+      code: r.code,
+      token,
+    });
     expect(resume.messages.at(-1)?.type).toBe('replaced');
     game.disconnect(resume);
     expect(p.peer).toBe(newest);
@@ -162,7 +173,12 @@ describe('reconnect and voting', () => {
     advance(45001);
     expect(r.players).toHaveLength(0);
     const expired = peer();
-    game.handle(expired, { type: 'resume', protocol: 1, code: r.code, token });
+    game.handle(expired, {
+      type: 'resume',
+      protocol: CONFIG.protocol,
+      code: r.code,
+      token,
+    });
     expect(expired.messages.at(-1)).toMatchObject({ code: 'SESSION_EXPIRED' });
   });
   it('never exposes tokens in room views or snapshots and rejects stolen guesses', () => {
@@ -176,7 +192,7 @@ describe('reconnect and voting', () => {
     const p = peer();
     game.handle(p, {
       type: 'resume',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       code: host.room!.code,
       token: 'x'.repeat(64),
     });
@@ -243,7 +259,7 @@ describe('reconnect and voting', () => {
     const returned = peer();
     game.handle(returned, {
       type: 'resume',
-      protocol: 1,
+      protocol: CONFIG.protocol,
       code: r.code,
       token: p.token,
     });
@@ -336,6 +352,13 @@ describe('simulation and security', () => {
     r.phase = 'PLAYING';
     r.deadline = Infinity;
     const before = host.player!.entity.position.x;
+    // Exactly one shared movement step of the first (sanitized) command.
+    const expected = stepPlayer(
+      host.player!.entity,
+      { seq: 1, tick: 0, x: 999, z: 0, yaw: 0, pitch: 999, buttons: 0 },
+      1 / 60,
+      levelWorld(game.level(r)),
+    ).position.x;
     for (let batch = 0; batch < 50; batch++)
       game.handle(host, {
         type: 'inputs',
@@ -351,7 +374,8 @@ describe('simulation and security', () => {
       });
     game.step();
     expect(host.player!.queue.length).toBeLessThanOrEqual(CONFIG.maxQueue);
-    expect(host.player!.entity.position.x - before).toBeCloseTo(5 / 60);
+    expect(host.player!.entity.position.x).toBe(expected);
+    expect(expected).toBeGreaterThan(before);
     expect(host.player!.entity.pitch).toBe(1.5);
   });
 });

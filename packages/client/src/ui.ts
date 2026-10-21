@@ -1,4 +1,5 @@
 import { graphicsControls } from './graphics';
+import { movementControls, movementSettings } from './movement-settings';
 import { CONFIG, MISSIONS } from '@leviathan/shared';
 import type { ClientMessage, DevState, RoomView } from '@leviathan/shared';
 export interface UIContext {
@@ -74,11 +75,20 @@ export function renderInterface(c: UIContext) {
   const legend = () => {
     const d = el('div', '', 'controls');
     d.append(el('div', 'CONTROLS // KEYBOARD + MOUSE', 'eyebrow'));
+    const m = movementSettings;
     const rows = [
       ['W A S D', 'MOVE'],
       ['MOUSE', c.fallback ? 'DRAG TO LOOK' : 'LOOK'],
-      ['SPACE', 'JUMP'],
-      ['SHIFT', 'SPRINT'],
+      ['SPACE', 'JUMP · AIR JUMP · WALL-JUMP'],
+      [
+        'SHIFT',
+        m.sprintMode === 'AUTO' ? 'WALK (AUTO-SPRINT ON)' : 'SPRINT (HOLD)',
+      ],
+      ['C', m.crouchMode === 'TOGGLE' ? 'CROUCH (TOGGLE)' : 'CROUCH (HOLD)'],
+      ...(m.ctrlCrouch ? [['LEFT CTRL', 'CROUCH (CTRL+W RISK)']] : []),
+      ['SPRINT + C', 'SLIDE · SPACE TO SLIDE-JUMP'],
+      ['JUMP ALONG A WALL', 'WALL-RUN · C DROPS OFF'],
+      ['JUMP AT LEDGE', 'MANTLE · C CANCELS'],
       ['ESC', 'PAUSE / RELEASE MOUSE'],
       ['F3', 'TELEMETRY'],
       ['H', 'CONTROLS'],
@@ -180,7 +190,7 @@ export function renderInterface(c: UIContext) {
       slider(`${bus.toUpperCase()} VOLUME`, c.volumes[bus], 0, 1, 0.01, (v) =>
         c.setVolume(bus, v),
       );
-    grid.append(graphicsControls());
+    grid.append(movementControls(), graphicsControls());
     d.append(grid);
     return d;
   };
@@ -246,7 +256,10 @@ export function renderInterface(c: UIContext) {
   if (c.room?.phase === 'PLAYING') {
     const hud = el('div', '', 'hud');
     hud.append(
-      el('span', `L0 // ${MISSIONS[c.room.mission]}`),
+      el(
+        'span',
+        `L0 // ${c.room.levelId === 'movement-lab' ? 'MOVEMENT LAB' : MISSIONS[c.room.mission]}`,
+      ),
       el('span', '', 'timer'),
     );
     const shortcuts = el('div', '', 'hud-actions');
@@ -263,7 +276,10 @@ export function renderInterface(c: UIContext) {
       btn('H / CONTROLS', 'Show all controls.', c.toggleControls),
     );
     hud.append(shortcuts);
-    c.app.append(hud, el('div', '+', 'crosshair'));
+    const speedometer = el('div', '', 'speedometer');
+    speedometer.hidden = !movementSettings.speedometer;
+    speedometer.setAttribute('aria-label', 'Horizontal speed');
+    c.app.append(hud, el('div', '+', 'crosshair'), speedometer);
     if (c.fallback && !c.devOpen && !c.controlsOpen)
       c.app.append(
         el(

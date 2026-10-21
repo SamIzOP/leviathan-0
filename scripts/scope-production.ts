@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 import WebSocket from 'ws';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { DEV_ACTIONS, decodeServer, encode } from '@leviathan/shared';
+import { CONFIG, DEV_ACTIONS, decodeServer, encode } from '@leviathan/shared';
 import type { ServerMessage, ClientMessage } from '@leviathan/shared';
 const base = process.env.TEST_URL ?? 'http://localhost:3001';
 const messages: ServerMessage[] = [];
@@ -37,7 +37,9 @@ try {
     ).devTools,
     false,
   );
-  ws.send(encode({ type: 'create', protocol: 1, name: 'PRODUCTION' }));
+  ws.send(
+    encode({ type: 'create', protocol: CONFIG.protocol, name: 'PRODUCTION' }),
+  );
   const welcome = (await waitFor((m) => m.type === 'welcome')) as Extract<
     ServerMessage,
     { type: 'welcome' }
@@ -45,7 +47,14 @@ try {
   assert.equal(welcome.devTools, false);
   const commands: ClientMessage[] = [
     ...DEV_ACTIONS.map((action) => ({ type: 'dev' as const, action })),
-    { type: 'dev-solo', protocol: 1, name: 'FORBIDDEN' },
+    { type: 'dev-solo', protocol: CONFIG.protocol, name: 'FORBIDDEN' },
+    // The Movement Lab is not part of production at all.
+    {
+      type: 'dev-solo',
+      protocol: CONFIG.protocol,
+      name: 'FORBIDDEN',
+      level: 'lab',
+    },
     { type: 'debug', action: 'end' },
     { type: 'debug', action: 'robot' },
   ];

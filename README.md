@@ -1,6 +1,6 @@
 # LEVIATHAN 0 — multiplayer foundation
 
-Browser co-op foundation for 2–8 Kainos operators. Rooms, authoritative movement, prediction, reconnect, rematches and audio are implemented. Foundry Row adds a playable industrial world, procedural weather/materials and environment audio. Weapons and combat AI remain deferred.
+Browser co-op foundation for 2–8 Kainos operators. Rooms, authoritative movement, prediction, reconnect, rematches and audio are implemented. Foundry Row adds a playable industrial world, procedural weather/materials and environment audio. The movement stage adds sprint, crouch, slide, slide-jump, air jump, wall-run, wall-jump and mantle. Weapons and combat AI remain deferred.
 
 ## Run locally
 
@@ -45,7 +45,7 @@ Optional replacement art goes at `packages/client/public/assets/menu-bg.webp` or
 
 ## Play with friends
 
-Enter a 2–16 character callsign, create a room, and copy the invite link. Friends join, everyone presses READY, then the host presses START. A five-second countdown leads into the Foundry Row. WASD moves, mouse looks, Space jumps, Shift sprints. Click to capture the mouse; Esc releases it. Settings persist locally. F3 toggles telemetry. With `DEV_TOOLS=true`, F8 ends the mission and F9 spawns a synchronized diagnostic robot capsule.
+Enter a 2–16 character callsign, create a room, and copy the invite link. Friends join, everyone presses READY, then the host presses START. A five-second countdown leads into the Foundry Row. WASD moves, mouse looks, Space jumps, Shift sprints, C crouches/slides (see Movement below). Click to capture the mouse; Esc releases it. Settings persist locally. F3 toggles telemetry. With `DEV_TOOLS=true`, F8 ends the mission and F9 spawns a synchronized diagnostic robot capsule.
 
 After the mission, vote REPLAY or NEXT FACTORY. The vote lasts 20 seconds. The host breaks ties; no votes defaults to replay. A new countdown starts automatically if at least two operators are connected. NEXT changes the mission label and its level/weather variant.
 
@@ -117,3 +117,31 @@ For full mouse look, open the game in Chrome or Edge. When embedded browsers den
 The enlarged factory is visibly sealed and all spawns/recovery points are at its entrance. Stairs and low obstacles up to 0.5 m are walked automatically, with camera smoothing; higher ledges still require the existing jump. F4 retains composition/free camera and world controls.
 
 Export editable models with npm run forge:export. Outputs: packages/client/public/assets/models/generated/*.glb plus manifest.json (63 assets × 3 variants). See ASSETS.md for override behavior and export contents. Verification commands include npm test, npm run level:check, npm run assets:check, npm run lint and npm run build. scripts/boundary-test.ts checks confinement; scripts/revision-features.ts checks actual stair walking and pointer-lock timeout; scripts/gallery-test.ts checks gallery rendering; scripts/revision-browser.ts captures views, benchmarks and replay cycles. Evidence is in docs/screens/revision and docs/perf.
+
+## Movement
+
+| Key                | Action                                                                         |
+| ------------------ | ------------------------------------------------------------------------------ |
+| W A S D / mouse    | Move / look                                                                    |
+| Space              | Jump; again in the air for the air jump; during a wall-run, wall-jump          |
+| Left Shift (hold)  | Sprint (with AUTO-SPRINT on, Shift walks instead)                              |
+| C (hold)           | Crouch; while sprinting, slide. Space during a slide is a slide-jump           |
+| Left Ctrl (opt-in) | Alternative crouch key; off by default because Ctrl+W closes a browser tab     |
+| Jump along a wall  | Wall-run on marked long walls (street facades, run walls, containers, hall)    |
+| Jump at a ledge    | Mantle onto real ledges (roofs, containers, crates, cars, catwalks); C cancels |
+
+Operator Settings → MOVEMENT / CAMERA (saved on this device): crouch HOLD/TOGGLE, sprint HOLD/AUTO, field of view 80–110 (default 95, horizontal at 4:3), camera roll, head bob and FOV speed kick (0–100 %), REDUCE MOTION, an optional speedometer, and the Left Ctrl option. With Ctrl enabled, capturing the mouse also enters fullscreen and requests the browser's Keyboard Lock where supported. F3 shows the movement state and speed.
+
+[Movement Lab](http://localhost:5173/?solo=1&level=lab) (development only, requires DEV_TOOLS): rulers every 5 m, a ledge row at 0.5–2.6 m (plus 4.0 m and an unflagged block), a stair run, a 40 m wall-run wall, L-shaped and concave corners, a gapped wall, an unflagged wall, a 2/4/6/8 m gap course, a 1.2 m tunnel, a slide strip and a chain-finish mantle block. Return to Foundry Row with [solo mode](http://localhost:5173/?solo=1).
+
+F4 → MOVEMENT TUNING adjusts every movement constant live for the dev room (server and prediction use the same values), with DEFAULT, FLOATY, HEAVY and RESET. DEBUG DRAW adds the movement state label, velocity arrow, wall and mantle probes with targets, ground contact and a 10-second speed graph. Browser tests drive the client through the dev-only `window.leviathanTest.inject([...])` hook.
+
+```sh
+npm run movement:harness   # headless measures vs. ranges (MOVE_TARGETS)
+npm run test:boundary      # perimeter: bots plus adversarial full-movement search
+npm run test:movement      # Playwright chain + frames (dev server running)
+npm run movement:perf      # server CPU per tick, eight traversing players
+npm run level:check -- --advanced
+```
+
+Optional movement audio files go under `packages/client/public/assets/audio` using the `movement.*` keys in `asset-manifest.json`; synthesized fallbacks play otherwise. Evidence is in ACCEPTANCE.md and docs/perf/movement-*.json; frames are in docs/screens/movement.

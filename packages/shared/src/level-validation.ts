@@ -1,7 +1,92 @@
 import { levelSchema, type Level } from './level';
 import { METRICS } from './metrics';
-import { PHYSICS } from './config';
+import { MOVE, PLACEHOLDER } from './config';
 import { confinement } from './confinement';
+/** Informational only: platforms that gain entry routes through mantle or wall-run.
+ * The validators above keep their conservative placeholder rules. */
+export function advancedTraversal(level: Level) {
+  const boxes = level.colliders.filter((b) => !b.decor);
+  // Stair treads (0.29 m deep) are step-up surfaces, not traversal destinations.
+  const platforms = boxes.filter(
+    (b) => b.platform && Math.min(b.max.x - b.min.x, b.max.z - b.min.z) > 0.3,
+  );
+  const jumpApex = MOVE.jumpHeight,
+    airJump = MOVE.doubleJump ** 2 / (2 * MOVE.gravity);
+  // Highest feet reach from a standing top: jump plus air jump, then the mantle window.
+  const mantleReach = jumpApex + airJump + MOVE.mantleMax;
+  // A wall-run adds its rise, then a wall-jump and the restored air jump.
+  const wallGain =
+    jumpApex +
+    (MOVE.wallRunRise * MOVE.wallRunRiseTime) / 2 +
+    MOVE.wallJumpUp ** 2 / (2 * MOVE.gravity) +
+    airJump;
+  const runLength = MOVE.wallRunSpeed * MOVE.wallRunTime;
+  const gap = (a: (typeof boxes)[number], b: (typeof boxes)[number]) =>
+    Math.hypot(
+      Math.max(0, b.min.x - a.max.x, a.min.x - b.max.x),
+      Math.max(0, b.min.z - a.max.z, a.min.z - b.max.z),
+    );
+  const walls = boxes.filter((b) => b.wallRunnable);
+  const mantle: { from: string; to: string; rise: number }[] = [];
+  const wallRun: { from: string; to: string; rise: number; wall: string }[] =
+    [];
+  for (const b of platforms)
+    for (const a of platforms) {
+      if (a === b) continue;
+      const rise = b.max.y - a.max.y,
+        apart = gap(a, b);
+      if (
+        b.mantleable &&
+        rise > PLACEHOLDER.jump ** 2 / (2 * PLACEHOLDER.gravity) &&
+        rise <= mantleReach &&
+        apart <= 1.5
+      )
+        mantle.push({ from: a.id, to: b.id, rise });
+      else if (
+        rise > METRICS.stepHeight &&
+        rise <= wallGain &&
+        apart <= runLength
+      ) {
+        const wall = walls.find(
+          (w) => w !== a && w !== b && gap(w, a) <= 3 && gap(w, b) <= 3,
+        );
+        if (wall) wallRun.push({ from: a.id, to: b.id, rise, wall: wall.id });
+      }
+    }
+  const zones = level.zones.map((zone) => {
+    const near = new Set(
+      platforms
+        .filter(
+          (b) =>
+            Math.hypot(
+              (b.min.x + b.max.x) / 2 - zone.position.x,
+              (b.min.z + b.max.z) / 2 - zone.position.z,
+            ) <= 30,
+        )
+        .map((b) => b.id),
+    );
+    const viaMantle = mantle.filter((e) => near.has(e.to)),
+      viaWallRun = wallRun.filter((e) => near.has(e.to));
+    return {
+      zone: zone.id,
+      mantleRoutes: viaMantle.length,
+      wallRunRoutes: viaWallRun.length,
+      platformsWithAdvancedEntry: new Set(
+        [...viaMantle, ...viaWallRun].map((e) => e.to),
+      ).size,
+      examples: [...viaMantle, ...viaWallRun]
+        .sort((x, y) => y.rise - x.rise)
+        .slice(0, 3)
+        .map((e) => `${e.from} -> ${e.to} (+${e.rise.toFixed(1)} m)`),
+    };
+  });
+  return {
+    reach: { mantle: mantleReach, wallRun: wallGain, runLength },
+    mantleRoutes: mantle.length,
+    wallRunRoutes: wallRun.length,
+    zones,
+  };
+}
 export function validateLevel(level: Level): string[] {
   const parsed = levelSchema.safeParse(level);
   if (!parsed.success) return parsed.error.issues.map((i) => i.message);
@@ -49,6 +134,8 @@ export function validateLevel(level: Level): string[] {
   }
   // Directed surface graph: full step-height limit and ballistic horizontal reach.
   // Structural chimney/column tops are not walkable platforms. All usable roofs are.
+  // These conservative rules intentionally keep the retired placeholder jump.
+  const PHYSICS = PLACEHOLDER;
   const platforms = boxes.filter((b) => b.platform),
     seen = new Set(platforms.filter((b) => b.max.y <= 0.001).map((b) => b.id));
   let changed = true;

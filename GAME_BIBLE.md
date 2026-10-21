@@ -34,7 +34,6 @@ Rooms, host migration, ready states, invite links, server countdown and match ti
 
 ## Later milestones (not implemented)
 
-- Deterministic fast movement: sprint, slide, wall-run, double jump and mantle. Current walk/jump/gravity and simple sprint exist only to prove prediction.
 - Ammo-based weapons, world ammo pickups and authoritative hit detection.
 - Server-controlled robot waves, mission objectives and a final boss encounter.
 - Additional distinctive factories, final imported assets and authored sound design.
@@ -90,3 +89,27 @@ Buildings have 6–16 metre frontages and four to eight 3.6-metre floors. Nine f
 The container lanes reach three 2.6-metre levels. The gantry is 28 metres tall. Three stacks rise 80–110 metres above their bases. The boiler is 21.6 metres high; the hall spans approximately 100 × 60 metres beneath a 30-metre ceiling, with catwalks at 6, 12 and 18 metres. Ordinary stairs reach roofs and gantries; ladders are visual future-access markers, not a new climb mechanic. Rear roof barriers prevent jumping over the lower perimeter wall.
 
 The forge supplies environment models, including five vehicle silhouettes and their wrecks, utilities, storage, machinery, structural fittings and industrial landmarks. It remains procedural game art, with no downloaded models.
+
+## Movement
+
+Kainos operators move like trained couriers with mechanical legs: fast, heavy and exact. Traversal is the first system players master, so it must read instantly and never surprise.
+
+Design pillars:
+
+- **Momentum is earned and kept.** Sprint builds in a quarter second; slides, slide-jumps and wall-jumps carry speed forward; landing never stops you dead. Nothing grants unlimited speed: strafing adds none, a hard 16 m/s cap holds, and slide entry is capped.
+- **Weight without sluggishness.** High gravity, short airtime, quick ground response, gently bleeding overspeed. One air jump, not a floaty glide.
+- **Readable surfaces.** Only flagged long walls take a wall-run and only real ledges take a mantle; everything else is plain collision. Step-up handles stairs and kerbs.
+- **Forgiving input, exact simulation.** Coyote time and jump buffering are tick-counted and identical on server and client; prediction stays exact.
+- **Subtle presentation.** Camera roll, FOV kick, slide height, landing dip and head bob are small, eased and individually adjustable, with a REDUCE MOTION switch. No trails, glows or coloured effects.
+
+Final tuned values (shared `MOVE` constants; measured by `npm run movement:harness`):
+
+| Area      | Values                                                                                                                                                                                            |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hull      | radius 0.4 m; height 1.8 m standing, 1.0 m crouched/sliding; eye 1.65 / 1.1 / 0.9 m                                                                                                               |
+| Ground    | walk 5.0, sprint 8.0 (walk→sprint 0.25 s at 12 m/s²), crouch 2.8 m/s; accel 40, brake/turn 50, overspeed bleed 9 m/s²; step-up 0.5 m                                                              |
+| Jumping   | gravity 24 m/s²; jump apex 1.28 m (placeholder 1.225); one air jump at 6.9 m/s (reach ≈ 2.27 m) with 50% steer; air accel 14 m/s² up to 6.5 m/s; cap 16 m/s; coyote 0.10 s; buffer 0.12 s         |
+| Slide     | sprint (≥ 6 m/s) + crouch press; entry max(speed, 8) × 1.15 capped at 11; decay 3.7 m/s² to 4 m/s (≈ 1.4 s, ≈ 9.3 m from a sprint); steer 0.6 rad/s; cooldown 0.35 s; slide-jump +1.0 m/s         |
+| Wall-run  | flagged faces; airborne, ≥ 5.5 m/s, ≤ 0.1 m away, < 70° from the plane, ≥ 0.5 m up; eases to 9 m/s; 2 m/s rise over 0.6 s, then 15 % gravity (sink ≤ 1.6 m/s); 2.2 s max; 1.2 s same-wall lockout |
+| Wall-jump | 5 m/s away, 7 m/s up, along-wall speed kept, air jump restored                                                                                                                                    |
+| Mantle    | flagged ledges 0.6–2.3 m above the feet, within 0.35 m, facing ≤ 60°, airborne or jumping, standing room on top; 0.45 s eased climb; 4.5 m/s exit; crouch cancels                                 |
