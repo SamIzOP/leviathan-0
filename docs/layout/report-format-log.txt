@@ -1,0 +1,32 @@
+README.md 91ms (unchanged)
+ACCEPTANCE.md 119ms
+GAME_BIBLE.md 36ms
+ARCHITECTURE.md 42ms (unchanged)
+ASSETS.md 13ms
+DECISIONS.md 47ms (unchanged)
+docs/layout/CRITIQUE.md 7ms
+docs/layout/LAYOUT.md 13ms
+docs/layout/REVIEW.md 10ms
+docs/layout/after/views.json 56ms
+docs/layout/before/views.json 15ms
+docs/layout/check.json 2ms
+docs/layout/collision-audit.json 1ms
+docs/layout/gallery.json 3ms
+docs/layout/landmark-stations.json 2ms
+docs/layout/level-after.json 7871ms
+docs/layout/level-before.json 774ms
+docs/layout/overhead-audit.json 1ms
+docs/layout/progression-audit.json 2ms
+docs/layout/view-variety.json 4ms
+docs/perf/redesign-bundle.json 1ms
+docs/perf/redesign-high.json 3ms
+docs/perf/redesign-low.json 3ms
+docs/perf/redesign-medium.json 3ms
+docs/perf/redesign-production.json 1ms
+docs/perf/redesign-stress.json 1ms
+docs/perf/redesign-summary.md 17ms
+docs/perf/forge-export.json 1ms
+docs/perf/movement-server.json 1ms
+docs/perf/revision-assets-empty.json 1ms
+docs/perf/revision-assets-overrides.json 1ms
+packages/client/public/assets/models/generated/manifest.json 12ms

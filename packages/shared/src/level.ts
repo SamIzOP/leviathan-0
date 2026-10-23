@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { METRICS } from './metrics';
-import { buildFoundry } from './foundry-layout';
+import { buildFoundry } from './foundry-redesign';
 import { spatialWorld } from './spatial-grid';
 import { makeEntity } from './movement';
 import type { Entity, Vec3, World } from './types';
@@ -31,6 +31,8 @@ const colliderSchema = box.extend({
   clip: z.boolean().optional(),
   platform: z.boolean(),
   prop: z.string().optional(),
+  visualId: z.string().optional(),
+  collision: z.literal('solid').optional(),
 });
 const decorSchema = z.object({
   id: z.string(),
@@ -42,11 +44,119 @@ const decorSchema = z.object({
   detail: z.boolean().optional(),
   prop: z.string().optional(),
   rotation: vec.optional(),
+  collision: z.enum(['solid', 'decor']).optional(),
+  reason: z
+    .enum(['small', 'overhead', 'surface', 'cable', 'effect'])
+    .optional(),
+  zone: z.string().optional(),
+  text: z.string().optional(),
 });
 export const levelSchema = z.object({
   id: z.string(),
   name: z.string(),
   seed: z.number().int(),
+  layoutVersion: z.number().optional(),
+  solids: z
+    .array(
+      z.object({
+        id: z.string(),
+        shape: z.string(),
+        position: vec,
+        size: vec,
+        surface: surfaceSchema,
+        color: z.string().optional(),
+        collision: z.literal('solid'),
+        colliderIds: z.array(z.string()),
+        zone: z.string(),
+      }),
+    )
+    .optional(),
+  criticalPath: z.array(vec).optional(),
+  landmarks: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        position: vec,
+        height: z.number(),
+      }),
+    )
+    .optional(),
+  coverPoints: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        position: vec,
+        heightClass: z.enum(['low', 'medium', 'high']),
+        colliderId: z.string(),
+      }),
+    )
+    .optional(),
+  markers: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        position: vec,
+        kind: z.enum([
+          'enemySpawn',
+          'ammo',
+          'salvage',
+          'oil',
+          'burn',
+          'exit',
+          'checkpoint',
+        ]),
+        hint: z.enum(['ground', 'elevated', 'interior']).optional(),
+      }),
+    )
+    .optional(),
+  encounters: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        bounds: box,
+        entryGate: z.string(),
+        waveSize: z.number(),
+        intensity: z.number(),
+      }),
+    )
+    .optional(),
+  routes: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        width: z.number(),
+        ceiling: z.number(),
+        kind: z.enum([
+          'primary',
+          'flank',
+          'slide',
+          'stairs',
+          'wallrun',
+          'jump',
+        ]),
+        points: z.array(vec),
+        shortcut: z.boolean().optional(),
+      }),
+    )
+    .optional(),
+  rooms: z
+    .array(
+      z.object({
+        id: z.string(),
+        zone: z.string(),
+        bounds: box,
+        openings: z.array(
+          z.object({ position: vec, width: z.number(), height: z.number() }),
+        ),
+        roof: z.number(),
+      }),
+    )
+    .optional(),
   bounds: box,
   killY: z.number(),
   colliders: z.array(colliderSchema),
@@ -54,10 +164,24 @@ export const levelSchema = z.object({
     z.object({
       id: z.string(),
       position: vec,
-      initiallyClosed: z.literal(true),
+      initiallyClosed: z.boolean(),
+      connects: z.tuple([z.string(), z.string()]).optional(),
+      width: z.number().optional(),
     }),
   ),
-  zones: z.array(z.object({ id: z.string(), position: vec })),
+  zones: z.array(
+    z.object({
+      id: z.string(),
+      position: vec,
+      bounds: box.optional(),
+      code: z.string().optional(),
+      material: surfaceSchema.optional(),
+      fogTint: z.string().optional(),
+      ambient: z.number().optional(),
+      dressingMinimum: z.number().optional(),
+      dressingPer1000: z.number().optional(),
+    }),
+  ),
   buildings: z.array(
     z.object({
       id: z.string(),
@@ -125,11 +249,6 @@ export function randomSeed(seed: number) {
 const v = (x: number, y: number, z: number): Vec3 => ({ x, y, z });
 const first = levelSchema.parse(buildFoundry());
 
-first.spawns.push(
-  { position: v(0, 0, -9), yaw: 0, type: 'enemySpawn' },
-  { position: v(-50, 0, -10), yaw: 0, type: 'pickup' },
-  { position: v(40, -3, -45), yaw: 0, type: 'objective' },
-);
 const second: Level = {
   ...first,
   id: 'foundry-row-overcast',

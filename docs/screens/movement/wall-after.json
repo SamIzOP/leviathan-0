@@ -1,0 +1,3074 @@
+[
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 15,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 30,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 45,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 60,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 60,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": true,
+    "reason": "ATTACHED"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 75,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_FAR"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 75,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 4.5,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 6,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 8,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.02,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.15,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.25,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-used",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "double-press",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "same-wall",
+    "attached": false,
+    "reason": "SAME_WALL_LOCKOUT"
+  },
+  {
+    "angle": 85,
+    "speed": 10,
+    "gap": 0.4,
+    "kind": "other-wall",
+    "attached": false,
+    "reason": "TOO_SLOW"
+  }
+]

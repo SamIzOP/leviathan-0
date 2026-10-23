@@ -33,6 +33,14 @@ export interface MoveState {
   wall: WallContact | null;
   lockouts: { id: string; ticks: number }[];
   mantle: MantleState | null;
+  /** Short deterministic contact memory; never a jump/global latch lockout. */
+  latchGrace?: {
+    id: string;
+    axis: 'x' | 'z';
+    dir: 1 | -1;
+    plane: number;
+    ticks: number;
+  };
 }
 export interface Entity {
   id: string;

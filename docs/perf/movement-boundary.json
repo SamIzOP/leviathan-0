@@ -4,7 +4,7 @@
     "bots": 8,
     "secondsPerDirection": 60,
     "ticks": 14400,
-    "statesReached": ["GROUND", "AIR", "SLIDE", "WALLRUN"],
+    "statesReached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "CROUCH"],
     "positions": [
       {
         "direction": "north",
@@ -12,42 +12,42 @@
           {
             "x": -48,
             "y": 1.2150951785838235,
-            "z": -81.0961111111111
+            "z": -245.5961111111111
           },
           {
             "x": -36,
             "y": 0,
-            "z": -77.76944444444437
+            "z": -241.56944444444449
           },
           {
-            "x": -45.14926988840837,
+            "x": -30.717984874913114,
             "y": 0,
-            "z": -75.36666894090843
+            "z": -238.49401897802593
           },
           {
-            "x": 47.174720258597965,
+            "x": -6.209086519806771,
             "y": 0.8317822902541556,
-            "z": -77.57579907250198
+            "z": -240.6732454771214
           },
           {
-            "x": -1.1164696652226792e-14,
-            "y": 2.1134285119171574,
-            "z": -81.1
+            "x": -4.990435706525413e-15,
+            "y": 0,
+            "z": -245.6
           },
           {
             "x": 12,
             "y": 0.6638367176906167,
-            "z": -81.1
+            "z": -244.9
           },
           {
-            "x": -49.1,
-            "y": 1.1349795549963362,
-            "z": -81.1
+            "x": 18.69495021421327,
+            "y": 1.4239840674727113,
+            "z": -240.29999999999998
           },
           {
-            "x": 49.1,
-            "y": 1.8050951785838238,
-            "z": -81.1
+            "x": 40.300000000000004,
+            "y": 1.2095917942265417,
+            "z": -234.1
           }
         ]
       },
@@ -55,44 +55,44 @@
         "direction": "east",
         "positions": [
           {
-            "x": 106.5961111111111,
+            "x": 205.5961111111111,
             "y": 1.2150951785838235,
             "z": -48
           },
           {
-            "x": 103.26944444444437,
+            "x": 202.26944444444447,
             "y": 0,
             "z": -36
           },
           {
-            "x": 99.49401897802659,
+            "x": 198.49401897802593,
             "y": 0,
-            "z": -82.71798487491338
+            "z": -64.21798487491338
           },
           {
-            "x": 102.37324547712196,
-            "y": 0.8317822902541556,
-            "z": 84.29091348019338
+            "x": 205.6,
+            "y": 0,
+            "z": 85.47861297337307
           },
           {
-            "x": 106.6,
+            "x": 205.6,
             "y": 2.1134285119171574,
             "z": 6.448836963460006e-14
           },
           {
-            "x": 106.6,
+            "x": 205.6,
             "y": 0.6638367176906167,
             "z": 12
           },
           {
-            "x": 106.6,
+            "x": 205.6,
             "y": 2.190095178583824,
-            "z": -86.6
+            "z": -68.1
           },
           {
-            "x": 106.6,
+            "x": 205.6,
             "y": 1.2095917942265417,
-            "z": 86.6
+            "z": 85.6
           }
         ]
       },
@@ -102,42 +102,42 @@
           {
             "x": -48,
             "y": 1.2150951785838235,
-            "z": 86.5961111111111
+            "z": 85.5961111111111
           },
           {
             "x": -36,
             "y": 0,
-            "z": 83.26944444444437
+            "z": 81.56944444444437
           },
           {
-            "x": -11.282015125086799,
+            "x": -9.282015125086799,
             "y": 0,
-            "z": 79.49401897802659
+            "z": 78.49401897802659
           },
           {
-            "x": -104.29091348019338,
+            "x": -34.6,
             "y": 0.8317822902541556,
-            "z": 82.37324547712196
+            "z": 85.6
           },
           {
-            "x": -4.6777629679231796e-14,
+            "x": -4.671381197380956e-14,
             "y": 2.1134285119171574,
-            "z": 85.1
+            "z": 85.6
           },
           {
             "x": 12,
             "y": 0.6638367176906167,
-            "z": 86.6
+            "z": 84.89999999999999
           },
           {
-            "x": 106.6,
+            "x": 42.6,
             "y": 2.190095178583824,
-            "z": 86.6
+            "z": 85.6
           },
           {
-            "x": 7.4,
+            "x": 13.4,
             "y": 1.2095917942265417,
-            "z": 86.6
+            "z": 85.6
           }
         ]
       },
@@ -145,44 +145,44 @@
         "direction": "west",
         "positions": [
           {
-            "x": -106.5961111111111,
+            "x": -205.5961111111111,
             "y": 1.2150951785838235,
             "z": -48
           },
           {
-            "x": -103.26944444444437,
+            "x": -195.91944444444448,
             "y": 0,
             "z": -36
           },
           {
-            "x": -99.40333544663125,
+            "x": -198.40333544663056,
             "y": 0,
-            "z": 82.66844423592431
+            "z": 81.66844423592431
           },
           {
-            "x": -102.37324547712194,
+            "x": -201.3732454771214,
             "y": 0.8317822902541556,
-            "z": -84.29091348019338
+            "z": -65.79091348019338
           },
           {
-            "x": -106.6,
+            "x": -199.25,
             "y": 2.1134285119171574,
-            "z": -6.6098610085646466e-15
+            "z": -6.423510587294388e-15
           },
           {
-            "x": -106.6,
+            "x": -205.6,
             "y": 0.6638367176906167,
             "z": 12
           },
           {
-            "x": -106.6,
+            "x": -205.6,
             "y": 2.190095178583824,
-            "z": 86.6
+            "z": 85.6
           },
           {
-            "x": -106.6,
+            "x": -205.6,
             "y": 1.2095917942265417,
-            "z": -86.6
+            "z": -68.1
           }
         ]
       }
@@ -190,76 +190,346 @@
   },
   "perimeterPieces": [
     {
-      "id": "compound-wall-x-108",
+      "id": "perimeter-x-208",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "compound-wall-x108",
+      "id": "perimeter-x208",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "compound-wall-z-88",
+      "id": "perimeter-z-248",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "compound-wall-z88",
+      "id": "perimeter-z88",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "compound-clip-x-108",
-      "wallRunnable": false,
-      "mantleable": false,
-      "clip": true
-    },
-    {
-      "id": "compound-clip-x108",
-      "wallRunnable": false,
-      "mantleable": false,
-      "clip": true
-    },
-    {
-      "id": "compound-clip-z-88",
-      "wallRunnable": false,
-      "mantleable": false,
-      "clip": true
-    },
-    {
-      "id": "compound-clip-z88",
-      "wallRunnable": false,
-      "mantleable": false,
-      "clip": true
-    },
-    {
-      "id": "entrance-blast-door",
+      "id": "seal-buttress--196--245.8",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "side-seal--1",
+      "id": "seal-buttress--196-85.8",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     },
     {
-      "id": "side-seal-1",
+      "id": "seal-buttress--180--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--180-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--164--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--164-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--148--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--148-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--132--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--132-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--116--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--116-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--100--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--100-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--84--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--84-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--68--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--68-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--52--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--52-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--36--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--36-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--20--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--20-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--4--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress--4-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-12--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-12-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-28--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-28-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-44--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-44-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-60--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-60-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-76--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-76-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-92--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-92-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-108--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-108-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-124--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-124-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-140--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-140-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-156--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-156-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-172--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-172-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-188--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-188-85.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-204--245.8",
+      "wallRunnable": false,
+      "mantleable": false,
+      "clip": false
+    },
+    {
+      "id": "seal-buttress-204-85.8",
       "wallRunnable": false,
       "mantleable": false,
       "clip": false
     }
   ],
   "adversarial": {
-    "probes": 63410,
-    "simulatedTicks": 20925300,
-    "seconds": 178.4419456,
+    "probes": 8472,
+    "simulatedTicks": 2795760,
+    "seconds": 46.7061069,
     "escapes": 0
   }
 }

@@ -1,0 +1,37 @@
+{
+  "pass": true,
+  "probes": 1296,
+  "modes": ["GROUND", "SLIDE", "AIR", "CROUCH", "WALLRUN", "MANTLE"],
+  "failures": [],
+  "flood": {
+    "errors": [],
+    "checks": [
+      {
+        "gate": "gate-01",
+        "blockedLater": true
+      },
+      {
+        "gate": "gate-02",
+        "blockedLater": true
+      },
+      {
+        "gate": "gate-03",
+        "blockedLater": true
+      },
+      {
+        "gate": "gate-04",
+        "blockedLater": true
+      },
+      {
+        "gate": "gate-05",
+        "blockedLater": true
+      },
+      {
+        "gate": "gate-06",
+        "blockedLater": true
+      }
+    ],
+    "gridMetres": 0.5,
+    "shortestGroundManhattan": 1625
+  }
+}

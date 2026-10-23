@@ -1,0 +1,242 @@
+{
+  "defaultKeys": {
+    "reached": ["GROUND", "SLIDE", "AIR"],
+    "audio": {
+      "slide": 1,
+      "stand": 1,
+      "doublejump": 1,
+      "land.concrete": 1
+    }
+  },
+  "lab": {
+    "log": [
+      "false -> 32",
+      "m.mode === 'SLIDE' && m.slideTicks > 10 -> 11",
+      "m.mode === 'AIR' -> 1",
+      "s.velocity.y <= 1.5 -> 16",
+      "m.airJumps === 0 -> 1",
+      "m.mode === 'WALLRUN' -> 7",
+      "m.mode === 'WALLRUN' && m.wall.ticks > 30 -> 31",
+      "m.mode === 'AIR' && s.velocity.y > 4 -> 1",
+      "m.mode !== 'AIR' -> 51",
+      "s.position.z < -28.4 -> 35",
+      "m.mode === 'MANTLE' -> 6",
+      "m.mode !== 'MANTLE' -> 27"
+    ],
+    "frames": {
+      "apex": {
+        "fovVertical": 78.59945523854884,
+        "eye": 1.6499999999999992,
+        "fovKick": 0.0000837937367857025,
+        "rollDegrees": 0,
+        "pull": 0,
+        "dip": -3.8265271204156823e-75,
+        "bob": 9.138059621195794e-8
+      },
+      "slide": {
+        "fovVertical": 81.25249140145065,
+        "eye": 1.074831596785767,
+        "fovKick": 2.6781926839366372,
+        "rollDegrees": 0,
+        "pull": 0,
+        "dip": -0.00011139723109247319,
+        "bob": 0.011008892965087145
+      },
+      "wallrun": {
+        "fovVertical": 82.42750674137955,
+        "eye": 1.649141465843607,
+        "fovKick": 3.8528956570891344,
+        "rollDegrees": 11.340089993278278,
+        "pull": 0,
+        "dip": -7.772202398480325e-9,
+        "bob": 0.0000018973509501016134
+      },
+      "mantle": {
+        "fovVertical": 79.49803298418574,
+        "eye": 1.6499999999999992,
+        "fovKick": 0.9111832327216426,
+        "rollDegrees": 9.923073324739327e-22,
+        "pull": -0.08326318374155996,
+        "dip": -1.9849837862739944e-31,
+        "bob": 0.001497085702630092
+      }
+    },
+    "transitions": [
+      ["GROUND", -3, 0, 64, 0],
+      ["SLIDE", -3, 0, 57.6, 0],
+      ["AIR", -3, 0.13, 55.3, 7.6],
+      ["GROUND", -3, 0, 46.2, 0],
+      ["AIR", -39.2, 0.13, 24.1, 7.6],
+      ["GROUND", -39.2, 0, 24.1, 0],
+      ["SLIDE", -39.2, 0, 20.7, 0],
+      ["AIR", -39.2, 0.13, 19, 7.6],
+      ["WALLRUN:lab-run-long", -38.4, 1.96, 15.4, 3],
+      ["AIR", -38.5, 2.94, 10.7, 6.8],
+      ["GROUND", -41, 0, 2.4, 0],
+      ["AIR", -43, 0.13, -28.6, 7.6],
+      ["MANTLE", -43, 0.66, -29.3, 0],
+      ["GROUND", -43, 1.5, -30.4, 0]
+    ],
+    "maxRoll": 11.765052629332809,
+    "maxKick": 5.431743821966001,
+    "movement": {
+      "mode": "GROUND",
+      "crouched": false,
+      "speed": 0.16666666666666663,
+      "reached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "MANTLE"],
+      "reconciliations": 0,
+      "matchedSnapshots": 734,
+      "maxPredictionError": 0,
+      "camera": {
+        "fovVertical": 79.419476908603,
+        "eye": 1.6499999999999992,
+        "fovKick": 0.8316978296543573,
+        "rollDegrees": 1.0347381489891037e-22,
+        "pull": -0.047848215769788024,
+        "dip": -5.981329421495045e-33,
+        "bob": 0.01274591855201089
+      },
+      "audio": {
+        "counts": {
+          "slide": 2,
+          "stand": 2,
+          "doublejump": 3,
+          "land.concrete": 3,
+          "wallstep.brick": 4,
+          "walljump.brick": 1,
+          "handslap.concrete": 1,
+          "mantle": 1
+        },
+        "slideLoop": false,
+        "windGain": 0.004791008308529854,
+        "assets": 0
+      },
+      "poses": []
+    }
+  },
+  "foundry": {
+    "apex": {
+      "fovVertical": 78.59945906093397,
+      "eye": 1.65,
+      "fovKick": 0.00008767821961428148,
+      "rollDegrees": 0,
+      "pull": -2.9220115832737664e-19,
+      "dip": 0,
+      "bob": 9.277440670768662e-8
+    },
+    "slide": {
+      "fovVertical": 81.25272983198364,
+      "eye": 1.0746131938200796,
+      "fovKick": 2.6784317574625387,
+      "rollDegrees": 0,
+      "pull": -3.0211953262224243e-22,
+      "dip": -0.00011181416483897272,
+      "bob": 0.010997571829500875
+    },
+    "wallrun": {
+      "fovVertical": 79.23198523365879,
+      "eye": 1.6499595715445237,
+      "fovKick": 0.6418602495054918,
+      "rollDegrees": 11.340584119429696,
+      "pull": -1.3570087589090538e-25,
+      "dip": -1.3491511697251633e-10,
+      "bob": 4.8433177461293813e-8
+    },
+    "log": [
+      "false -> 32",
+      "m.mode === 'SLIDE' && m.slideTicks > 10 -> 11",
+      "m.mode === 'AIR' -> 1",
+      "s.velocity.y <= 1.5 -> 16",
+      "m.airJumps === 0 -> 1",
+      "m.mode === 'WALLRUN' -> 29",
+      "m.mode === 'WALLRUN' && m.wall.ticks > 30 -> 31",
+      "m.mode === 'AIR' && s.velocity.y > 4 -> 1",
+      "m.mode !== 'AIR' -> 49"
+    ],
+    "mantle": {
+      "fovVertical": 79.41551279892614,
+      "eye": 1.6499999999999992,
+      "fovKick": 0.8276859859800672,
+      "rollDegrees": 4.9778500946080305e-11,
+      "pull": -0.08325569423009234,
+      "dip": -4.841225814961516e-15,
+      "bob": 0.0024640030800007367
+    },
+    "climbLog": [
+      "s.position.x < -2.9 -> 33",
+      "m.mode === 'MANTLE' -> 3",
+      "m.mode !== 'MANTLE' -> 27"
+    ],
+    "movement": {
+      "mode": "GROUND",
+      "crouched": false,
+      "speed": 2.5,
+      "reached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "MANTLE"],
+      "reconciliations": 0,
+      "matchedSnapshots": 315,
+      "maxPredictionError": 0,
+      "camera": {
+        "fovVertical": 79.48299352304528,
+        "eye": 1.6499999999999992,
+        "fovKick": 0.8959683001183063,
+        "rollDegrees": 7.418758716744184e-12,
+        "pull": -0.06540026240162464,
+        "dip": -2.5367614245921773e-16,
+        "bob": 0.009702589722963118
+      },
+      "audio": {
+        "counts": {
+          "doublejump": 2,
+          "land.concrete": 2,
+          "slide": 1,
+          "stand": 1,
+          "wallstep.brick": 4,
+          "walljump.brick": 1,
+          "handslap.metal": 1,
+          "mantle": 1
+        },
+        "slideLoop": false,
+        "windGain": 0.0056664003059268,
+        "assets": 0
+      },
+      "poses": []
+    }
+  },
+  "prediction": [
+    {
+      "lag": 0,
+      "loss": 3,
+      "reached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "MANTLE"],
+      "maxPredictionError": 0,
+      "reconciliations": 0,
+      "matchedSnapshots": 685
+    },
+    {
+      "lag": 150,
+      "loss": 3,
+      "reached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "MANTLE"],
+      "maxPredictionError": 0.1250197515259295,
+      "reconciliations": 1,
+      "matchedSnapshots": 1416
+    },
+    {
+      "lag": 300,
+      "loss": 3,
+      "reached": ["GROUND", "AIR", "SLIDE", "WALLRUN", "MANTLE"],
+      "maxPredictionError": 0.02333333333332549,
+      "reconciliations": 1,
+      "matchedSnapshots": 1409
+    }
+  ],
+  "settings": {
+    "baseFovVertical": 78.59995311265234,
+    "fov110Vertical": 93.93292347689199,
+    "reduceMotionMaxRoll": 0,
+    "reduceMotionMaxKick": 0.000004855480990678655,
+    "speedometer": "5.2 M/S"
+  },
+  "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x000046A3) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "frameMs": 16.662777777777794,
+  "pass": true,
+  "errors": []
+}

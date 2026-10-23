@@ -1,6 +1,7 @@
 import { BUTTON } from '@leviathan/shared';
 import type { Input } from '@leviathan/shared';
 import { movementSettings } from './movement-settings';
+import { LookPipeline } from './look-pipeline';
 /** One scripted input step for the dev-only browser test hook. */
 export interface InjectedInput {
   ticks: number;
@@ -32,6 +33,20 @@ export class InputReader {
   noticeDismissed = false;
   crouchToggled = false;
   injected: InjectedInput[] = [];
+  onMouse?: (x: number, y: number) => void;
+  look = new LookPipeline();
+  mouse(x: number, y: number) {
+    this.onMouse?.(x, y);
+    this.look.add(x, y);
+  }
+  frameLook() {
+    const delta = this.look.flush();
+    this.yaw -= delta.x * this.sensitivity;
+    this.pitch = Math.max(
+      -1.5,
+      Math.min(1.5, this.pitch - delta.y * this.sensitivity),
+    );
+  }
   private crouchTap = false;
   private activation = 0;
   private dragging = false;
@@ -108,7 +123,8 @@ export class InputReader {
       e.preventDefault();
       canvas.focus({ preventScroll: true });
       this.dragging = true;
-      this.lastMouse = { x: e.clientX, y: e.clientY };
+      this.lastMouse.x = e.clientX;
+      this.lastMouse.y = e.clientY;
     });
     document.addEventListener('mouseup', () => {
       this.dragging = false;
@@ -119,11 +135,7 @@ export class InputReader {
       const dx = locked ? e.movementX : e.clientX - this.lastMouse.x;
       const dy = locked ? e.movementY : e.clientY - this.lastMouse.y;
       this.lastMouse = { x: e.clientX, y: e.clientY };
-      this.yaw -= dx * this.sensitivity;
-      this.pitch = Math.max(
-        -1.5,
-        Math.min(1.5, this.pitch - dy * this.sensitivity),
-      );
+      this.mouse(dx, dy);
     });
   }
   /** With Ctrl crouch enabled, capture enters fullscreen and asks for keyboard lock
@@ -162,7 +174,9 @@ export class InputReader {
     document.addEventListener('pointerlockerror', fallback, { once: true });
     try {
       await Promise.race([
-        this.canvas.requestPointerLock(),
+        Promise.resolve(
+          this.canvas.requestPointerLock({ unadjustedMovement: true }),
+        ).catch(() => this.canvas.requestPointerLock()),
         new Promise<void>((resolve) => window.setTimeout(resolve, 1050)),
       ]);
     } catch {
@@ -180,6 +194,7 @@ export class InputReader {
     if (changed) this.onStateChange();
   }
   clear() {
+    this.look.clear();
     this.keys.clear();
     this.jump = false;
     this.crouchTap = false;

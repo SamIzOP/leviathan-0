@@ -1,0 +1,217 @@
+npm notice run npx
+npm notice run tsx scripts/redesign-gallery.ts
+{
+  "pass": true,
+  "variants": 267,
+  "results": [
+    {
+      "ready": true,
+      "key": "cooling-tower",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1220,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "gas-holder",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1644,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "signal-tower",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 270,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "ore-bridge",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 612,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "furnace",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1060,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "vault-roof",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1776,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "sawtooth-roof",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1598,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "sag-cable",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 172,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "curved-pipe",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 268,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "arched-tunnel",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 1776,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "freight-car",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 516,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "collapsed-overpass",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 624,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "silo",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 840,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "ladle",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 492,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "slag-pot",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 492,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "pump-house",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 198,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "forklift",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 216,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "cart",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 180,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "scaffold",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 276,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "tarpaulin",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 198,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "workstation",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 192,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "locker",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 180,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "broken-container",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 300,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "open-container",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 288,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "substation",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 540,
+      "count": 89
+    },
+    {
+      "ready": true,
+      "key": "rubble",
+      "variant": 1,
+      "seed": 71017,
+      "triangles": 144,
+      "count": 89
+    }
+  ],
+  "errors": []
+}

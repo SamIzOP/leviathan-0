@@ -19,12 +19,12 @@ for (let i = 0; i < 8; i++) {
   bots.push(peer);
 }
 const inside = (p: Entity['position']) =>
-  p.x > -INNER.x && p.x < INNER.x && p.z > -INNER.z && p.z < INNER.z;
+  p.x > -INNER.x && p.x < INNER.x && p.z > INNER.minZ && p.z < INNER.z;
 const DIRECTIONS = [
-  ['north', 0, -85, 0],
-  ['east', 105, 0, -Math.PI / 2],
-  ['south', 0, 84, Math.PI],
-  ['west', -105, 0, Math.PI / 2],
+  ['north', 0, INNER.minZ + 2, 0],
+  ['east', INNER.x - 2, 0, -Math.PI / 2],
+  ['south', 0, INNER.z - 2, Math.PI],
+  ['west', -INNER.x + 2, 0, Math.PI / 2],
 ] as const;
 const place = (direction: string, x: number, z: number, spacing: number) =>
   bots.forEach((peer, i) => {
@@ -142,9 +142,9 @@ for (const [direction, x, z, yaw] of DIRECTIONS) {
 }
 for (const peer of bots) {
   for (const position of [
-    { x: 121, y: 0, z: 0 },
-    { x: 0, y: -20, z: 0 },
-    { x: 0, y: 0, z: -100 },
+    { x: level.bounds.max.x + 1, y: 0, z: 0 },
+    { x: 0, y: level.killY - 1, z: 0 },
+    { x: 0, y: 0, z: level.bounds.min.z - 1 },
   ]) {
     peer.player!.entity.position = position;
     game.step();
@@ -162,7 +162,7 @@ for (const peer of bots) {
 }
 // 3. Perimeter pieces carry no traversal flags.
 const perimeter = level.colliders.filter((c) =>
-  /^(compound-|entrance-blast-door|side-seal-)/.test(c.id),
+  /^(perimeter-|seal-buttress-)/.test(c.id),
 );
 assert(perimeter.length >= 9);
 assert(perimeter.every((c) => !c.wallRunnable && !c.mantleable));

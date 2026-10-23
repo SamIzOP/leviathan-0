@@ -68,7 +68,7 @@ describe('Foundry Row level contract', () => {
   it('rejects obstructed spawns and inaccessible platforms', () => {
     const level = structuredClone(missionLevel(0));
     level.spawns[0]!.position = {
-      ...level.colliders.find((b) => b.id === 'row-1-0')!.min,
+      ...level.colliders.find((b) => b.id === 'gate-workshop/side-1')!.min,
     };
     level.spawns[0]!.position.y = 1;
     expect(
@@ -104,8 +104,8 @@ describe('Foundry Row level contract', () => {
     });
     const level = missionLevel(0);
     for (const position of [
-      { x: 0, y: -10, z: 0 },
-      { x: 99, y: 0, z: 0 },
+      { x: 0, y: level.killY - 1, z: 0 },
+      { x: level.bounds.max.x + 1, y: 0, z: 0 },
     ]) {
       peer.player!.entity.position = position;
       game.step();
@@ -134,7 +134,9 @@ describe('Foundry Row level contract', () => {
       missionLevel(0).spawns.filter((s) => s.type === 'player'),
     ).toHaveLength(12);
     expect(
-      missionLevel(0).colliders.filter((c) => c.prop === 'prop.van'),
+      missionLevel(0).colliders.filter(
+        (c) => c.id === 'entrance/assembly-truck-18-66/chassis',
+      ),
     ).toHaveLength(1);
   });
 });

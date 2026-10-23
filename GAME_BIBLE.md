@@ -1,5 +1,11 @@
 # LEVIATHAN 0
 
+## Foundry Row redesign — 2026-10-23
+
+The active level now follows seven beats: Ravel Gate → Bracken Courts → Kainos Freight → Vale Condensers → Ash Transfer → Narrow Iron → Vesper Core. Its sealed footprint is 420 × 340 m and its authored route is 2,251 m. The water tower and three-stack entrance composition remain the visual anchor. Local landmarks are the signal tower, freight gantry, gas holder, stack yard, ore bridge and furnace.
+
+Material identity progresses from worn brick and court windows to corrugated blue-grey freight sheds, pale condenser concrete, soot-dark slag screens, vaulted hall steel and blackened furnace plate. Fog tints and positioned ambience remain subtle. Rooms, mezzanines, sunken yards, rail elevation and hall galleries supply vertical encounters. Combat spawns, cover, pickups, encounters and burn/exit points are data only. See [the layout design](docs/layout/LAYOUT.md) and [visual review](docs/layout/REVIEW.md) for evidence and remaining art limitations. Older layout dimensions below are historical.
+
 A browser-based cooperative first-person shooter for 2–8 PC players. Operators open a public link, choose a callsign, and create or join a four-character room. No accounts, installation, or login. Each player has an independent screen synchronized to an authoritative server. Sessions will last about five minutes.
 
 The Kainos are humans with discreet mechanical limbs. Their home is the artificial planet Leviathan 0. Corrupted industrial robots obey VANE SS, a rogue scientist robot. Crews will fight through roughly six factories before the final confrontation. Names and assets are original.

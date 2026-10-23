@@ -1,0 +1,67 @@
+{
+  "courses": [
+    {
+      "width": 6,
+      "contacts": ["left", "right", "left", "right"],
+      "ticks": 232,
+      "policy": {
+        "steer": 0.9,
+        "jumpAt": 44,
+        "runFor": 30
+      }
+    },
+    {
+      "width": 8,
+      "contacts": ["left", "right", "left", "right"],
+      "ticks": 280,
+      "policy": {
+        "steer": 0.9,
+        "jumpAt": 44,
+        "runFor": 30
+      }
+    },
+    {
+      "width": 10,
+      "contacts": ["left", "right", "left", "right"],
+      "ticks": 308,
+      "policy": {
+        "steer": 0.55,
+        "jumpAt": 30,
+        "runFor": 30
+      }
+    }
+  ],
+  "randomized": {
+    "attempts": 200,
+    "success": 192,
+    "rate": 0.96,
+    "unflagged": 0
+  },
+  "sameWall": {
+    "leftAt": 12,
+    "returnedAt": 78,
+    "seconds": 1.1,
+    "usedDouble": true,
+    "airJumps": 0
+  },
+  "prediction": [
+    {
+      "lag": 0,
+      "loss": 3,
+      "maxPredictionError": 0,
+      "checks": 266
+    },
+    {
+      "lag": 150,
+      "loss": 3,
+      "maxPredictionError": 0,
+      "checks": 259
+    },
+    {
+      "lag": 300,
+      "loss": 3,
+      "maxPredictionError": 0,
+      "checks": 255
+    }
+  ]
+}

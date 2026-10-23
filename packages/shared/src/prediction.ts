@@ -26,6 +26,19 @@ const near = (a: Vec3, b: Vec3, t: number) =>
 function sameMove(a?: MoveState, b?: MoveState) {
   if (!a || !b) return a === b;
   const t = RECONCILE_TOLERANCE.position;
+  const g = a.latchGrace,
+    h = b.latchGrace;
+  if (
+    !!g !== !!h ||
+    (g &&
+      h &&
+      (g.id !== h.id ||
+        g.axis !== h.axis ||
+        g.dir !== h.dir ||
+        g.ticks !== h.ticks ||
+        Math.abs(g.plane - h.plane) > t))
+  )
+    return false;
   if (
     a.mode !== b.mode ||
     a.buttons !== b.buttons ||

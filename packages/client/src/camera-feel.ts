@@ -13,7 +13,6 @@ export class CameraFeel {
   private bobPhase = 0;
   private bobAmount = 0;
   private fov = 0;
-  private last = performance.now();
   /** Sim-rate events: landing impacts and stride phase. */
   tick(before: Entity, after: Entity) {
     const was = before.move?.mode ?? 'GROUND',
@@ -34,10 +33,8 @@ export class CameraFeel {
     camera: THREE.PerspectiveCamera,
     local: Entity,
     position: { x: number; y: number; z: number },
+    dt: number,
   ) {
-    const now = performance.now(),
-      dt = Math.min(0.1, (now - this.last) / 1000);
-    this.last = now;
     const ease = (current: number, target: number, tau: number) =>
       current + (target - current) * (1 - Math.exp(-dt / tau));
     const m = local.move,
@@ -105,11 +102,11 @@ export class CameraFeel {
       bobX = Math.sin(this.bobPhase) * this.bobAmount * 0.5;
     camera.position.set(
       position.x + Math.cos(local.yaw) * bobX,
-      position.y + this.eye + this.dip + bobY,
+      position.y + this.eye + this.dip + bobY + this.pull,
       position.z - Math.sin(local.yaw) * bobX,
     );
     camera.rotation.order = 'YXZ';
-    camera.rotation.set(local.pitch + this.pull, local.yaw, this.roll);
+    camera.rotation.set(local.pitch, local.yaw, this.roll);
   }
   stats() {
     return {

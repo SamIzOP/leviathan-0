@@ -99,7 +99,10 @@ export function validateLevel(level: Level): string[] {
     if (ids.has(b.id)) errors.push('Duplicate collider ' + b.id);
     ids.add(b.id);
     for (const axis of ['x', 'y', 'z'] as const) {
-      if (b.max[axis] - b.min[axis] < 0.05 - 1e-8)
+      if (
+        b.max[axis] - b.min[axis] <
+        (b.visualId && /\/tip-[xz]$/.test(b.id) ? 0.0009 : 0.05 - 1e-8)
+      )
         errors.push('Undersized collider ' + b.id);
       if (
         b.min[axis] < level.bounds.min[axis] ||

@@ -1,0 +1,11 @@
+npm notice run npx
+npm notice run tsx scripts/landmark-stations.ts
+water-tower {"position":{"x":-199.44012286436234,"y":1.65,"z":-41.142766340239795},"visible":17}
+bracken-signal {"position":{"x":0,"y":42,"z":14},"visible":6}
+freight-gantry {"position":{"x":35,"y":42,"z":-140},"visible":19}
+vale-gasholder {"position":{"x":192,"y":42,"z":-155},"visible":4}
+stack-0 {"position":{"x":-183.829571266533,"y":1.65,"z":20.18990313266122},"visible":5}
+stack-1 {"position":{"x":-152.4401228643623,"y":1.65,"z":51.14276634023983},"visible":4}
+stack-2 {"position":{"x":54.18990313266117,"y":1.65,"z":-173.829571266533},"visible":6}
+ore-bridge {"position":{"x":192.1899031326612,"y":1.65,"z":-73.17042873346699},"visible":7}
+vesper-furnace {"position":{"x":-46.82957126653301,"y":28,"z":77.18990313266121},"visible":1}

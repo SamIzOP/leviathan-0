@@ -1,0 +1,9 @@
+{
+  "bounds": [],
+  "boundsCount": 0,
+  "walk": {
+    "probes": 4824,
+    "errors": []
+  }
+}
+{"bounds":0,"walk":0,"sweepMismatches":0}

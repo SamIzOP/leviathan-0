@@ -1,0 +1,12 @@
+CYCLE {"cycle":0,"geometries":407,"textures":53,"heap":30518912,"level":"foundry-row"}
+CYCLE {"cycle":1,"geometries":407,"textures":53,"heap":31675344,"level":"foundry-row-overcast"}
+CYCLE {"cycle":2,"geometries":407,"textures":53,"heap":32031952,"level":"foundry-row-overcast"}
+CYCLE {"cycle":3,"geometries":407,"textures":53,"heap":32250040,"level":"foundry-row"}
+CYCLE {"cycle":4,"geometries":407,"textures":53,"heap":32384168,"level":"foundry-row"}
+CYCLE {"cycle":5,"geometries":407,"textures":53,"heap":32538764,"level":"foundry-row"}
+CYCLE {"cycle":6,"geometries":407,"textures":53,"heap":32551356,"level":"foundry-row"}
+CYCLE {"cycle":7,"geometries":407,"textures":53,"heap":32605196,"level":"foundry-row"}
+CYCLE {"cycle":8,"geometries":407,"textures":53,"heap":32701924,"level":"foundry-row"}
+CYCLE {"cycle":9,"geometries":407,"textures":53,"heap":32839548,"level":"foundry-row"}
+CYCLE {"cycle":10,"geometries":407,"textures":53,"heap":32919376,"level":"foundry-row"}
+PASS cycles

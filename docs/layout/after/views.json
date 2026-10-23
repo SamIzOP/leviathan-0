@@ -1,0 +1,1334 @@
+[
+  {
+    "name": "entrance-player",
+    "position": {
+      "x": 0,
+      "y": 1.65,
+      "z": 76
+    },
+    "target": {
+      "x": 0,
+      "y": 14,
+      "z": 15
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 425,
+      "triangles": 513556,
+      "textureMiB": 46.6,
+      "gpuMs": 7.870052,
+      "frameMs": 24.668888888623982,
+      "particles": 826,
+      "geometries": 403,
+      "textures": 53,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "entrance-high",
+    "position": {
+      "x": 8,
+      "y": 22,
+      "z": 18
+    },
+    "target": {
+      "x": -60,
+      "y": 5,
+      "z": 10
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 335,
+      "triangles": 428200,
+      "textureMiB": 46.6,
+      "gpuMs": 8.959218,
+      "frameMs": 21.745833333191417,
+      "particles": 826,
+      "geometries": 482,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "tenements-player",
+    "position": {
+      "x": -190,
+      "y": 1.65,
+      "z": 60
+    },
+    "target": {
+      "x": -138,
+      "y": 15,
+      "z": 0
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 377,
+      "triangles": 384366,
+      "textureMiB": 46.6,
+      "gpuMs": 5.919218,
+      "frameMs": 17.405555555555555,
+      "particles": 826,
+      "geometries": 513,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "tenements-high",
+    "position": {
+      "x": -68,
+      "y": 22,
+      "z": 18
+    },
+    "target": {
+      "x": -76,
+      "y": 5,
+      "z": 65
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 148,
+      "triangles": 171790,
+      "textureMiB": 46.6,
+      "gpuMs": 6.090833,
+      "frameMs": 16.663333333333338,
+      "particles": 826,
+      "geometries": 519,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "rail-player",
+    "position": {
+      "x": -190,
+      "y": 1.65,
+      "z": -155
+    },
+    "target": {
+      "x": -130,
+      "y": 18,
+      "z": -140
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 396,
+      "triangles": 484848,
+      "textureMiB": 46.6,
+      "gpuMs": 7.843958,
+      "frameMs": 16.84888888888889,
+      "particles": 826,
+      "geometries": 623,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "rail-high",
+    "position": {
+      "x": -178,
+      "y": 26,
+      "z": -175
+    },
+    "target": {
+      "x": -145,
+      "y": 0,
+      "z": -198
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 258,
+      "triangles": 317254,
+      "textureMiB": 46.6,
+      "gpuMs": 8.320989,
+      "frameMs": 16.85055555555556,
+      "particles": 826,
+      "geometries": 656,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "pumps-player",
+    "position": {
+      "x": 40,
+      "y": 1.65,
+      "z": -135
+    },
+    "target": {
+      "x": 27,
+      "y": 25,
+      "z": -180
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 248,
+      "triangles": 333582,
+      "textureMiB": 46.6,
+      "gpuMs": 8.867552,
+      "frameMs": 16.664999999999996,
+      "particles": 826,
+      "geometries": 717,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "pumps-high",
+    "position": {
+      "x": 45,
+      "y": 26,
+      "z": -140
+    },
+    "target": {
+      "x": 10,
+      "y": 2,
+      "z": -204
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 261,
+      "triangles": 344126,
+      "textureMiB": 46.6,
+      "gpuMs": 13.818906,
+      "frameMs": 16.665555555555553,
+      "particles": 826,
+      "geometries": 721,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "slag-player",
+    "position": {
+      "x": -35,
+      "y": 1.65,
+      "z": -30
+    },
+    "target": {
+      "x": 0,
+      "y": 35,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 303,
+      "triangles": 429672,
+      "textureMiB": 46.6,
+      "gpuMs": 8.2525,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 767,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "slag-high",
+    "position": {
+      "x": -36,
+      "y": 26,
+      "z": -90
+    },
+    "target": {
+      "x": 0,
+      "y": 0,
+      "z": -56
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 360,
+      "triangles": 459642,
+      "textureMiB": 46.6,
+      "gpuMs": 8.756927,
+      "frameMs": 16.663888888888877,
+      "particles": 826,
+      "geometries": 771,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "hall-player",
+    "position": {
+      "x": 185,
+      "y": 1.65,
+      "z": -220
+    },
+    "target": {
+      "x": 153,
+      "y": 12,
+      "z": -170
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 352,
+      "triangles": 448682,
+      "textureMiB": 46.6,
+      "gpuMs": 11.30802,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 820,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "hall-high",
+    "position": {
+      "x": 175,
+      "y": 22,
+      "z": -212
+    },
+    "target": {
+      "x": 145,
+      "y": 10,
+      "z": -150
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 351,
+      "triangles": 479236,
+      "textureMiB": 46.6,
+      "gpuMs": 10.943072,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 820,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "core-player",
+    "position": {
+      "x": 185,
+      "y": 1.65,
+      "z": 60
+    },
+    "target": {
+      "x": 115,
+      "y": 25,
+      "z": 45
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 351,
+      "triangles": 385924,
+      "textureMiB": 46.6,
+      "gpuMs": 8.934531,
+      "frameMs": 16.66333333333332,
+      "particles": 826,
+      "geometries": 856,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "core-high",
+    "position": {
+      "x": 185,
+      "y": 22,
+      "z": 65
+    },
+    "target": {
+      "x": 115,
+      "y": 16,
+      "z": 25
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 372,
+      "triangles": 416364,
+      "textureMiB": 46.6,
+      "gpuMs": 7.404218,
+      "frameMs": 16.662777777777794,
+      "particles": 826,
+      "geometries": 859,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "composition",
+    "position": {
+      "x": 0,
+      "y": 9,
+      "z": 82
+    },
+    "target": {
+      "x": 0,
+      "y": 26,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 431,
+      "triangles": 515956,
+      "textureMiB": 46.6,
+      "gpuMs": 7.991718,
+      "frameMs": 16.664444444444435,
+      "particles": 826,
+      "geometries": 862,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "spawn",
+    "position": {
+      "x": 0,
+      "y": 1.65,
+      "z": 81
+    },
+    "target": {
+      "x": 0,
+      "y": 4,
+      "z": 10
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 431,
+      "triangles": 515956,
+      "textureMiB": 46.6,
+      "gpuMs": 8.948645,
+      "frameMs": 16.664444444444435,
+      "particles": 826,
+      "geometries": 862,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "stacks",
+    "position": {
+      "x": -35,
+      "y": 1.65,
+      "z": -50
+    },
+    "target": {
+      "x": 0,
+      "y": 65,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 234,
+      "triangles": 357256,
+      "textureMiB": 46.6,
+      "gpuMs": 10.708125,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 862,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "hall",
+    "position": {
+      "x": 185,
+      "y": 1.65,
+      "z": -220
+    },
+    "target": {
+      "x": 153,
+      "y": 12,
+      "z": -170
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 352,
+      "triangles": 448682,
+      "textureMiB": 46.6,
+      "gpuMs": 9.182552,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 862,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "containers",
+    "position": {
+      "x": -178,
+      "y": 26,
+      "z": -175
+    },
+    "target": {
+      "x": -145,
+      "y": 0,
+      "z": -198
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 258,
+      "triangles": 317254,
+      "textureMiB": 46.6,
+      "gpuMs": 8.680104,
+      "frameMs": 16.757777777777786,
+      "particles": 826,
+      "geometries": 862,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "van",
+    "position": {
+      "x": 0,
+      "y": 1.65,
+      "z": 10
+    },
+    "target": {
+      "x": -60,
+      "y": 4,
+      "z": 10
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 309,
+      "triangles": 371944,
+      "textureMiB": 46.6,
+      "gpuMs": 7.832395,
+      "frameMs": 16.757222222222218,
+      "particles": 826,
+      "geometries": 863,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "puddle",
+    "position": {
+      "x": 40,
+      "y": 1.65,
+      "z": -135
+    },
+    "target": {
+      "x": 27,
+      "y": 25,
+      "z": -180
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 248,
+      "triangles": 333582,
+      "textureMiB": 46.6,
+      "gpuMs": 10.234114,
+      "frameMs": 16.664444444444435,
+      "particles": 826,
+      "geometries": 863,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "stairs",
+    "position": {
+      "x": -146,
+      "y": 1.65,
+      "z": -184
+    },
+    "target": {
+      "x": -146,
+      "y": 4,
+      "z": -201
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 128,
+      "triangles": 154102,
+      "textureMiB": 46.6,
+      "gpuMs": 7.636406,
+      "frameMs": 16.664444444444435,
+      "particles": 826,
+      "geometries": 864,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "wallrun",
+    "position": {
+      "x": -197,
+      "y": 1.65,
+      "z": 8
+    },
+    "target": {
+      "x": -197,
+      "y": 2,
+      "z": -38
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 231,
+      "triangles": 334896,
+      "textureMiB": 46.6,
+      "gpuMs": 8.519687,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 866,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "tunnel",
+    "position": {
+      "x": -49,
+      "y": 0.9,
+      "z": -183
+    },
+    "target": {
+      "x": -49,
+      "y": 0.8,
+      "z": -156
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 386,
+      "triangles": 496752,
+      "textureMiB": 46.6,
+      "gpuMs": 7.516145,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 870,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "boundary",
+    "position": {
+      "x": -193,
+      "y": 1.65,
+      "z": 55
+    },
+    "target": {
+      "x": -208,
+      "y": 25,
+      "z": 55
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 49,
+      "triangles": 41266,
+      "textureMiB": 46.6,
+      "gpuMs": 6.701979,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 872,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "inside-gate-workshop",
+    "position": {
+      "x": -34,
+      "y": 1.65,
+      "z": 68
+    },
+    "target": {
+      "x": -26,
+      "y": 1.6,
+      "z": 46
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 423,
+      "triangles": 503896,
+      "textureMiB": 46.6,
+      "gpuMs": 10.664375,
+      "frameMs": 16.665000000000024,
+      "particles": 826,
+      "geometries": 872,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "inside-dispatch-office",
+    "position": {
+      "x": 34,
+      "y": 1.65,
+      "z": 53
+    },
+    "target": {
+      "x": 42,
+      "y": 1.6,
+      "z": 33
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 375,
+      "triangles": 528822,
+      "textureMiB": 46.6,
+      "gpuMs": 8.941093,
+      "frameMs": 16.664999999999985,
+      "particles": 826,
+      "geometries": 875,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "inside-bracken-tenement",
+    "position": {
+      "x": -128,
+      "y": 1.65,
+      "z": 17
+    },
+    "target": {
+      "x": -116,
+      "y": 1.6,
+      "z": -7
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 390,
+      "triangles": 491394,
+      "textureMiB": 46.6,
+      "gpuMs": 10.671614,
+      "frameMs": 16.664444444444477,
+      "particles": 826,
+      "geometries": 875,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-water-tower",
+    "position": {
+      "x": -199.44012286436234,
+      "y": 1.65,
+      "z": -41.142766340239795
+    },
+    "target": {
+      "x": -47,
+      "y": 45.64,
+      "z": 22
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 359,
+      "triangles": 425552,
+      "textureMiB": 46.6,
+      "gpuMs": 6.671562,
+      "frameMs": 16.664999999999985,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-bracken-signal",
+    "position": {
+      "x": 0,
+      "y": 42,
+      "z": 14
+    },
+    "target": {
+      "x": -165,
+      "y": 42.839999999999996,
+      "z": 14
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 277,
+      "triangles": 370710,
+      "textureMiB": 46.6,
+      "gpuMs": 8.05375,
+      "frameMs": 16.663888888888888,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-freight-gantry",
+    "position": {
+      "x": 35,
+      "y": 42,
+      "z": -140
+    },
+    "target": {
+      "x": -130,
+      "y": 35.14,
+      "z": -140
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 334,
+      "triangles": 481350,
+      "textureMiB": 46.6,
+      "gpuMs": 8.632343,
+      "frameMs": 16.66333333333334,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-vale-gasholder",
+    "position": {
+      "x": 192,
+      "y": 42,
+      "z": -155
+    },
+    "target": {
+      "x": 27,
+      "y": 38.64,
+      "z": -155
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 355,
+      "triangles": 491440,
+      "textureMiB": 46.6,
+      "gpuMs": 8.782395,
+      "frameMs": 16.664444444444435,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-stack-0",
+    "position": {
+      "x": -183.829571266533,
+      "y": 1.65,
+      "z": 20.18990313266122
+    },
+    "target": {
+      "x": -22,
+      "y": 58.239999999999995,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 366,
+      "triangles": 468384,
+      "textureMiB": 46.6,
+      "gpuMs": 8.585781,
+      "frameMs": 16.664444444444477,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-stack-1",
+    "position": {
+      "x": -152.4401228643623,
+      "y": 1.65,
+      "z": 51.14276634023983
+    },
+    "target": {
+      "x": 0,
+      "y": 68.74,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 363,
+      "triangles": 428886,
+      "textureMiB": 46.6,
+      "gpuMs": 8.585937,
+      "frameMs": 16.66777777777776,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-stack-2",
+    "position": {
+      "x": 54.18990313266117,
+      "y": 1.65,
+      "z": -173.829571266533
+    },
+    "target": {
+      "x": 22,
+      "y": 79.24,
+      "z": -12
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 398,
+      "triangles": 558538,
+      "textureMiB": 46.6,
+      "gpuMs": 10.01375,
+      "frameMs": 16.665000000000024,
+      "particles": 826,
+      "geometries": 876,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-ore-bridge",
+    "position": {
+      "x": 192.1899031326612,
+      "y": 1.65,
+      "z": -73.17042873346699
+    },
+    "target": {
+      "x": 160,
+      "y": 51.24,
+      "z": -235
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 224,
+      "triangles": 323058,
+      "textureMiB": 46.6,
+      "gpuMs": 8.188281,
+      "frameMs": 16.664444444444477,
+      "particles": 826,
+      "geometries": 878,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  },
+  {
+    "name": "landmark-vesper-furnace",
+    "position": {
+      "x": -46.82957126653301,
+      "y": 28,
+      "z": 77.18990313266121
+    },
+    "target": {
+      "x": 115,
+      "y": 51.24,
+      "z": 45
+    },
+    "stats": {
+      "preset": "MEDIUM",
+      "drawCalls": 292,
+      "triangles": 350722,
+      "textureMiB": 46.6,
+      "gpuMs": 9.911822,
+      "frameMs": 16.664444444444396,
+      "particles": 826,
+      "geometries": 879,
+      "textures": 55,
+      "mode": "free",
+      "ready": true,
+      "loadedAt": 674,
+      "level": "foundry-row",
+      "assets": {
+        "prop.debris": "procedural",
+        "prop.valve": "procedural",
+        "prop.hopper": "procedural",
+        "prop.gantry-crane": "procedural",
+        "prop.water-tower": "procedural",
+        "prop.smokestack": "procedural"
+      }
+    }
+  }
+]

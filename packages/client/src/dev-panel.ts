@@ -12,6 +12,7 @@ export interface DrawFlags {
   velocity: boolean;
   movement: boolean;
   speedGraph: boolean;
+  inputDiagnostics: boolean;
 }
 /** Tuning sliders grouped for the service terminal; every MOVE constant appears once. */
 const TUNING_GROUPS: [string, (keyof DevTuning)[]][] = [
@@ -111,6 +112,7 @@ export class DevPanel {
       velocity: false,
       movement: false,
       speedGraph: false,
+      inputDiagnostics: false,
     },
     lag: 0,
     loss: 0,
@@ -441,6 +443,7 @@ export class DevPanel {
       velocity: 'VELOCITY VECTORS',
       movement: 'MOVEMENT STATE / PROBES',
       speedGraph: 'SPEED GRAPH (10 S)',
+      inputDiagnostics: 'INPUT DIAGNOSTICS',
     }))
       this.checkbox(
         draw,

@@ -31,6 +31,15 @@ const GROUNDED: ReadonlySet<MoveMode> = new Set(['GROUND', 'CROUCH', 'SLIDE']);
 const EPS = 1e-7,
   SIDE = 1e-9;
 type Axis = 'x' | 'z';
+export interface WallLatchDiagnostic {
+  reason: string;
+  speed: number;
+  angle: number;
+  height: number;
+  distance: number;
+  lockout: number;
+}
+export const WALL_LATCH_GRACE_SECONDS = 0.08;
 const other = (a: Axis): Axis => (a === 'x' ? 'z' : 'x');
 export function initialMove(grounded = true): MoveState {
   return {
@@ -50,6 +59,7 @@ export function initialMove(grounded = true): MoveState {
 export function cloneMove(m: MoveState): MoveState {
   return {
     ...m,
+    ...(m.latchGrace ? { latchGrace: { ...m.latchGrace } } : {}),
     wall: m.wall && { ...m.wall },
     lockouts: m.lockouts.map((l) => ({ ...l })),
     mantle: m.mantle && {
@@ -316,6 +326,7 @@ export function stepPlayer(
   dt: number,
   world: World,
   tune: MoveTuning = MOVE,
+  diagnose?: (sample: WallLatchDiagnostic) => void,
 ): Entity {
   const s: Entity = {
     ...state,
@@ -362,6 +373,7 @@ export function stepPlayer(
   if (m.coyote > 0) m.coyote--;
   if (m.buffer > 0) m.buffer--;
   if (m.slideCooldown > 0) m.slideCooldown--;
+  if (m.latchGrace && --m.latchGrace.ticks <= 0) delete m.latchGrace;
   if (m.lockouts.length) {
     for (const l of m.lockouts) l.ticks--;
     m.lockouts = m.lockouts.filter((l) => l.ticks > 0);
@@ -379,6 +391,177 @@ export function stepPlayer(
     if (t > 0) m.lockouts.push({ id, ticks: t });
   };
   const canStand = () => clearAt(boxes, p.x, p.y, p.z, r, PHYSICS.height);
+  // Capture entry momentum before air steering, air-jump redirection or collision.
+  const entryVelocity = { ...v };
+  let latchedThisTick = false;
+  const tryLatch = () => {
+    if (m.mode !== 'AIR') return false;
+    const floorTop = supportBelow(
+      boxes,
+      world.floor,
+      p.x,
+      p.y,
+      p.z,
+      r,
+      -Infinity,
+    );
+    const height = p.y - floorTop;
+    // Probe the current hull and swept endpoint; contact cannot be skipped by a fast tick.
+    const end = { ...p };
+    for (const axis of ['x', 'z'] as const)
+      end[axis] += sweep(
+        boxes,
+        end,
+        axis,
+        entryVelocity[axis] * dt,
+        r,
+        PHYSICS.height,
+      ).travel;
+    const candidates = wallCandidates(boxes, p, tune.wallRunReach);
+    for (const c of wallCandidates(boxes, end, tune.wallRunReach))
+      if (
+        !candidates.some(
+          (b) => b.box === c.box && b.axis === c.axis && b.dir === c.dir,
+        )
+      )
+        candidates.push({ ...c, gap: (c.plane - p[c.axis]) * c.dir - r });
+    const nearest = candidates[0];
+    if (nearest)
+      m.latchGrace = {
+        id: nearest.box.id ?? '',
+        axis: nearest.axis,
+        dir: nearest.dir,
+        plane: nearest.plane,
+        ticks: ticks(WALL_LATCH_GRACE_SECONDS),
+      };
+    else if (m.latchGrace) {
+      const g = m.latchGrace,
+        b = boxes.find((b) => b.id === g.id),
+        o = other(g.axis);
+      const gap = (g.plane - p[g.axis]) * g.dir - r;
+      if (
+        b &&
+        runnable(b, g.axis, g.dir) &&
+        gap >= -EPS &&
+        gap <= tune.wallRunReach &&
+        p.y + 1.3 > b.min.y &&
+        p.y + 0.5 < b.max.y &&
+        p[o] >=
+          b.min[o] - Math.abs(entryVelocity[o]) * WALL_LATCH_GRACE_SECONDS &&
+        p[o] <= b.max[o] + Math.abs(entryVelocity[o]) * WALL_LATCH_GRACE_SECONDS
+      )
+        candidates.push({
+          box: b,
+          axis: g.axis,
+          dir: g.dir,
+          plane: g.plane,
+          gap,
+        });
+    }
+    let reason = 'TOO_FAR',
+      speed = Math.hypot(entryVelocity.x, entryVelocity.z),
+      angle = 0,
+      distance = Infinity,
+      remaining = 0;
+    if (diagnose && !candidates.length) {
+      for (const b of boxes)
+        for (const axis of ['x', 'z'] as const) {
+          const o = other(axis);
+          if (
+            p[o] < b.min[o] ||
+            p[o] > b.max[o] ||
+            p.y + 1.3 <= b.min.y ||
+            p.y + 0.5 >= b.max.y
+          )
+            continue;
+          for (const dir of [1, -1] as const) {
+            const gap = (faceOf(b, axis, dir) - p[axis]) * dir - r;
+            if (
+              gap >= -EPS &&
+              gap <= tune.wallRunReach &&
+              !runnable(b, axis, dir)
+            ) {
+              reason = 'NO_FLAG';
+              distance = gap;
+            }
+          }
+        }
+    }
+    for (const wall of candidates) {
+      const o = other(wall.axis),
+        into = entryVelocity[wall.axis] * wall.dir;
+      speed = Math.abs(entryVelocity[o]);
+      angle = (Math.atan2(Math.abs(into), speed) * 180) / Math.PI;
+      distance = wall.gap;
+      remaining =
+        m.lockouts.find((l) => l.id === (wall.box.id ?? ''))?.ticks ?? 0;
+      reason = crouchHeld
+        ? 'CROUCH_HELD'
+        : remaining
+          ? 'SAME_WALL_LOCKOUT'
+          : height < tune.wallRunMinHeight - EPS
+            ? 'TOO_LOW'
+            : speed < tune.wallRunMinSpeed - EPS
+              ? 'TOO_SLOW'
+              : angle > tune.wallRunMaxAngle + EPS
+                ? 'BAD_ANGLE'
+                : wishLen > 0.1 && wishDir[wall.axis] * wall.dir < -0.5
+                  ? 'PUSHING_AWAY'
+                  : !canStand()
+                    ? 'NO_HEAD_CLEARANCE'
+                    : 'ATTACHED';
+      if (reason !== 'ATTACHED') continue;
+      const flush = wall.gap * wall.dir;
+      const travel =
+        flush === 0
+          ? 0
+          : sweep(boxes, p, wall.axis, flush, r, PHYSICS.height).travel;
+      if (Math.abs(travel - flush) > EPS) {
+        reason = 'NO_HEAD_CLEARANCE';
+        continue;
+      }
+      p[wall.axis] += travel;
+      const rise = Math.max(
+        tune.wallRunRise,
+        Math.min(v.y, tune.wallRunRise * 1.5),
+      );
+      m.mode = 'WALLRUN';
+      latchedThisTick = true;
+      m.crouched = false;
+      m.buffer = 0;
+      m.wall = {
+        id: wall.box.id ?? '',
+        axis: wall.axis,
+        dir: wall.dir,
+        plane: wall.plane,
+        run: entryVelocity[o] >= 0 ? 1 : -1,
+        ticks: 0,
+        rise,
+      };
+      v[wall.axis] = 0;
+      v[o] = entryVelocity[o];
+      v.y = rise;
+      delete m.latchGrace;
+      diagnose?.({
+        reason,
+        speed,
+        angle,
+        height,
+        distance,
+        lockout: remaining * dt,
+      });
+      return true;
+    }
+    diagnose?.({
+      reason,
+      speed,
+      angle,
+      height,
+      distance,
+      lockout: remaining * dt,
+    });
+    return false;
+  };
   // Impulses add half a step of gravity so the fixed-step apex equals the analytic one
   // (jumpHeight is the measured apex, never below the placeholder's 1.225 m).
   const kick = (speed: number) => speed + (tune.gravity * dt) / 2;
@@ -592,6 +775,8 @@ export function stepPlayer(
         leaveWall(0);
     }
   } else if (m.mode === 'WALLRUN') m.mode = 'AIR';
+  // A Space press at a runnable face attaches first; it cannot consume an air jump.
+  if (m.mode === 'AIR' && integrate && !jumpUsed) tryLatch();
   if (m.mode === 'AIR' && integrate) {
     if (m.crouched && canStand()) m.crouched = false;
     if (jumpUsed) {
@@ -737,11 +922,12 @@ export function stepPlayer(
     }
   }
   if (GROUNDED.has(m.mode)) {
+    delete m.latchGrace;
     m.airJumps = 1;
     m.lockouts = [];
     m.wall = null;
   }
-  if (m.mode === 'WALLRUN' && m.wall) {
+  if (m.mode === 'WALLRUN' && m.wall && !latchedThisTick) {
     const w = m.wall,
       o = other(w.axis);
     const corner = blockedAlongWall as Box | null;
@@ -794,64 +980,7 @@ export function stepPlayer(
         dir: mantle.dir,
       };
       v.x = v.y = v.z = 0;
-    } else {
-      const speed = Math.hypot(v.x, v.z);
-      const floorTop = supportBelow(
-        boxes,
-        world.floor,
-        p.x,
-        p.y,
-        p.z,
-        r,
-        -Infinity,
-      );
-      if (
-        speed >= tune.wallRunMinSpeed &&
-        p.y - floorTop >= tune.wallRunMinHeight
-      ) {
-        const steep = Math.tan((tune.wallRunMaxAngle * Math.PI) / 180);
-        const wall = wallCandidates(boxes, p, tune.wallRunReach, locked).find(
-          (c) => {
-            const into = v[c.axis] * c.dir,
-              along = Math.abs(v[other(c.axis)]);
-            return into > -0.5 && Math.abs(into) <= steep * along;
-          },
-        );
-        if (wall) {
-          const o = other(wall.axis);
-          // Settle flush against the face with a swept move (never into other geometry).
-          const flush = wall.gap * wall.dir;
-          if (flush !== 0) {
-            const { travel } = sweep(
-              boxes,
-              p,
-              wall.axis,
-              flush,
-              r,
-              PHYSICS.height,
-            );
-            p[wall.axis] += travel;
-          }
-          const rise =
-            v.y < tune.wallRunRise
-              ? tune.wallRunRise
-              : Math.min(v.y, tune.wallRunRise * 1.5);
-          m.mode = 'WALLRUN';
-          m.buffer = 0;
-          m.wall = {
-            id: wall.box.id ?? '',
-            axis: wall.axis,
-            dir: wall.dir,
-            plane: wall.plane,
-            run: v[o] >= 0 ? 1 : -1,
-            ticks: 0,
-            rise,
-          };
-          v[wall.axis] = 0;
-          v.y = rise;
-        }
-      }
-    }
+    } else tryLatch();
   }
   if (m.mode === 'SLIDE' && Math.hypot(v.x, v.z) < tune.slideEnd) {
     // An obstacle stopped the slide.

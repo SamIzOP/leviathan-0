@@ -1,0 +1,5 @@
+{
+  "count": 267,
+  "totalBytes": 17111952,
+  "directory": "packages/client/public/assets/models/generated"
+}

@@ -1,5 +1,13 @@
 # Optional world assets
 
+## Expanded procedural forge — 2026-10-23
+
+The catalog now contains 89 families (267 seeded variants), including cooling towers, gas holders, signal towers, ore bridges, furnaces, vaulted and sawtooth roofs, sagging cables, curved pipes, arches, freight cars, collapsed overpasses, silos, ladles, slag pots, pump houses, forklifts, carts, scaffolds, tarps, workstations, lockers, damaged/open containers, substations and rubble. `/?gallery=1` includes every family and the existing 1.8 m human scale reference. `npm run forge:export` exports the complete catalog and its triangle/byte manifest.
+
+The active level uses explicit `solid` or `decor` classification. Solid objects reference shared colliders. Thin skins, surface marks, cables, steam and sufficiently raised machinery remain decorative; the audit checks physical tops rather than assuming optional roofs are unreachable. Human-scale structural details, furniture, tanks, posts and thick pipes collide.
+
+Any supported forge key can be added as `prop.<family>` to `asset-manifest.json` for a GLB override. Empty asset directories retain complete procedural rendering. Generated GLBs are optional export products, not runtime dependencies. See `docs/layout/gallery.json` and the acceptance report for the actual export/fallback checks.
+
 The game runs with no files in `packages/client/public/assets`. Its procedural world, generated textures, sky, particles and synthesized audio are the default. No remote CDN or downloaded art is required.
 
 `packages/client/public/asset-manifest.json` lives outside that optional directory. It maps model keys, surface texture sets, HDRI candidates and audio keys to same-origin URLs. Missing, malformed or unsupported files retain the fallback. Run `npm run assets:check` for a per-path report. Restart/reload after adding or replacing assets; a production build copies public files into dist.

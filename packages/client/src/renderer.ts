@@ -60,7 +60,14 @@ export class Renderer {
           if (version === this.loadVersion)
             this.loading.querySelector('progress')!.value = v;
         })
-        .then(() => {
+        .then(async () => {
+          if (version !== this.loadVersion) return;
+          world.ready = false;
+          await this.renderer.compileAsync(this.scene, this.camera);
+          if (version !== this.loadVersion) return;
+          // Warm the merged post pass while the loading screen still covers the scene.
+          world.render(this.camera);
+          world.ready = true;
           if (version === this.loadVersion) this.loading.hidden = true;
         });
     }, 0);
@@ -163,9 +170,10 @@ export class Renderer {
     localId: string,
     names: Map<string, string>,
     correction: Vec3,
+    position = local?.position,
+    now = performance.now(),
   ) {
-    const now = performance.now(),
-      poseDt = Math.min(0.1, (now - this.poseAt) / 1000);
+    const poseDt = Math.max(0, Math.min(0.1, (now - this.poseAt) / 1000));
     this.poseAt = now;
     const latest = this.snapshots.at(-1);
     if (latest) {
@@ -231,8 +239,8 @@ export class Renderer {
         v.body.material.opacity = e.flags & FLAG.disconnected ? 0.25 : 1;
       }
     }
-    if (local && (!this.world || this.world.mode === 'player')) {
-      const targetY = local.position.y + correction.y;
+    if (local && position && (!this.world || this.world.mode === 'player')) {
+      const targetY = position.y + correction.y;
       const stair =
         !!(local.flags & FLAG.grounded) &&
         Number.isFinite(this.cameraY) &&
@@ -242,12 +250,18 @@ export class Renderer {
           (targetY - this.cameraY) * (1 - Math.exp(-(now - this.cameraAt) / 95))
         : targetY;
       this.cameraAt = now;
-      this.feel.apply(this.camera, local, {
-        x: local.position.x + correction.x,
-        y: this.cameraY,
-        z: local.position.z + correction.z,
-      });
+      this.feel.apply(
+        this.camera,
+        local,
+        {
+          x: position.x + correction.x,
+          y: this.cameraY,
+          z: position.z + correction.z,
+        },
+        poseDt,
+      );
     }
-    if (this.world?.ready) this.world.render(this.camera);
+    if (this.world?.ready)
+      this.world.render(this.camera, now, local?.move?.mode);
   }
 }

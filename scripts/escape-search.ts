@@ -6,6 +6,7 @@ import {
   MOVE,
   PHYSICS,
   levelWorld,
+  getLevel,
   makeEntity,
   stepPlayer,
 } from '../packages/shared/src/index';
@@ -19,7 +20,11 @@ import type {
 const { jump: J, sprint: S, crouch: C } = BUTTON;
 const DT = 1 / 60;
 /** Inner faces of the perimeter walls: crossing them is an escape. */
-export const INNER = { x: 107, z: 87 };
+export const INNER = {
+  x: getLevel().bounds.max.x - 4,
+  z: getLevel().bounds.max.z - 4,
+  minZ: getLevel().bounds.min.z + 4,
+};
 export type Maneuver =
   | 'leap'
   | 'coyote-leap'
@@ -119,7 +124,12 @@ function wallChain(runup: number, yaw: number): Script {
     return { z: 1, yaw, buttons: S | (press ? J : 0) | air };
   };
 }
-export function runProbe(world: World, probe: Probe, ticks = 330) {
+export function runProbe(
+  world: World,
+  probe: Probe,
+  ticks = 330,
+  crossed?: (position: Vec3) => boolean,
+) {
   let s: Entity = {
     ...makeEntity('escape'),
     position: { ...probe.start },
@@ -148,7 +158,13 @@ export function runProbe(world: World, probe: Probe, ticks = 330) {
     );
     maxY = Math.max(maxY, s.position.y);
     modes.add(mode(s));
-    if (Math.abs(s.position.x) >= INNER.x || Math.abs(s.position.z) >= INNER.z)
+    if (
+      crossed
+        ? crossed(s.position)
+        : Math.abs(s.position.x) >= INNER.x ||
+          s.position.z >= INNER.z ||
+          s.position.z <= INNER.minZ
+    )
       return {
         escaped: true,
         at: s.position,
@@ -167,7 +183,7 @@ export function runProbe(world: World, probe: Probe, ticks = 330) {
   };
 }
 const distanceToPerimeter = (x: number, z: number) =>
-  Math.min(INNER.x - Math.abs(x), INNER.z - Math.abs(z));
+  Math.min(INNER.x - Math.abs(x), INNER.z - z, z - INNER.minZ);
 /** Headings toward the nearest perimeter walls, plus diagonals. */
 function headings(x: number, z: number) {
   const out = new Set<number>();
@@ -175,7 +191,7 @@ function headings(x: number, z: number) {
     { d: INNER.x - x, yaw: -Math.PI / 2 },
     { d: INNER.x + x, yaw: Math.PI / 2 },
     { d: INNER.z - z, yaw: Math.PI },
-    { d: INNER.z + z, yaw: 0 },
+    { d: z - INNER.minZ, yaw: 0 },
   ].sort((a, b) => a.d - b.d);
   for (const t of toward.slice(0, 2))
     for (const offset of [0, 0.6, -0.6]) out.add(t.yaw + offset);
@@ -215,7 +231,7 @@ export function escapeProbes(
   ];
   for (const b of level.colliders) {
     // Walkable surfaces only: walls, doors, shutters and barriers are not platforms.
-    if (b.decor || !b.platform || b.max.y < minTop) continue;
+    if (b.decor || !(b.platform || b.mantleable) || b.max.y < minTop) continue;
     const near = distanceToPerimeter(
       Math.min(Math.abs(b.min.x), Math.abs(b.max.x)) === Math.abs(b.min.x)
         ? b.max.x
@@ -257,12 +273,18 @@ export function escapeProbes(
   if (options.ground !== false)
     // Ground ring along the inside of the perimeter: climb, mantle and wall-run attempts.
     for (const inset of [2, 6])
-      for (let k = -100; k <= 100; k += 5)
+      for (let k = -100; k <= 100; k += 2.5)
         for (const [x, z] of [
-          [k, INNER.z - inset],
-          [k, -INNER.z + inset],
-          [INNER.x - inset, (k * 85) / 100],
-          [-INNER.x + inset, (k * 85) / 100],
+          [(k * INNER.x) / 100, INNER.z - inset],
+          [(k * INNER.x) / 100, INNER.minZ + inset],
+          [
+            INNER.x - inset,
+            INNER.minZ + ((k + 100) / 200) * (INNER.z - INNER.minZ),
+          ],
+          [
+            -INNER.x + inset,
+            INNER.minZ + ((k + 100) / 200) * (INNER.z - INNER.minZ),
+          ],
         ] as const) {
           if (!clear(x, 0, z)) continue;
           for (const yaw of headings(x, z).slice(0, 1))

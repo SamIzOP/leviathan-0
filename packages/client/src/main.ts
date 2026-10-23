@@ -18,6 +18,9 @@ import type {
 import { applyTheme } from './theme';
 import { Network } from './network';
 import { InputReader, type InjectedInput } from './input';
+import { InputDiagnostics } from './input-diagnostics';
+import { interpolatePosition } from './look-pipeline';
+import type { WallLatchDiagnostic } from '../../shared/src/movement';
 import { Renderer } from './renderer';
 import { AudioManager } from './audio';
 import { MenuBackground } from './menu-background';
@@ -69,8 +72,15 @@ let reconciliations = 0,
   matchedSnapshots = 0,
   maxPredictionError = 0;
 const reached = new Set<MoveMode>();
+const playerNames = new Map<string, string>();
 let restoreLook = false;
 const correction = { x: 0, y: 0, z: 0 };
+let previousPosition: Entity['position'] | undefined;
+const renderPosition = { x: 0, y: 0, z: 0 };
+let wallDiagnostic: WallLatchDiagnostic | undefined;
+const inputDiagnostics = import.meta.env.DEV
+  ? new InputDiagnostics()
+  : undefined;
 const input = new InputReader(
   canvas,
   (action) => {
@@ -86,6 +96,7 @@ const network = new Network(receive, (value) => {
   offline = value;
   document.querySelector<HTMLElement>('#reconnecting')!.hidden = !value;
 });
+input.onMouse = (x, y) => inputDiagnostics?.mouse(x, y);
 const devPanel = new DevPanel(
   (m) => network.send(m),
   (lag, loss) => network.setDevFaults(lag, loss),
@@ -113,9 +124,15 @@ function step(state: Entity, command: Input) {
     1 / tickRate,
     world(),
     dev && devPanel.state ? resolveTuning(devPanel.state.tuning) : undefined,
+    dev
+      ? (sample) => {
+          wallDiagnostic = sample;
+        }
+      : undefined,
   );
 }
 function resetPrediction() {
+  previousPosition = undefined;
   pending = [];
   history = new Map();
   correction.x = correction.y = correction.z = 0;
@@ -211,6 +228,8 @@ function vote(value: 'REPLAY' | 'NEXT') {
   void audio.play('vote_cast');
 }
 function setRoom(value: RoomView) {
+  playerNames.clear();
+  for (const player of value.players) playerNames.set(player.id, player.name);
   const old = room?.phase;
   const comparable = (r: RoomView | undefined) =>
     r
@@ -311,6 +330,7 @@ function receive(m: ServerMessage) {
         const reset = m.reset.find((r) => r.entity.id === playerId);
         if (reset) {
           predicted = reset.entity;
+          previousPosition = undefined;
           pending = pending.filter((i) => i.seq > reset.ack);
           history = new Map();
           correction.x = correction.y = correction.z = 0;
@@ -370,11 +390,17 @@ function receive(m: ServerMessage) {
             );
             maxPredictionError = Math.max(maxPredictionError, predictionError);
             reconciliations++;
-            for (const axis of ['x', 'y', 'z'] as const)
+            inputDiagnostics?.correction(predictionError);
+            for (const axis of ['x', 'y', 'z'] as const) {
               correction[axis] +=
                 predicted.position[axis] - state.position[axis];
+              if (previousPosition)
+                previousPosition[axis] +=
+                  state.position[axis] - predicted.position[axis];
+            }
           }
           predicted = state;
+          if (!playing) previousPosition = undefined;
         }
       }
       break;
@@ -428,6 +454,7 @@ setInterval(() => {
   accumulator += Math.min(now - previousSimulation, 250);
   previousSimulation = now;
   while (accumulator >= 1000 / tickRate) {
+    if (inputDiagnostics) inputDiagnostics.ticks++;
     accumulator -= 1000 / tickRate;
     if (
       room?.phase === 'PLAYING' &&
@@ -449,6 +476,7 @@ setInterval(() => {
       }
       pending.push(command);
       const before = predicted;
+      previousPosition = { ...before.position };
       predicted = step(predicted, command);
       history.set(command.seq, predicted);
       network.send({ type: 'inputs', inputs: pending.slice(-CONFIG.maxBatch) });
@@ -474,6 +502,7 @@ setInterval(() => {
   }
 }, 4);
 function frame(now: number) {
+  input.frameLook();
   const elapsed = Math.min(now - previous, 250);
   previous = now;
   if (predicted && (!renderer.world || renderer.world.mode === 'player')) {
@@ -505,8 +534,18 @@ function frame(now: number) {
     renderer.render(
       room?.phase === 'PLAYING' ? predicted : undefined,
       playerId,
-      new Map(room?.players.map((p) => [p.id, p.name]) ?? []),
+      playerNames,
       correction,
+      predicted
+        ? interpolatePosition(
+            previousPosition ?? predicted.position,
+            predicted.position,
+            (accumulator + Math.max(0, now - previousSimulation)) /
+              (1000 / tickRate),
+            renderPosition,
+          )
+        : undefined,
+      now,
     );
     debugDraw.render(
       renderer.camera,
@@ -569,6 +608,27 @@ function frame(now: number) {
   }
   debug.hidden = !input.debug;
   debug.textContent = `SERVER TICK ${tick}\nSNAPSHOTS ${(snapshotTimes.length / 2).toFixed(1)} / ${snapshotRate} Hz\nPING ${room?.players.find((p) => p.id === playerId)?.ping ?? 0} ms\nLOSS EST. ${((100 * missingSnapshots) / Math.max(1, totalSnapshots + missingSnapshots)).toFixed(1)}%\nPREDICTION ERROR ${predictionError.toFixed(4)} m\nUNACKNOWLEDGED ${pending.length}\nENTITIES ${renderer.snapshots.at(-1)?.entities.length ?? 0}\nMOVE STATE ${mode}${predicted?.move?.crouched ? ' / CROUCHED' : ''}\nSPEED ${speed.toFixed(2)} m/s\nRECONCILED ${reconciliations} / MATCHED ${matchedSnapshots}`;
+  inputDiagnostics?.frame(
+    performance.now(),
+    elapsed,
+    renderer.camera.rotation.y,
+    renderer.camera.rotation.x,
+  );
+  if (inputDiagnostics && dev) {
+    inputDiagnostics.enabled = !!devPanel.preferences.draw.inputDiagnostics;
+    // F3 collects the same bounded history even when the dedicated panel is hidden.
+    inputDiagnostics.update(
+      now,
+      renderer.world?.preset ?? 'NONE',
+      canvas.width,
+      canvas.height,
+      input.look.discarded,
+      wallDiagnostic
+        ? `WALL ${wallDiagnostic.reason}\nALONG ${wallDiagnostic.speed.toFixed(2)} / ANGLE ${wallDiagnostic.angle.toFixed(1)}° / HEIGHT ${wallDiagnostic.height.toFixed(2)}\nGAP ${wallDiagnostic.distance.toFixed(2)} / SAME LOCK ${wallDiagnostic.lockout.toFixed(2)}s / GLOBAL 0s`
+        : 'WALL —',
+    );
+    if (input.debug) debug.textContent += '\n' + inputDiagnostics.summary;
+  }
   requestAnimationFrame(frame);
 }
 // Read-only diagnostics used by the browser acceptance harness and future netcode tools.
@@ -595,6 +655,7 @@ Object.defineProperty(window, 'leviathan', {
     devTools: dev,
     devState: devPanel.state,
     devPanelOpen: devPanel.open,
+    wallDiagnostic,
     background: background.stats,
     world: renderer.world?.stats(),
     environmentAudio: {
@@ -618,6 +679,23 @@ Object.defineProperty(window, 'leviathan', {
     perf: renderer.world?.perfReport,
     worldDebug: dev
       ? {
+          collisionAudit: async () =>
+            renderer.world
+              ? (await import('./collision-sweep')).collisionSweep(
+                  renderer.world,
+                )
+              : undefined,
+          landmarkVisibility: (id?: string) =>
+            renderer.world?.landmarkVisibility(renderer.camera, id),
+          view: (
+            position: { x: number; y: number; z: number },
+            target: { x: number; y: number; z: number },
+          ) => {
+            if (!renderer.world) return;
+            renderer.world.mode = 'free';
+            renderer.camera.position.set(position.x, position.y, position.z);
+            renderer.camera.lookAt(target.x, target.y, target.z);
+          },
           camera: (name: string) => {
             if (
               name === 'player' ||
@@ -636,6 +714,11 @@ Object.defineProperty(window, 'leviathanTest', {
   get: () =>
     dev
       ? {
+          mouse: (x: number, y: number) => input.mouse(x, y),
+          inputDiagnostics,
+          diagnostics: (enabled: boolean) => {
+            devPanel.preferences.draw.inputDiagnostics = enabled;
+          },
           inject: (steps: InjectedInput[]) => {
             input.injected.push(...steps.map((s) => ({ ...s })));
           },
