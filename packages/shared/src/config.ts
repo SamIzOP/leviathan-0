@@ -1,5 +1,5 @@
 export const CONFIG = {
-  protocol: 2,
+  protocol: 3,
   tickRate: 60,
   snapshotRate: 30,
   maxPlayers: 8,

@@ -1,4 +1,4 @@
-import { BUTTON } from '@leviathan/shared';
+import { BUTTON, FIRE_BUTTON, WEAPONS } from '@leviathan/shared';
 import type { Input } from '@leviathan/shared';
 import { movementSettings } from './movement-settings';
 import { LookPipeline } from './look-pipeline';
@@ -10,6 +10,7 @@ export interface InjectedInput {
   yaw?: number;
   pitch?: number;
   buttons?: number;
+  weapon?: number;
 }
 const LOCKED_KEYS = [
   'KeyW',
@@ -35,16 +36,24 @@ export class InputReader {
   injected: InjectedInput[] = [];
   onMouse?: (x: number, y: number) => void;
   look = new LookPipeline();
+  /** Look scale while aiming down sights (ADS sensitivity × zoom), set per frame. */
+  lookScale = 1;
+  /** Wanted weapon slot; the shared step switches only to owned tiers. */
+  slot = 0;
+  owned = 0b11;
+  private fireHeld = false;
+  private adsHeld = false;
+  private latched = 0;
   mouse(x: number, y: number) {
     this.onMouse?.(x, y);
     this.look.add(x, y);
   }
   frameLook() {
     const delta = this.look.flush();
-    this.yaw -= delta.x * this.sensitivity;
+    this.yaw -= delta.x * this.sensitivity * this.lookScale;
     this.pitch = Math.max(
       -1.5,
-      Math.min(1.5, this.pitch - delta.y * this.sensitivity),
+      Math.min(1.5, this.pitch - delta.y * this.sensitivity * this.lookScale),
     );
   }
   private crouchTap = false;
@@ -104,6 +113,15 @@ export class InputReader {
         this.crouchTap = true;
         this.crouchToggled = !this.crouchToggled;
       }
+      if (!e.repeat) {
+        const digit = /^Digit([1-9])$/.exec(e.code);
+        if (digit && Number(digit[1]) <= WEAPONS.length)
+          this.selectSlot(Number(digit[1]) - 1);
+        if (e.code === 'KeyR') this.latched |= FIRE_BUTTON.reload;
+        if (e.code === 'KeyG') this.latched |= FIRE_BUTTON.oil;
+        if (e.code === 'KeyQ') this.latched |= FIRE_BUTTON.fingers;
+        if (e.code === 'KeyF') this.latched |= FIRE_BUTTON.fire;
+      }
       if (e.code === 'F8' && !e.repeat) onDebugCommand('end');
       if (e.code === 'F9' && !e.repeat) onDebugCommand('robot');
     });
@@ -118,6 +136,38 @@ export class InputReader {
       }
       if (!document.pointerLockElement) this.clear();
     });
+    // Combat mouse buttons: left fires and right aims while the pointer is captured.
+    // In drag-look fallback the left button looks, so F fires instead.
+    document.addEventListener('mousedown', (e) => {
+      if (document.pointerLockElement !== canvas) return;
+      if (e.button === 0) {
+        this.fireHeld = true;
+        this.latched |= FIRE_BUTTON.fire;
+      }
+      if (e.button === 2) this.adsHeld = true;
+    });
+    document.addEventListener('mouseup', (e) => {
+      if (e.button === 0) this.fireHeld = false;
+      if (e.button === 2) this.adsHeld = false;
+    });
+    document.addEventListener('contextmenu', (e) => {
+      if (this.active) e.preventDefault();
+    });
+    document.addEventListener(
+      'wheel',
+      (e) => {
+        if (!this.active || !e.deltaY) return;
+        const n = WEAPONS.length;
+        for (let k = 1; k <= n; k++) {
+          const next = (this.slot + Math.sign(e.deltaY) * k + n * 4) % n;
+          if (this.owned & (1 << next)) {
+            this.selectSlot(next);
+            break;
+          }
+        }
+      },
+      { passive: true },
+    );
     canvas.addEventListener('mousedown', (e) => {
       if (!this.fallback || e.button !== 0) return;
       e.preventDefault();
@@ -193,7 +243,13 @@ export class InputReader {
     this.clear();
     if (changed) this.onStateChange();
   }
+  selectSlot(slot: number) {
+    if (this.owned & (1 << slot)) this.slot = slot;
+  }
   clear() {
+    this.fireHeld = false;
+    this.adsHeld = false;
+    this.latched = 0;
     this.look.clear();
     this.keys.clear();
     this.jump = false;
@@ -216,6 +272,7 @@ export class InputReader {
         yaw: this.yaw,
         pitch: this.pitch,
         buttons: step.buttons ?? 0,
+        weapon: step.weapon ?? this.slot,
       };
     }
     const crouchHeld =
@@ -237,10 +294,15 @@ export class InputReader {
       buttons:
         (this.keys.has('Space') || this.jump ? BUTTON.jump : 0) |
         (sprint ? BUTTON.sprint : 0) |
-        (crouch ? BUTTON.crouch : 0),
+        (crouch ? BUTTON.crouch : 0) |
+        (this.fireHeld || this.keys.has('KeyF') ? FIRE_BUTTON.fire : 0) |
+        (this.adsHeld ? FIRE_BUTTON.ads : 0) |
+        this.latched,
+      weapon: this.slot,
     };
     this.jump = false;
     this.crouchTap = false;
+    this.latched = 0;
     return input;
   }
 }

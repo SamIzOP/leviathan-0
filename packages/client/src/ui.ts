@@ -1,3 +1,4 @@
+import { weaponControls } from './weapon-settings';
 import { graphicsControls } from './graphics';
 import { movementControls, movementSettings } from './movement-settings';
 import { CONFIG, MISSIONS } from '@leviathan/shared';
@@ -89,6 +90,12 @@ export function renderInterface(c: UIContext) {
       ['SPRINT + C', 'SLIDE · SPACE TO SLIDE-JUMP'],
       ['JUMP ALONG A WALL', 'WALL-RUN · C DROPS OFF'],
       ['JUMP AT LEDGE', 'MANTLE · C CANCELS'],
+      [c.fallback ? 'F' : 'LEFT MOUSE / F', 'FIRE'],
+      ['RIGHT MOUSE', 'AIM DOWN SIGHTS'],
+      ['R', 'RELOAD'],
+      ['1–5 / WHEEL', 'SWITCH WEAPON'],
+      ['G', 'OIL FLASK'],
+      ['Q', 'FINGERS OF GOD (WHEN CHARGED)'],
       ['ESC', 'PAUSE / RELEASE MOUSE'],
       ['F3', 'TELEMETRY'],
       ['H', 'CONTROLS'],
@@ -190,7 +197,7 @@ export function renderInterface(c: UIContext) {
       slider(`${bus.toUpperCase()} VOLUME`, c.volumes[bus], 0, 1, 0.01, (v) =>
         c.setVolume(bus, v),
       );
-    grid.append(movementControls(), graphicsControls());
+    grid.append(weaponControls(), movementControls(), graphicsControls());
     d.append(grid);
     return d;
   };

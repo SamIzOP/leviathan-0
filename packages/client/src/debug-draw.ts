@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 import {
+  MOTION,
   MOVE,
   PHYSICS,
   getLevel,
+  hitShapes,
   levelWorld,
   mantleCandidates,
+  moveMode,
   wallCandidates,
 } from '@leviathan/shared';
-import type { Entity, MoveTuning } from '@leviathan/shared';
+import type { CombatEvent, Entity, MoveTuning } from '@leviathan/shared';
 import type { DrawFlags } from './dev-panel';
 export class DebugDraw {
   levelId = 'foundry-row';
@@ -15,6 +18,16 @@ export class DebugDraw {
   ctx: CanvasRenderingContext2D;
   tuning: MoveTuning = MOVE;
   private speeds: { at: number; speed: number }[] = [];
+  /** Server hit-debug events (rays and lag-compensation rewind boxes), kept 2 s. */
+  private shots: { at: number; e: Extract<CombatEvent, { t: 'debug' }> }[] = [];
+  hitDebug(events: CombatEvent[]) {
+    const now = performance.now();
+    for (const e of events)
+      if (e.t === 'debug') this.shots.push({ at: now, e });
+    while (this.shots.length && now - this.shots[0]!.at > 2000)
+      this.shots.shift();
+    if (this.shots.length > 64) this.shots.splice(0, this.shots.length - 64);
+  }
   constructor() {
     this.canvas.id = 'debug-draw';
     this.canvas.setAttribute('aria-hidden', 'true');
@@ -119,6 +132,41 @@ export class DebugDraw {
           ),
         );
       }
+    }
+    if (flags.hitboxes) {
+      // Current hit shapes from the latest snapshot (body grey, head pale).
+      for (const e of entities) {
+        if (e.type !== 'player' && e.type !== 'robot') continue;
+        const crouched =
+          !!((e.motion ?? 0) & MOTION.crouch) || moveMode(e.motion) === 'SLIDE';
+        for (const shape of hitShapes(e.position, crouched)) {
+          c.strokeStyle = shape.zone === 'head' ? '#e8e2c8' : '#7d8b92';
+          box(shape.min, shape.max);
+        }
+      }
+    }
+    if (flags.hitRays) {
+      const age = (at: number) => 1 - (now - at) / 2000;
+      for (const { at, e } of this.shots) {
+        c.globalAlpha = Math.max(0.15, age(at));
+        c.strokeStyle = '#d9c27a';
+        for (const end of e.ends)
+          line(
+            project(e.origin.x, e.origin.y, e.origin.z),
+            project(end.x, end.y, end.z),
+          );
+        // Where the server rewound each target for this shot.
+        c.strokeStyle = '#d97a5a';
+        for (const b of e.boxes) box(b.min, b.max);
+        const o = project(e.origin.x, e.origin.y, e.origin.z);
+        if (o.visible)
+          c.fillText(
+            `REWIND ${((e.tick - e.rewindTick) * (1000 / 60)).toFixed(0)} MS`,
+            o.x + 6,
+            o.y - 6,
+          );
+      }
+      c.globalAlpha = 1;
     }
     if (flags.movement && predicted)
       this.movement(camera, predicted, project, line, box);

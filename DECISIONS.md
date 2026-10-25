@@ -1,3 +1,25 @@
+## Weapons and combat core (Prompt 4) — 2026-10-25
+
+- **Scope:**
+  - Done: weapons data, the shared weapon step, server authority, hit detection, lag compensation, ammo, health and death, oil/fire, Fingers of God, crates, combat HUD, viewmodel, effects, audio, dev tools and tests.
+  - Untouched: `movement.ts`, robot AI, level layout, menus, match flow and progression. The only movement hook is weapon-related: firing or aiming strips the sprint bit on the ground, and weapon speed multipliers scale walk/sprint/crouch through tuning.
+- **Design gaps:** the design notes were blank. Every gap is an `ASSUMPTION` in `weapons.ts` and in the report (roster, oil/fire, Fingers of God, crates, loadout, team damage, health).
+- **Protocol 3:**
+  - Inputs carry combat bits, the wanted slot and the lag-compensation `view` tick.
+  - Snapshots carry owner weapon state, combat entities and events.
+  - Weapon state is predicted and reconciled exactly like movement, using integer-tick timers and seeded spread.
+- **Weapon clock:** the weapon is clocked by real inputs only. Server filler ticks for a starved link step movement but never fire or advance weapon timers.
+- **Lag compensation:**
+  - The server keeps 40 ticks of history and rewinds hitscan targets only (not the shooter, not walls) to the client view tick, capped at 300 ms.
+  - Projectiles are simulated in real time against current positions.
+- **Input-queue fix (predates this stage):** client hitches used to leave a permanent ~300 ms input backlog.
+  - Idle ticks now earn catch-up credit, which lets a backlog drain up to two extra inputs per tick.
+  - A per-operator wall-clock token bucket (the weapon's rate, capacity 2) rejects any shot faster than real time. Ammo is still spent, matching prediction.
+- **Team damage:** a match-mode rule in data (co-op: off), overridable by a dev toggle.
+- **Performance:**
+  - Presentation is pooled and instanced, with no dynamic lights and shaders prewarmed.
+  - Effect caps scale with the quality preset.
+
 ## Asset pipeline and dressing pass (Prompt 3.7) — 2026-10-24
 
 - **Scope:**

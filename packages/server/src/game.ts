@@ -12,9 +12,16 @@ import {
   FLAG,
   MISSIONS,
   makeEntity,
-  sanitizeInput,
+  sanitizeCombatInput,
   stepPlayer,
-  stepDev,
+  stepCombatant,
+  resolveTuning,
+  STATUS,
+  COMBAT,
+  DEFAULT_RULES,
+  type Shot,
+  type Throw,
+  type Vec3,
 } from '@leviathan/shared';
 import type {
   ClientMessage,
@@ -29,6 +36,12 @@ import type {
 } from '@leviathan/shared';
 import { cleanName, uniqueName } from './names';
 import { devState, instantStart, handleDev, devTick } from './dev-tools';
+import {
+  ALL_WEAPONS,
+  CombatWorld,
+  restock,
+  type Combatant,
+} from './combat-server';
 export interface Peer {
   id: string;
   send: (message: ServerMessage) => void;
@@ -50,6 +63,10 @@ export interface Player {
   queue: Input[];
   ack: number;
   received: number;
+  /** Catch-up credit: one per tick with no input queued (capped). A later backlog
+   * may spend it to process extra inputs, so input steps never exceed real ticks
+   * but a client hitch no longer leaves a permanent input delay. */
+  credit?: number;
 }
 export interface Room {
   dev?: DevState;
@@ -66,6 +83,8 @@ export interface Room {
   started: number;
   /** Dev-only level override (the Movement Lab); missions select levels otherwise. */
   levelId?: string;
+  /** Authoritative combat (hits, projectiles, hazards, crates), reset per mission. */
+  combat?: CombatWorld;
 }
 /** Snapshot entities carry compact motion bits; the full sub-state goes to its owner. */
 const publicEntity = (e: Entity): Entity => ({
@@ -78,6 +97,8 @@ const publicEntity = (e: Entity): Entity => ({
   health: e.health,
   flags: e.flags,
   motion: e.motion ?? 0,
+  slot: e.slot ?? 0,
+  status: e.status ?? 0,
 });
 export interface Settings {
   tickRate: number;
@@ -166,17 +187,53 @@ export class Game {
       type: 'snapshot' as const,
       tick: this.tick,
       time: this.now(),
-      entities: [...r.players.map((p) => p.entity), ...r.robots].map(
-        publicEntity,
-      ),
+      entities: [
+        ...[...r.players.map((p) => p.entity), ...r.robots].map(publicEntity),
+        ...(r.phase === 'PLAYING' ? (r.combat?.entities(this.tick) ?? []) : []),
+      ],
       acks: Object.fromEntries(r.players.map((p) => [p.id, p.ack])),
       ...(recipient?.entity.move ? { move: recipient.entity.move } : {}),
+      ...(recipient?.entity.combat ? { combat: recipient.entity.combat } : {}),
     };
   }
   sendSnapshots(r: Room) {
     const base = this.snapshot(r);
+    if (r.combat?.events.length) {
+      base.events = r.combat.events;
+      r.combat.events = [];
+    }
     for (const p of r.players)
-      p.peer?.send(p.entity.move ? { ...base, move: p.entity.move } : base);
+      p.peer?.send({
+        ...base,
+        ...(p.entity.move ? { move: p.entity.move } : {}),
+        ...(p.entity.combat ? { combat: p.entity.combat } : {}),
+      });
+  }
+  /** Loadout owned by every operator in this room (all tiers on dev servers). */
+  owned() {
+    return this.settings.devTools ? ALL_WEAPONS : 0b11;
+  }
+  /** Spawn with a fresh loadout; `keep` carries weapon state over (out-of-bounds). */
+  spawn(r: Room, p: Player, keep = false) {
+    const e = spawnEntity(
+      p.id,
+      r.players.indexOf(p),
+      this.level(r),
+      r.players.filter((q) => q !== p).map((q) => q.entity),
+    );
+    return keep && p.entity.combat
+      ? {
+          ...e,
+          combat: p.entity.combat,
+          slot: p.entity.slot,
+          health: p.entity.health,
+          status: p.entity.status,
+        }
+      : restock(
+          e,
+          p.entity.combat?.owned ?? this.owned(),
+          r.combat?.rules() ?? DEFAULT_RULES,
+        );
   }
   handle(peer: Peer, m: ClientMessage) {
     try {
@@ -331,7 +388,7 @@ export class Game {
             for (const raw of m.inputs) {
               if (raw.seq <= p.received) continue;
               if (p.queue.length >= CONFIG.maxQueue) break;
-              const i = sanitizeInput(raw);
+              const i = sanitizeCombatInput(raw);
               p.queue.push(i);
               p.received = i.seq;
             }
@@ -426,8 +483,15 @@ export class Game {
     r.deadline = this.now() + this.settings.countdownMs;
     r.robots = [];
     r.result = null;
+    r.combat = new CombatWorld(this.level(r), 1 / this.settings.tickRate, () =>
+      this.settings.devTools ? r.dev?.combat : undefined,
+    );
     for (const [i, p] of r.players.entries()) {
-      p.entity = spawnEntity(p.id, i, this.level(r));
+      p.entity = restock(
+        spawnEntity(p.id, i, this.level(r)),
+        this.owned(),
+        r.combat.rules(),
+      );
       if (!p.peer) p.entity.flags |= FLAG.disconnected;
       p.queue = [];
       p.received = p.ack;
@@ -444,6 +508,173 @@ export class Game {
     };
     for (const p of r.players) p.queue = [];
     this.update(r);
+  }
+  /** One PLAYING tick: inputs through the shared combat step (movement unchanged),
+   * then shots resolve against the lag-compensation history, then hazards, crates,
+   * strikes, deaths and respawns. */
+  stepCombat(r: Room) {
+    const level = this.level(r),
+      world = levelWorld(level),
+      dt = 1 / this.settings.tickRate,
+      combat = (r.combat ??= new CombatWorld(level, dt, () =>
+        this.settings.devTools ? r.dev?.combat : undefined,
+      )),
+      rules = combat.rules(),
+      tune = this.settings.devTools ? resolveTuning(r.dev?.tuning) : undefined;
+    const fired: {
+      player: Player;
+      shots: Shot[];
+      throws: Throw[];
+      fingers?: { origin: Vec3; dir: Vec3 };
+      view?: number;
+    }[] = [];
+    for (const p of r.players) {
+      if (!p.peer) continue;
+      if (
+        p.entity.position.y < level.killY ||
+        !inside(p.entity.position, level.bounds)
+      ) {
+        p.entity = this.spawn(r, p, true);
+        p.queue = [];
+      }
+      let i = p.queue.shift();
+      if (!i) p.credit = Math.min(CONFIG.maxQueue, (p.credit ?? 0) + 1);
+      const extra = () => {
+        if (p.queue.length > 2 && (p.credit ?? 0) > 0) {
+          p.credit = (p.credit ?? 0) - 1;
+          return p.queue.shift();
+        }
+        return undefined;
+      };
+      if ((p.entity.status ?? 0) & STATUS.dead) {
+        // Dead operators keep acknowledging input but do not move or fire.
+        if (i) p.ack = i.seq;
+        for (let k = 0, x = extra(); x && k < 2; k++, x = extra())
+          p.ack = x.seq;
+        continue;
+      }
+      if (!i) {
+        // Missing input: zero axes and held movement buttons (no false edges). The
+        // weapon is clocked by real inputs only, exactly as the client predicts it,
+        // so a starved link neither fires nor advances weapon timers.
+        p.entity = stepPlayer(
+          p.entity,
+          {
+            seq: p.ack,
+            tick: this.tick,
+            x: 0,
+            z: 0,
+            yaw: p.entity.yaw,
+            pitch: p.entity.pitch,
+            buttons: p.entity.move?.buttons ?? 0,
+          },
+          dt,
+          world,
+          tune,
+        );
+        continue;
+      }
+      for (let k = 0; i && k < 3; k++, i = extra()) {
+        const out = stepCombatant(p.entity, i, dt, world, tune, rules);
+        p.entity = out.entity;
+        p.ack = i.seq;
+        if (out.shots.length || out.throws.length || out.fingers)
+          fired.push({
+            player: p,
+            shots: out.shots,
+            throws: out.throws,
+            fingers: out.fingers,
+            view: i.view,
+          });
+      }
+      if (
+        p.entity.position.y < level.killY ||
+        !inside(p.entity.position, level.bounds)
+      ) {
+        p.entity = this.spawn(r, p, true);
+        p.queue = [];
+      }
+    }
+    // Debug-only wandering robots prove generic entities; dummies stand still or
+    // strafe on a fixed path (dev-tools). Combat AI is deliberately absent.
+    for (let j = 0; j < r.robots.length; j++) {
+      const e = r.robots[j]!;
+      if (((e.status ?? 0) & (STATUS.dummy | STATUS.dead)) !== 0) continue;
+      r.robots[j] = stepPlayer(
+        e,
+        {
+          seq: 0,
+          tick: this.tick,
+          x: Math.sin(this.tick / 90 + j),
+          z: Math.cos(this.tick / 113 + j),
+          yaw: e.yaw + (Math.random() - 0.5) * 0.1,
+          pitch: 0,
+          buttons: 0,
+        },
+        dt,
+        world,
+      );
+    }
+    const players: Combatant[] = r.players
+      .filter((p) => p.peer)
+      .map((p) => ({
+        entity: p.entity,
+        player: true,
+        set: (e) => {
+          p.entity = e;
+        },
+      }));
+    const robots: Combatant[] = r.robots.map((e, j) => ({
+      entity: e,
+      player: false,
+      set: (next) => {
+        r.robots[j] = next;
+      },
+    }));
+    const all = [...players, ...robots];
+    for (const f of fired) {
+      const shooter = all.find((c) => c.entity.id === f.player.entity.id);
+      if (!shooter) continue;
+      combat.fire(shooter, f.shots, f.view, this.tick, all);
+      combat.throwFlasks(shooter, f.throws);
+      if (f.fingers)
+        combat.callFingers(shooter, f.fingers.origin, f.fingers.dir, this.tick);
+    }
+    combat.tick(this.tick, all, players);
+    // Deaths: operators respawn after a delay with a fresh loadout; dummies reset;
+    // wandering robots are removed (their crate was dropped on death).
+    for (const p of r.players) {
+      if (!((p.entity.status ?? 0) & STATUS.dead)) continue;
+      const s = combat.status.get(p.id);
+      if (s && this.tick >= s.deadUntil) {
+        p.entity = this.spawn(r, p);
+        p.queue = [];
+        combat.status.delete(p.id);
+        combat.events.push({ t: 'respawn', player: p.id });
+      }
+    }
+    r.robots = r.robots.filter(
+      (e) =>
+        !((e.status ?? 0) & STATUS.dead) || !!((e.status ?? 0) & STATUS.dummy),
+    );
+    for (let j = 0; j < r.robots.length; j++) {
+      const e = r.robots[j]!,
+        s = combat.status.get(e.id);
+      if ((e.status ?? 0) & STATUS.dead && s && this.tick >= s.deadUntil) {
+        r.robots[j] = {
+          ...e,
+          health: COMBAT.dummyHealth,
+          status: STATUS.dummy,
+        };
+        combat.status.delete(e.id);
+      }
+    }
+    combat.record(this.tick, [
+      ...r.players
+        .filter((p) => p.peer)
+        .map((p) => ({ entity: p.entity, player: true, set: () => {} })),
+      ...r.robots.map((e) => ({ entity: e, player: false, set: () => {} })),
+    ]);
   }
   step() {
     this.tick++;
@@ -467,85 +698,7 @@ export class Game {
       }
       if (r.phase === 'PLAYING') {
         if (this.settings.devTools) devTick(this, r);
-        for (const p of r.players) {
-          if (!p.peer) continue;
-          const level = this.level(r);
-          if (
-            p.entity.position.y < level.killY ||
-            !inside(p.entity.position, level.bounds)
-          ) {
-            p.entity = spawnEntity(
-              p.id,
-              r.players.indexOf(p),
-              level,
-              r.players.filter((q) => q !== p).map((q) => q.entity),
-            );
-            p.queue = [];
-          }
-          const i = p.queue.shift();
-          if (i) {
-            p.entity = stepDev(
-              p.entity,
-              i,
-              1 / this.settings.tickRate,
-              levelWorld(this.level(r)),
-              this.settings.devTools ? r.dev?.tuning : undefined,
-            );
-            p.ack = i.seq;
-          } else {
-            // Missing input: zero axes, but held buttons persist so no false edges appear.
-            const idle: Input = {
-              seq: p.ack,
-              tick: this.tick,
-              x: 0,
-              z: 0,
-              yaw: p.entity.yaw,
-              pitch: p.entity.pitch,
-              buttons: p.entity.move?.buttons ?? 0,
-            };
-            p.entity = stepDev(
-              p.entity,
-              idle,
-              1 / this.settings.tickRate,
-              levelWorld(this.level(r)),
-              this.settings.devTools ? r.dev?.tuning : undefined,
-            );
-          }
-        }
-        for (const p of r.players) {
-          const level = this.level(r);
-          if (
-            p.peer &&
-            (p.entity.position.y < level.killY ||
-              !inside(p.entity.position, level.bounds))
-          ) {
-            p.entity = spawnEntity(
-              p.id,
-              r.players.indexOf(p),
-              level,
-              r.players.filter((q) => q !== p).map((q) => q.entity),
-            );
-            p.queue = [];
-          }
-        }
-        // Debug-only wandering proves generic entities; combat AI is deliberately absent.
-        for (let j = 0; j < r.robots.length; j++) {
-          const e = r.robots[j]!;
-          r.robots[j] = stepPlayer(
-            e,
-            {
-              seq: 0,
-              tick: this.tick,
-              x: Math.sin(this.tick / 90 + j),
-              z: Math.cos(this.tick / 113 + j),
-              yaw: e.yaw + (Math.random() - 0.5) * 0.1,
-              pitch: 0,
-              buttons: 0,
-            },
-            1 / this.settings.tickRate,
-            levelWorld(this.level(r)),
-          );
-        }
+        this.stepCombat(r);
         if (
           now >= r.deadline &&
           (!this.settings.devTools ||

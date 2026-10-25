@@ -6,3 +6,5 @@ export * from './prediction';
 export * from './dev';
 export * from './metrics';
 export * from './level';
+export * from './weapons';
+export * from './combat';

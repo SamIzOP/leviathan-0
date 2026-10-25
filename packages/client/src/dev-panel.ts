@@ -1,4 +1,10 @@
-import { DEFAULT_TUNING, MOVE_LIMITS, TUNING_PRESETS } from '@leviathan/shared';
+import {
+  DEFAULT_TUNING,
+  MOVE_LIMITS,
+  TUNING_PRESETS,
+  WEAPONS,
+  WEAPON_LIMITS,
+} from '@leviathan/shared';
 import type {
   ClientMessage,
   DevState,
@@ -13,6 +19,8 @@ export interface DrawFlags {
   movement: boolean;
   speedGraph: boolean;
   inputDiagnostics: boolean;
+  hitboxes: boolean;
+  hitRays: boolean;
 }
 /** Tuning sliders grouped for the service terminal; every MOVE constant appears once. */
 const TUNING_GROUPS: [string, (keyof DevTuning)[]][] = [
@@ -94,6 +102,8 @@ interface Preferences {
   draw: DrawFlags;
   lag: number;
   loss: number;
+  jitter?: number;
+  editWeapon?: string;
   sections: Record<string, boolean>;
   timer?: boolean;
   frozen?: boolean;
@@ -113,6 +123,8 @@ export class DevPanel {
       movement: false,
       speedGraph: false,
       inputDiagnostics: false,
+      hitboxes: false,
+      hitRays: false,
     },
     lag: 0,
     loss: 0,
@@ -121,7 +133,7 @@ export class DevPanel {
   private rosterKey = '';
   constructor(
     private send: (message: ClientMessage) => void,
-    private fault: (lag: number, loss: number) => void,
+    private fault: (lag: number, loss: number, jitter?: number) => void,
     private disconnect: (ms: number) => void,
     private close: () => void,
     private sound: () => void = () => {},
@@ -152,7 +164,12 @@ export class DevPanel {
     this.enabled = value;
     if (value) {
       this.build();
-      if (applyFaults) this.fault(this.preferences.lag, this.preferences.loss);
+      if (applyFaults)
+        this.fault(
+          this.preferences.lag,
+          this.preferences.loss,
+          this.preferences.jitter ?? 0,
+        );
     } else {
       this.open = false;
       this.root.hidden = true;
@@ -350,7 +367,7 @@ export class DevPanel {
       (v) => {
         this.preferences.lag = v;
         this.save();
-        this.fault(v, this.preferences.loss);
+        this.fault(v, this.preferences.loss, this.preferences.jitter ?? 0);
       },
     );
     this.slider(
@@ -365,7 +382,22 @@ export class DevPanel {
       (v) => {
         this.preferences.loss = v;
         this.save();
-        this.fault(this.preferences.lag, v);
+        this.fault(this.preferences.lag, v, this.preferences.jitter ?? 0);
+      },
+    );
+    this.slider(
+      network,
+      'JITTER / MS',
+      'jitter',
+      0,
+      100,
+      5,
+      this.preferences.jitter ?? 0,
+      'Extra random one-way delay per gameplay message (order preserved).',
+      (v) => {
+        this.preferences.jitter = v;
+        this.save();
+        this.fault(this.preferences.lag, this.preferences.loss, v);
       },
     );
     network.append(
@@ -393,6 +425,7 @@ export class DevPanel {
         () => this.command('reset-player'),
       ),
     );
+    this.weapons();
     const movement = this.section('MOVEMENT TUNING');
     const presets = document.createElement('div');
     presets.className = 'dev-presets';
@@ -444,6 +477,8 @@ export class DevPanel {
       movement: 'MOVEMENT STATE / PROBES',
       speedGraph: 'SPEED GRAPH (10 S)',
       inputDiagnostics: 'INPUT DIAGNOSTICS',
+      hitboxes: 'HITBOXES',
+      hitRays: 'HIT RAYS + REWIND (SERVER)',
     }))
       this.checkbox(
         draw,
@@ -454,6 +489,8 @@ export class DevPanel {
         (v) => {
           this.preferences.draw[key as keyof DrawFlags] = v;
           this.save();
+          // Server-side hit debug events are only sent while the ray overlay is on.
+          if (key === 'hitRays') this.command('hit-debug', { enabled: v });
         },
       );
     const foot = document.createElement('footer');
@@ -462,8 +499,171 @@ export class DevPanel {
     this.extend?.();
     this.rosterKey = '';
   }
+  /** Weapon tools: loadout, ammo, damage, targets, rules and live stat editing. */
+  weapons() {
+    const section = this.section('WEAPONS');
+    const give = document.createElement('div');
+    give.className = 'dev-presets';
+    WEAPONS.forEach((w, i) =>
+      give.append(
+        this.button(
+          `T${w.tier}`,
+          `Give ${w.name} (tier ${w.tier}) with a full reserve.`,
+          () => this.command('give-weapon', { weapon: i }),
+        ),
+      ),
+    );
+    section.append(
+      give,
+      this.button('GIVE ALL', 'Own every weapon tier.', () =>
+        this.command('give-all-weapons'),
+      ),
+      this.button(
+        'REFILL AMMO',
+        'Fill every magazine, reserve and flask.',
+        () => this.command('refill-ammo'),
+      ),
+      this.button('FILL FINGERS OF GOD', 'Charge the ultimate (Q).', () =>
+        this.command('fill-fingers'),
+      ),
+      this.button(
+        'SPAWN TARGET DUMMY',
+        'One static 200 HP dummy 8 m ahead (pulled in until in clear sight).',
+        () => this.command('spawn-range', { count: 1 }),
+      ),
+      this.button(
+        'SPAWN RANGE ROW',
+        'Five dummies ahead at 8, 15, 25, 40 and 60 m.',
+        () => this.command('spawn-range', { count: 5 }),
+      ),
+      this.button(
+        'HURT SELF (25)',
+        'Take 25 damage from ahead-left: tests the damage direction HUD.',
+        () => this.command('hurt-self', { value: 1 }),
+      ),
+    );
+    for (const [key, label, title] of [
+      [
+        'infinite-ammo',
+        'INFINITE AMMO',
+        'Magazines never empty (predicted too).',
+      ],
+      [
+        'friendly-fire',
+        'FRIENDLY FIRE',
+        'Match rule: operators can damage each other.',
+      ],
+      [
+        'moving-dummies',
+        'MOVING DUMMIES',
+        'Range dummies strafe ±2.5 m (lag compensation tests).',
+      ],
+      [
+        'bots-fire',
+        'BOTS FIRE',
+        'Bot operators fire bursts at dummies in sight (firefight load).',
+      ],
+      [
+        'lag-compensation',
+        'LAG COMPENSATION',
+        'Rewind targets by the shooter view (300 ms cap).',
+      ],
+    ] as const) {
+      const initial =
+        key === 'lag-compensation'
+          ? (this.state?.combat.lagCompensation ?? true)
+          : false;
+      this.checkbox(section, label, title, `combat-${key}`, initial, (v) =>
+        this.command(key, { enabled: v }),
+      );
+    }
+    this.slider(
+      section,
+      'DAMAGE MULTIPLIER',
+      'combat-damage',
+      0,
+      5,
+      0.1,
+      this.state?.combat.damageScale ?? 1,
+      'Scales all damage dealt in this dev room.',
+      (v) => this.command('damage-scale', { value: v }),
+    );
+    // Live stat editing for one weapon at a time.
+    const pick = document.createElement('select');
+    pick.setAttribute('aria-label', 'Weapon to edit');
+    for (const w of WEAPONS) {
+      const o = document.createElement('option');
+      o.value = w.id;
+      o.textContent = `T${w.tier} ${w.name}`;
+      pick.append(o);
+    }
+    pick.value = this.preferences.editWeapon ?? WEAPONS[0]!.id;
+    const stats = document.createElement('div');
+    const fill = () => {
+      stats.replaceChildren();
+      const base = WEAPONS.find((w) => w.id === pick.value)!,
+        current = { ...base, ...this.state?.combat.weapons[pick.value] };
+      for (const [key, [min, max]] of Object.entries(WEAPON_LIMITS)) {
+        const k = key as keyof typeof WEAPON_LIMITS;
+        this.slider(
+          stats,
+          key.replace(/([A-Z])/g, ' $1').toUpperCase(),
+          `weapon-${k}`,
+          min,
+          max,
+          stepFor(min, max),
+          current[k],
+          'Live weapon stat for this dev room; prediction uses the same value.',
+          (v) =>
+            this.command('weapon-tune', {
+              weaponId: pick.value,
+              stats: { [k]: v },
+            }),
+        );
+      }
+    };
+    pick.onchange = () => {
+      this.preferences.editWeapon = pick.value;
+      this.save();
+      fill();
+    };
+    const edit = document.createElement('h4');
+    edit.textContent = 'LIVE STATS';
+    section.append(
+      edit,
+      pick,
+      this.button(
+        'RESET WEAPON STATS',
+        'Restore every weapon to its data file.',
+        () => this.command('reset-weapons'),
+      ),
+      stats,
+    );
+    fill();
+    this.refreshWeaponStats = fill;
+  }
+  private refreshWeaponStats?: () => void;
+  private weaponsKey = '';
   update(state: DevState) {
     this.state = state;
+    const key = JSON.stringify(state.combat?.weapons ?? {});
+    if (key !== this.weaponsKey) {
+      this.weaponsKey = key;
+      if (!this.root.querySelector('[data-control^="weapon-"]:focus'))
+        this.refreshWeaponStats?.();
+    }
+    for (const [control, value] of [
+      ['combat-infinite-ammo', state.combat?.infiniteAmmo],
+      ['combat-friendly-fire', state.combat?.friendlyFire],
+      ['combat-moving-dummies', state.combat?.movingDummies],
+      ['combat-bots-fire', state.combat?.botsFire],
+      ['combat-lag-compensation', state.combat?.lagCompensation],
+    ] as const) {
+      const input = this.root.querySelector<HTMLInputElement>(
+        `[data-control="${control}"]`,
+      );
+      if (input && value !== undefined) input.checked = value;
+    }
     for (const [key, value] of [
       ['timer', state.timerEnabled],
       ['freeze', state.frozen],

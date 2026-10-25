@@ -1,0 +1,98 @@
+{
+  "movementStates": {
+    "shotsByMode": {
+      "SPRINT": 2,
+      "GROUND": 2,
+      "SLIDE": 2,
+      "AIR": 7,
+      "WALLRUN": 8,
+      "MANTLE": 7
+    },
+    "doubleJumpShots": 3,
+    "reached": ["GROUND", "SLIDE", "AIR", "WALLRUN", "MANTLE"],
+    "chains": [
+      ["false -> 32", "false -> 14"],
+      [
+        "false -> 32",
+        "m.mode === 'SLIDE' -> 1",
+        "m.slideTicks > 16 -> 16",
+        "m.mode === 'AIR' -> 1",
+        "s.velocity.y <= 1.5 -> 16",
+        "m.airJumps === 0 -> 1",
+        "m.mode === 'WALLRUN' -> 10",
+        "m.mode === 'WALLRUN' && m.wall.ticks > 30 -> 31",
+        "m.mode === 'AIR' && s.velocity.y > 4 -> 1",
+        "m.mode !== 'AIR' -> 51"
+      ],
+      [
+        "s.position.z < -28.4 -> 35",
+        "m.mode === 'MANTLE' -> 7",
+        "m.mode !== 'MANTLE' -> 27"
+      ]
+    ]
+  },
+  "ammo": {
+    "beforeReload": {
+      "mag": 9,
+      "reserve": 84
+    },
+    "midReload": 54,
+    "afterSwitch": {
+      "mag": 9,
+      "reserve": 84
+    },
+    "emptied": {
+      "ammo": {
+        "mag": 0,
+        "reserve": 84
+      },
+      "reload": 64
+    },
+    "reloaded": {
+      "mag": 12,
+      "reserve": 72
+    }
+  },
+  "pickup": {
+    "reserveBefore": 72,
+    "reserveAfter": 84,
+    "oilBefore": 3,
+    "oilAfter": 3
+  },
+  "rewinds": {
+    "n": 40,
+    "requestedMean": 270.296231670721,
+    "requestedMax": 288.7444661457266,
+    "appliedMean": 270.296231670721
+  },
+  "lagCompensation": {
+    "latencyMs": 100,
+    "jitterMs": 20,
+    "on": {
+      "label": "lag compensation ON",
+      "fired": 40,
+      "hits": 40,
+      "rate": 100
+    },
+    "off": {
+      "label": "lag compensation OFF",
+      "fired": 40,
+      "hits": 12,
+      "rate": 30
+    }
+  },
+  "devTools": {
+    "liveDamage": {
+      "hpBefore": 200,
+      "hpAfter": 155,
+      "dealt": 45
+    },
+    "debugOverlayVisible": true,
+    "hurtSelf": {
+      "healthBefore": 100,
+      "healthAfter": 75
+    }
+  },
+  "errors": [],
+  "pass": true
+}

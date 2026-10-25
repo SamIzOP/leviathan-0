@@ -13,6 +13,8 @@ export class CameraFeel {
   private bobPhase = 0;
   private bobAmount = 0;
   private fov = 0;
+  /** ADS zoom factor (1 = hip), eased by the weapon presentation. */
+  zoom = 1;
   /** Sim-rate events: landing impacts and stride phase. */
   tick(before: Entity, after: Entity) {
     const was = before.move?.mode ?? 'GROUND',
@@ -52,7 +54,13 @@ export class CameraFeel {
     const kickTarget =
       Math.max(0, Math.min(1, (speed - 5.5) / 7)) * 8 * effect('fovKick');
     this.kick = ease(this.kick, kickTarget, 0.25);
-    const fov = this.verticalFov(movementSettings.fov + this.kick);
+    // Aiming down sights narrows the view by the weapon zoom (tangent-space).
+    const base = this.verticalFov(movementSettings.fov + this.kick);
+    const fov =
+      this.zoom === 1
+        ? base
+        : (2 * Math.atan(Math.tan((base * Math.PI) / 360) / this.zoom) * 180) /
+          Math.PI;
     this.fov = fov;
     if (Math.abs(camera.fov - fov) > 1e-3) {
       camera.fov = fov;

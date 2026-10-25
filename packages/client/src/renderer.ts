@@ -28,6 +28,13 @@ export class Renderer {
   offset = 0;
   world?: WorldView;
   feel = new CameraFeel();
+  /** Server tick of the interpolated remote view (sent with inputs for lag
+   * compensation) and the alpha between the bracketing snapshots. */
+  viewTick = 0;
+  viewAlpha = 0;
+  pair?: { from: Entity[]; to: Entity[]; alpha: number };
+  /** Drawn after the world each frame (the first-person viewmodel pass). */
+  overlay?: (renderer: THREE.WebGLRenderer, now: number) => void;
   private loadVersion = 0;
   private loading = document.createElement('section');
   private cameraY = NaN;
@@ -191,7 +198,15 @@ export class Renderer {
         0,
         Math.min(1, (target - a.time) / Math.max(1, b.time - a.time)),
       );
-      const ids = new Set(latest.entities.map((e) => e.id));
+      this.viewTick = a.tick + (b.tick - a.tick) * alpha;
+      this.viewAlpha = alpha;
+      this.pair = { from: a.entities, to: b.entities, alpha };
+      // Capsules for operators and robots only; combat entities draw elsewhere.
+      const ids = new Set(
+        latest.entities
+          .filter((e) => e.type === 'player' || e.type === 'robot')
+          .map((e) => e.id),
+      );
       for (const [id, v] of this.avatars)
         if (!ids.has(id)) {
           this.scene.remove(v.group);
@@ -202,7 +217,7 @@ export class Renderer {
           this.avatars.delete(id);
         }
       for (const e of latest.entities) {
-        if (e.id === localId) continue;
+        if (e.id === localId || !ids.has(e.id)) continue;
         let v = this.avatars.get(e.id);
         const name = names.get(e.id) ?? 'DIAGNOSTIC UNIT';
         if (!v) {
@@ -261,7 +276,9 @@ export class Renderer {
         poseDt,
       );
     }
-    if (this.world?.ready)
+    if (this.world?.ready) {
       this.world.render(this.camera, now, local?.move?.mode);
+      this.overlay?.(this.renderer, now);
+    }
   }
 }
