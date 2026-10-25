@@ -1,15 +1,83 @@
 import * as T from 'three';
 import { randomSeed, type Surface } from '@leviathan/shared';
 import { worldPalette } from './theme';
+/** Zone material sets: surface class -> CC0 material key in asset-manifest.json.
+ * A missing key or file keeps the procedural canvas maps. */
+export const ZONE_MATERIALS: Record<
+  string,
+  Partial<Record<Surface, string>>
+> = {
+  entrance: {
+    asphalt: 'asphalt.wet',
+    concrete: 'concrete.stained',
+    brick: 'brick.red',
+    metal: 'metal.painted',
+    wood: 'wood.planks',
+  },
+  tenements: {
+    asphalt: 'asphalt.wet',
+    concrete: 'concrete.stained',
+    brick: 'brick.soot',
+    metal: 'metal.rusted',
+    wood: 'wood.planks',
+  },
+  rail: {
+    asphalt: 'asphalt.wet',
+    concrete: 'concrete.stained',
+    brick: 'brick.red',
+    metal: 'metal.corrugated',
+    wood: 'wood.planks',
+  },
+  pumps: {
+    asphalt: 'concrete.floor',
+    concrete: 'concrete.clean',
+    brick: 'brick.red',
+    metal: 'metal.painted',
+    wood: 'wood.planks',
+  },
+  slag: {
+    asphalt: 'rock.rubble',
+    concrete: 'concrete.stained',
+    brick: 'brick.soot',
+    metal: 'metal.dark',
+    wood: 'wood.planks',
+  },
+  hall: {
+    asphalt: 'concrete.floor',
+    concrete: 'concrete.floor',
+    brick: 'brick.soot',
+    metal: 'metal.plates',
+    wood: 'wood.planks',
+  },
+  core: {
+    asphalt: 'concrete.floor',
+    concrete: 'concrete.stained',
+    brick: 'brick.soot',
+    metal: 'metal.dark',
+    wood: 'wood.planks',
+  },
+  boundary: {
+    asphalt: 'asphalt.wet',
+    concrete: 'concrete.stained',
+    brick: 'brick.soot',
+    metal: 'metal.rusted',
+  },
+};
+/** World haze, wet grime and world-projected maps. Real CC0 maps (userData.realMaps)
+ * sample at their physical tile size (userData.worldTile = 1 / metres);
+ * `desaturate` grades imported props toward the monochrome palette. */
 export function grime(
   material: T.MeshStandardMaterial,
   heightFog = 0.018,
   horizon = '#8b989e',
   worldProjection = true,
+  desaturate = 0,
 ) {
   material.onBeforeCompile = (s) => {
+    const real = !!material.userData.realMaps;
     s.uniforms.worldHaze = { value: new T.Color(horizon) };
     s.uniforms.heightDensity = { value: heightFog };
+    s.uniforms.worldTile = { value: material.userData.worldTile ?? 0.45 };
     material.userData.heightDensity = s.uniforms.heightDensity;
     s.vertexShader =
       'varying vec3 worldPos; varying vec3 worldNormal;\n' + s.vertexShader;
@@ -23,7 +91,7 @@ export function grime(
       worldPos=(modelMatrix*wp).xyz; worldNormal=normalize(mat3(modelMatrix)*wn);`,
     );
     s.fragmentShader =
-      'varying vec3 worldPos; varying vec3 worldNormal; uniform vec3 worldHaze; uniform float heightDensity;\n' +
+      'varying vec3 worldPos; varying vec3 worldNormal; uniform vec3 worldHaze; uniform float heightDensity; uniform float worldTile;\n' +
       s.fragmentShader;
     if (worldProjection)
       s.fragmentShader = s.fragmentShader.replace(
@@ -31,7 +99,7 @@ export function grime(
         T.ShaderChunk.bumpmap_pars_fragment
           .replace(
             'vec2 dHdxy_fwd() {',
-            'vec2 dHdxy_fwd() { vec3 bn=abs(worldNormal);vec2 worldBumpUv=(bn.y>.6?worldPos.xz:bn.x>.6?worldPos.zy:worldPos.xy)*.45;',
+            'vec2 dHdxy_fwd() { vec3 bn=abs(worldNormal);vec2 worldBumpUv=(bn.y>.6?worldPos.xz:bn.x>.6?worldPos.zy:worldPos.xy)*worldTile;',
           )
           .replaceAll('vBumpMapUv', 'worldBumpUv'),
       );
@@ -41,8 +109,11 @@ export function grime(
         `float roughnessFactor=roughness;
       #ifdef USE_ROUGHNESSMAP
       vec3 rn=abs(worldNormal);vec2 ruv=rn.y>.6?worldPos.xz:rn.x>.6?worldPos.zy:worldPos.xy;
-      float wet=texture2D(roughnessMap,ruv*.18).g;
-      roughnessFactor*=rn.y>.6?max(.08,wet):(.8+.2*wet);
+      ${
+        real
+          ? 'roughnessFactor*=texture2D(roughnessMap,ruv*worldTile).g*(rn.y>.6?.62:1.);'
+          : 'float wet=texture2D(roughnessMap,ruv*.18).g;roughnessFactor*=rn.y>.6?max(.08,wet):(.8+.2*wet);'
+      }
       #endif`,
       );
     s.fragmentShader = s.fragmentShader.replace(
@@ -50,9 +121,18 @@ export function grime(
       (worldProjection
         ? `#ifdef USE_MAP
       vec3 an=abs(worldNormal); vec2 uvw=an.y>0.6?worldPos.xz:an.x>0.6?worldPos.zy:worldPos.xy;
-      diffuseColor*=texture2D(map,uvw*0.45);
+      diffuseColor*=texture2D(map,uvw*worldTile);${
+        // Macro breakup: the same map at ~11x scale stains large real surfaces.
+        real
+          ? 'diffuseColor.rgb*=.8+.45*texture2D(map,uvw*worldTile*.087+.37).g;'
+          : ''
+      }
       #endif`
         : '#include <map_fragment>') +
+        (desaturate
+          ? `
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(dot(diffuseColor.rgb,vec3(.299,.587,.114))),${desaturate.toFixed(2)});`
+          : '') +
         `
       float streak=sin(worldPos.x*31.0+worldPos.z*29.0)*sin(worldPos.x*7.0+worldPos.z*11.0);
       float damp=exp(-max(0.0,worldPos.y)*0.7);
@@ -66,7 +146,7 @@ export function grime(
     );
   };
   material.customProgramCacheKey = () =>
-    `world-grime-${heightFog}-${horizon}-${worldProjection}`;
+    `world-grime-${heightFog}-${horizon}-${worldProjection}-${desaturate}-${!!material.userData.realMaps}`;
 }
 export class WorldMaterials {
   materials = new Map<string, T.MeshStandardMaterial>();
@@ -195,6 +275,22 @@ export class WorldMaterials {
     }
     m.userData.worldSurface = surface;
     m.userData.worldColor = color;
+    this.materials.set(key, m);
+    return m;
+  }
+  /** A zone's variant of a surface: the same procedural maps until prepare()
+   * swaps in the zone's CC0 set (userData.materialKey). */
+  getZoned(surface: Surface, zone: string | undefined, color?: string) {
+    const materialKey = zone ? ZONE_MATERIALS[zone]?.[surface] : undefined;
+    if (!materialKey) return this.get(surface, color);
+    const key = `${surface}|${zone}|${color ?? ''}`;
+    const existing = this.materials.get(key);
+    if (existing) return existing;
+    const base = this.get(surface, color),
+      m = base.clone();
+    m.userData = { ...base.userData, materialKey, zone };
+    // Imported CC0 colour is graded toward the monochrome palette.
+    grime(m, this.heightFog, this.horizon, true, 0.35);
     this.materials.set(key, m);
     return m;
   }

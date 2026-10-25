@@ -1,13 +1,13 @@
 {
   "bounds": [],
   "walk": {
-    "probes": 4824,
+    "probes": 5292,
     "errors": []
   },
   "sweep": {
     "rays": 3445464,
     "lines": 6852,
-    "meshCount": 3075,
+    "meshCount": 3436,
     "mismatches": []
   }
 }

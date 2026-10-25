@@ -3,6 +3,7 @@ import { LevelKit, v } from './level-kit';
 import { seeded } from './forge-data';
 import { ARCHETYPES } from './buildings';
 import { dressArchitecture } from './foundry-dressing';
+import { dressProps } from './foundry-props';
 
 /** Seven connected industrial districts; all reachable structure is shared data. */
 export function buildFoundry(): Level {
@@ -995,6 +996,41 @@ export function buildFoundry(): Level {
       target: v(lm.position.x, lm.height * 0.6, lm.position.z),
     };
   dressArchitecture(k);
+  // Prop dressing stays beside routes: clear of route reservations (by width),
+  // combat markers, cover points, player spawns, gates, lowered yards and rooms.
+  const keepClear = [
+    ...level.markers!.map((m) => m.position),
+    ...level.coverPoints!.map((c) => c.position),
+    ...level.spawns.filter((s) => s.type === 'player').map((s) => s.position),
+  ];
+  dressProps(k, {
+    clear: (x, z, r) =>
+      !holes.some(
+        (h) =>
+          x > h.x0 - 2 - r &&
+          x < h.x1 + 2 + r &&
+          z > h.z0 - 2 - r &&
+          z < h.z1 + 2 + r,
+      ) &&
+      !level.routes!.some((route) =>
+        nearRoute(route.points, x, z, route.width / 2 + r + 0.6),
+      ) &&
+      !keepClear.some((p) => Math.hypot(p.x - x, p.z - z) < r + 1.8) &&
+      !level.gates.some(
+        (g) => Math.hypot(g.position.x - x, g.position.z - z) < r + 9,
+      ) &&
+      !level.rooms!.some(
+        (room) =>
+          x > room.bounds.min.x - r - 0.5 &&
+          x < room.bounds.max.x + r + 0.5 &&
+          z > room.bounds.min.z - r - 0.5 &&
+          z < room.bounds.max.z + r + 0.5,
+      ),
+    roofClear: (x, z, r) =>
+      !level.routes!.some((route) =>
+        nearRoute(route.points, x, z, route.width / 2 + r + 0.6),
+      ),
+  });
   // Check the whole footprint against physical tops, including optional roofs
   // and equipment. "platform" is navigation metadata, not a collision exemption.
   for (const d of [...level.decor].filter((d) => d.reason === 'overhead')) {
@@ -1047,6 +1083,26 @@ export function buildFoundry(): Level {
     'core-high': [185, 22, 65, 115, 16, 25],
     stairs: [-146, 1.65, -184, -146, 4, -201],
   };
+  // Dressing review: three fixed stations for each named play area
+  // (street = entrance, roofs = tenements, yard = rail, stacks = slag/pumps,
+  // hall = hall/core).
+  Object.assign(review, {
+    'dress-street-1': [0, 1.65, 80, 0, 4, 40],
+    'dress-street-2': [51, 1.65, 11, 37, 0.6, 25],
+    'dress-street-3': [-20, 12, 75, 10, 0, 40],
+    'dress-roofs-1': [-116, 20, 16, -150, 15, -40],
+    'dress-roofs-2': [-166, 16.4, -31, -128, 18, 0],
+    'dress-roofs-3': [-95, 26, -30, -140, 16, -10],
+    'dress-yard-1': [-151, 1.65, -147, -159, 0.6, -165],
+    'dress-yard-2': [-190, 1.65, -170, -150, 3, -190],
+    'dress-yard-3': [-120, 18, -150, -170, 0, -180],
+    'dress-stacks-1': [-30, 1.65, -40, 0, 30, -10],
+    'dress-stacks-2': [-5, 1.65, -243, -19, 0.6, -229],
+    'dress-stacks-3': [50, 22, -100, 10, 0, -60],
+    'dress-hall-1': [160, 1.65, -110, 168, 1, -128],
+    'dress-hall-2': [143, 1.65, -159, 157, 0.6, -145],
+    'dress-hall-3': [85, 1.65, 10, 72, 1, 24],
+  } satisfies typeof review);
   for (const [name, p] of Object.entries(review))
     level.cameras[name] = {
       position: v(p[0], p[1], p[2]),
@@ -1094,21 +1150,27 @@ export function buildFoundry(): Level {
   return level;
 }
 function nearRoutes(x: number, z: number, clear: number, level: Level) {
-  return level.routes!.some((r) =>
-    r.points.slice(1).some((b, i) => {
-      const a = r.points[i]!,
-        dx = b.x - a.x,
-        dz = b.z - a.z,
-        t = Math.max(
-          0,
-          Math.min(
-            1,
-            ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1),
-          ),
-        );
-      return Math.hypot(x - a.x - t * dx, z - a.z - t * dz) < clear;
-    }),
-  );
+  return level.routes!.some((r) => nearRoute(r.points, x, z, clear));
+}
+function nearRoute(
+  points: { x: number; z: number }[],
+  x: number,
+  z: number,
+  clear: number,
+) {
+  return points.slice(1).some((b, i) => {
+    const a = points[i]!,
+      dx = b.x - a.x,
+      dz = b.z - a.z,
+      t = Math.max(
+        0,
+        Math.min(
+          1,
+          ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1),
+        ),
+      );
+    return Math.hypot(x - a.x - t * dx, z - a.z - t * dz) < clear;
+  });
 }
 function free(x: number, z: number, r: number, level: Level) {
   return !level.colliders.some(

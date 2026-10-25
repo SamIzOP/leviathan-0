@@ -1,5 +1,14 @@
 # Optional world assets
 
+## CC0 asset pipeline — 2026-10-24
+
+The project now ships 54 CC0 models, 13 CC0 material sets and 2 CC0 HDRIs (35.5 MB), downloaded from Poly Haven and ambientCG.
+
+- [tools/assets/README.md](tools/assets/README.md) covers the scripts, outputs and licence rules.
+- [docs/dressing/DRESSING.md](docs/dressing/DRESSING.md) covers placement, zone material sets, performance caps and credits (author and source page per asset are in `asset-manifest.json` → `catalog`).
+
+The game still runs with every downloaded file missing. Props fall back to their forge families, materials to the procedural maps, and the HDRI to the procedural sky environment. This was checked with all 82 asset requests answered 404.
+
 ## Expanded procedural forge — 2026-10-23
 
 The catalog now contains 89 families (267 seeded variants), including cooling towers, gas holders, signal towers, ore bridges, furnaces, vaulted and sawtooth roofs, sagging cables, curved pipes, arches, freight cars, collapsed overpasses, silos, ladles, slag pots, pump houses, forklifts, carts, scaffolds, tarps, workstations, lockers, damaged/open containers, substations and rubble. `/?gallery=1` includes every family and the existing 1.8 m human scale reference. `npm run forge:export` exports the complete catalog and its triangle/byte manifest.

@@ -17,38 +17,38 @@
   "dressing": [
     {
       "id": "entrance",
-      "solid": 452,
-      "decor": 1038
+      "solid": 528,
+      "decor": 1045
     },
     {
       "id": "tenements",
-      "solid": 584,
-      "decor": 3264
+      "solid": 634,
+      "decor": 3271
     },
     {
       "id": "rail",
-      "solid": 486,
-      "decor": 3211
+      "solid": 532,
+      "decor": 3216
     },
     {
       "id": "pumps",
-      "solid": 336,
-      "decor": 2270
+      "solid": 389,
+      "decor": 2274
     },
     {
       "id": "slag",
-      "solid": 237,
-      "decor": 1409
+      "solid": 285,
+      "decor": 1411
     },
     {
       "id": "hall",
-      "solid": 642,
-      "decor": 6790
+      "solid": 687,
+      "decor": 6792
     },
     {
       "id": "core",
-      "solid": 282,
-      "decor": 1885
+      "solid": 325,
+      "decor": 1889
     }
   ]
 }

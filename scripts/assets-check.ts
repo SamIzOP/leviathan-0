@@ -7,7 +7,9 @@ const manifest = JSON.parse(
 let real = 0,
   fallback = 0;
 async function scan(value: unknown, key: string) {
-  if (typeof value === 'string') {
+  // Only same-origin paths are assets; other strings (catalog ids, licences,
+  // source URLs written by tools/assets/optimize.ts) are metadata.
+  if (typeof value === 'string' && value.startsWith('/')) {
     const path = resolve(root, '.' + value);
     if (!path.startsWith(root)) throw new Error('Asset outside public root');
     const exists = await stat(path)

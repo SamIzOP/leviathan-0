@@ -50,6 +50,9 @@ const decorSchema = z.object({
     .optional(),
   zone: z.string().optional(),
   text: z.string().optional(),
+  /** Dressing prop: procedural forge fallback when the model file is missing. */
+  fallback: z.string().optional(),
+  tint: z.number().optional(),
 });
 export const levelSchema = z.object({
   id: z.string(),
@@ -68,6 +71,11 @@ export const levelSchema = z.object({
         collision: z.literal('solid'),
         colliderIds: z.array(z.string()),
         zone: z.string(),
+        /** Blocking dressing prop rendered as a model fitted to this box footprint. */
+        prop: z.string().optional(),
+        fallback: z.string().optional(),
+        yaw: z.number().optional(),
+        tint: z.number().optional(),
       }),
     )
     .optional(),

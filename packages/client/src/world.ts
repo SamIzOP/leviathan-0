@@ -5,7 +5,7 @@ import { PRESETS, graphics, type Preset } from './graphics';
 import { WorldMaterials } from './world-materials';
 import { WorldWeather } from './world-weather';
 import { WorldPost } from './world-post';
-import { WorldAssets } from './world-assets';
+import { WorldAssets, gradeOvercast } from './world-assets';
 import { GpuTimer } from './gpu-timer';
 import { worldPalette } from './theme';
 import { forgeAsset, type Primitive } from '../../shared/src/forge-data';
@@ -14,6 +14,7 @@ import { facadeDetails } from './building-visuals';
 import { streetDetails } from './street-details';
 import type { InputReader } from './input';
 import { AutoQuality } from './auto-quality';
+import { PropLayer } from './prop-layer';
 export class WorldView {
   gpu: GpuTimer;
   root = new T.Group();
@@ -56,6 +57,9 @@ export class WorldView {
   private lamps: T.Sprite[] = [];
   private meshes: T.Object3D[] = [];
   private details: T.InstancedMesh[] = [];
+  props: PropLayer;
+  private proxyMaterial = new T.MeshBasicMaterial({ visible: false });
+  private warmed = false;
   private propInstances = new Map<
     string,
     { mesh: T.InstancedMesh; index: number }[]
@@ -87,6 +91,10 @@ export class WorldView {
       a.horizon,
     );
     this.assets = new WorldAssets(renderer);
+    this.props = new PropLayer(this.root, this.materials, this.level.seed, {
+      heightFog: a.heightFog,
+      horizon: a.horizon,
+    });
     this.root.add(new T.HemisphereLight(a.sky, '#343a3c', 2.1));
     const light = new T.DirectionalLight('#bbc6cb', 0.65);
     light.position.set(-30, 70, 30);
@@ -163,6 +171,7 @@ export class WorldView {
       {
         kind: string;
         detail: boolean;
+        proxy: boolean;
         material: T.Material;
         items: {
           position: Vec3;
@@ -174,6 +183,9 @@ export class WorldView {
     >();
     let source = '';
     let detail = false;
+    // Hidden nominal primitives of blocking props: the collision sweep audits these
+    // against the shared colliders; the visible model is fitted inside them.
+    let proxy = false;
     const add = (
       kind: string,
       material: T.Material,
@@ -181,10 +193,10 @@ export class WorldView {
       size: Vec3,
       rotation?: T.Quaternion,
     ) => {
-      const key = `${kind}-${detail}-${material.uuid}-${Math.floor(position.x / 80)}-${Math.floor(position.z / 80)}`;
+      const key = `${kind}-${detail}-${proxy}-${material.uuid}-${Math.floor(position.x / 80)}-${Math.floor(position.z / 80)}`;
       let b = buckets.get(key);
       if (!b) {
-        b = { kind, detail, material, items: [] };
+        b = { kind, detail, proxy, material, items: [] };
         buckets.set(key, b);
       }
       b.items.push({ position, size, source, rotation });
@@ -305,9 +317,60 @@ export class WorldView {
     this.extraMaterials.push(window);
     source = '';
     for (const s of this.level.solids ?? []) {
+      if (s.prop) {
+        this.props.add({
+          id: s.id,
+          key: s.prop,
+          fallback: s.fallback,
+          min: {
+            x: s.position.x - s.size.x / 2,
+            y: s.position.y - s.size.y / 2,
+            z: s.position.z - s.size.z / 2,
+          },
+          max: {
+            x: s.position.x + s.size.x / 2,
+            y: s.position.y + s.size.y / 2,
+            z: s.position.z + s.size.z / 2,
+          },
+          yaw: s.yaw ?? 0,
+          zone: s.zone,
+          solid: true,
+          tint: s.tint ?? 0.5,
+        });
+        source = s.id;
+        proxy = true;
+        add(s.shape, this.proxyMaterial, s.position, s.size);
+        proxy = false;
+        continue;
+      }
+      // Ground slabs span several zones: the slab stays the hidden collision
+      // proxy and each zone's part is drawn with that zone's ground material.
+      if (this.level.layoutVersion && /^ground-/.test(s.id)) {
+        source = s.id;
+        proxy = true;
+        add(s.shape, this.proxyMaterial, s.position, s.size);
+        proxy = false;
+        source = '';
+        detail = false;
+        for (const piece of zonePieces(s, this.level.zones))
+          add(
+            s.shape,
+            this.materials.getZoned(s.surface, piece.zone, s.color),
+            piece.position,
+            piece.size,
+          );
+        continue;
+      }
       source = s.id;
       detail = false;
-      add(s.shape, this.materials.get(s.surface, s.color), s.position, s.size);
+      add(
+        s.shape,
+        this.level.layoutVersion
+          ? this.materials.getZoned(s.surface, s.zone, s.color)
+          : this.materials.get(s.surface, s.color),
+        s.position,
+        s.size,
+      );
     }
     let decorationsBuilt = 0;
     for (const d of [
@@ -342,6 +405,28 @@ export class WorldView {
         const sign = new T.Mesh(geo, mat);
         sign.position.set(d.position.x, d.position.y, d.position.z);
         this.root.add(sign);
+        continue;
+      }
+      if (d.prop && this.level.layoutVersion) {
+        this.props.add({
+          id: d.id,
+          key: d.prop,
+          fallback: d.fallback,
+          min: {
+            x: d.position.x - d.size.x / 2,
+            y: d.position.y - d.size.y / 2,
+            z: d.position.z - d.size.z / 2,
+          },
+          max: {
+            x: d.position.x + d.size.x / 2,
+            y: d.position.y + d.size.y / 2,
+            z: d.position.z + d.size.z / 2,
+          },
+          yaw: d.rotation?.y ?? 0,
+          zone: d.zone ?? 'boundary',
+          solid: false,
+          tint: d.tint ?? 0.5,
+        });
         continue;
       }
       if (d.prop) {
@@ -399,8 +484,12 @@ export class WorldView {
         solidIds.has(item.source) ? item.source : null,
       );
       mesh.userData.sources = b.items.map((item) => item.source);
-      if (b.detail) this.details.push(mesh);
       this.root.add(mesh);
+      if (b.proxy) {
+        mesh.visible = false;
+        continue;
+      }
+      if (b.detail) this.details.push(mesh);
       this.meshes.push(mesh);
       if (++built % 32 === 0) {
         await new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -519,13 +608,21 @@ export class WorldView {
     progress(0.35);
     const sky = await this.assets.sky();
     if (sky && !this.disposed) {
+      const intensity = this.level.layoutVersion
+        ? gradeOvercast(sky, this.level.atmosphere)
+        : 1;
       const pmrem = new T.PMREMGenerator(this.renderer);
       this.environment?.dispose();
       this.environment = pmrem.fromEquirectangular(sky);
       this.scene.environment = this.environment.texture;
-      this.scene.background = sky;
-      this.scene.backgroundIntensity = 0.8;
-      this.sky.visible = false;
+      // Overcast HDRI drives lighting and reflections only; the fogged procedural
+      // sky dome stays the visible background so the rain/fog look is unchanged.
+      if (this.level.layoutVersion) this.scene.environmentIntensity = intensity;
+      else {
+        this.scene.background = sky;
+        this.scene.backgroundIntensity = 0.8;
+        this.sky.visible = false;
+      }
       pmrem.dispose();
     }
     let count = 0;
@@ -562,9 +659,28 @@ export class WorldView {
       }
       progress(0.35 + (0.2 * ++count) / Math.max(1, entries.length));
     }
+    progress(0.6);
+    let yielded = 0;
+    this.props.textureCap = this.preset === 'LOW' ? 512 : 0;
+    this.props.normals = this.preset !== 'LOW';
+    await this.props.build(this.assets, async () => {
+      if (++yielded % 64 === 0)
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      return this.disposed;
+    });
+    if (this.disposed) return;
+    await this.applyZoneMaterials();
+    if (this.disposed) return;
+    // Upload CC0 prop and zone maps now: distance-culled props would otherwise
+    // upload theirs mid-run, the first time they come into range.
+    for (const t of [...this.props.uploads, ...this.assets.textures])
+      this.renderer.initTexture(t);
+    progress(0.9);
     // Replacement meshes have the exact authored collider footprint. Hide their
     // procedural instance only after a replacement has successfully loaded.
-    for (const key of Object.keys(this.assets.manifest.models)) {
+    for (const key of this.level.layoutVersion
+      ? []
+      : Object.keys(this.assets.manifest.models)) {
       const path = this.assets.manifest.models[key];
       if (!path) continue;
       const placements = [
@@ -606,6 +722,44 @@ export class WorldView {
     if (!this.disposed) {
       progress(1);
       this.ready = true;
+    }
+  }
+  /** CC0 surface sets per zone (LOW loads the 512 px copies). Each zoned material
+   * keeps its colour identity, softened so real albedo is not crushed. */
+  private async applyZoneMaterials() {
+    const sets = this.assets.manifest.materials ?? {},
+      loaded = new Map<string, Promise<T.Texture | null>>();
+    const load = (path?: string) => {
+      if (!path) return Promise.resolve(null);
+      let t = loaded.get(path);
+      if (!t) loaded.set(path, (t = this.assets.texture(path)));
+      return t;
+    };
+    for (const m of [
+      ...this.materials.materials.values(),
+      ...this.props.forgeMaterials,
+    ]) {
+      const key = m.userData.materialKey as string | undefined,
+        set = key ? sets[key] : undefined;
+      if (!set) continue;
+      const maps = this.preset === 'LOW' ? (set.low ?? set.maps) : set.maps;
+      const [albedo, rough] = await Promise.all([
+        load(maps.albedo),
+        load(maps.roughness),
+      ]);
+      if (this.disposed) return;
+      if (!albedo) continue;
+      albedo.colorSpace = T.SRGBColorSpace;
+      albedo.anisotropy = 4;
+      m.map = albedo;
+      m.bumpMap = albedo;
+      m.bumpScale = 0.004;
+      if (rough) m.roughnessMap = rough;
+      m.roughness = 0.95;
+      m.color.lerp(new T.Color('#ffffff'), 0.55);
+      m.userData.realMaps = true;
+      m.userData.worldTile = 1 / Math.max(0.25, set.tile ?? 2);
+      m.needsUpdate = true;
     }
   }
   resize() {
@@ -725,7 +879,8 @@ export class WorldView {
               'spawn',
             ],
         t =
-          Math.min(0.99999, (now - this.perfStarted) / 60000) *
+          // rAF timestamps can precede perfStarted on the first frame.
+          Math.min(0.99999, Math.max(0, (now - this.perfStarted) / 60000)) *
           (path.length - 1),
         i = Math.floor(t),
         a = this.level.cameras[path[i]!]!,
@@ -765,12 +920,20 @@ export class WorldView {
           0.02,
         );
     }
+    // The loading warm-up frame draws every prop, so each one's post-pass
+    // program compiles behind the loading screen instead of on first sight.
+    if (this.level.layoutVersion && this.warmed)
+      this.props.cull(camera, this.preset);
+    this.warmed = true;
     for (const mesh of this.details)
       mesh.visible =
         !mesh.boundingSphere ||
         camera.position.distanceTo(mesh.boundingSphere.center) <
           (this.preset === 'LOW' ? 55 : 90) + mesh.boundingSphere.radius;
-    for (const m of this.materials.materials.values()) {
+    for (const m of [
+      ...this.materials.materials.values(),
+      ...this.props.forgeMaterials,
+    ]) {
       m.envMapIntensity = this.puddles ? 1 : 0.05;
       if (m.userData.heightDensity)
         m.userData.heightDensity.value =
@@ -874,6 +1037,12 @@ export class WorldView {
           this.level.atmosphere.horizon,
         ),
         replacements = new Map<T.Material, T.Material>();
+      // Zone materials carry imported CC0 maps that do not depend on the preset.
+      for (const [key, material] of [...old.materials])
+        if (material.userData.realMaps) {
+          old.materials.delete(key);
+          next.materials.set(key, material);
+        }
       for (const material of old.materials.values()) {
         const replacement = next.get(
           material.userData.worldSurface,
@@ -910,6 +1079,7 @@ export class WorldView {
       next.textures.push(...retained);
       old.dispose();
       this.materials = next;
+      this.props.retexture(next);
     }
     this.root.remove(this.weather.group);
     this.weather.dispose();
@@ -919,8 +1089,38 @@ export class WorldView {
     this.renderer.setSize(innerWidth, innerHeight);
     this.resize();
   }
+  /** Decoded texture memory per zone: zone materials plus that zone's props.
+   * A texture shared by two zones counts in both. */
+  private zoneTextureMiB() {
+    const zones = new Map<string, Set<T.Texture>>();
+    const add = (zone: string, m: T.Material | T.Material[]) => {
+      const set = zones.get(zone) ?? zones.set(zone, new Set()).get(zone)!;
+      for (const material of [m].flat())
+        for (const value of Object.values(material))
+          if (value instanceof T.Texture) set.add(value);
+    };
+    for (const m of this.materials.materials.values())
+      if (m.userData.zone) add(m.userData.zone, m);
+    for (const mesh of this.props.meshes)
+      add(mesh.userData.zone, mesh.material);
+    return Object.fromEntries(
+      [...zones].map(([zone, set]) => [
+        zone,
+        Math.round(
+          ([...set].reduce((sum, t) => {
+            const img = t.image as { width?: number; height?: number } | null;
+            return sum + (img?.width ?? 0) * (img?.height ?? 0) * 4 * 1.33;
+          }, 0) /
+            1048576) *
+            10,
+        ) / 10,
+      ]),
+    );
+  }
   stats() {
     return {
+      props: this.props.stats(),
+      zoneTextureMiB: this.zoneTextureMiB(),
       preset: this.preset,
       drawCalls: this.drawCalls,
       triangles: this.triangles,
@@ -960,10 +1160,56 @@ export class WorldView {
     this.post.dispose();
     this.reflection.dispose();
     this.environment?.dispose();
+    this.props.dispose();
+    this.proxyMaterial.dispose();
     this.materials.dispose();
     this.geometries.forEach((g) => g.dispose());
     this.extraMaterials.forEach((m) => m.dispose());
     this.root.clear();
     this.renderer.renderLists.dispose();
   }
+}
+/** Split a box along every zone boundary that crosses it; each piece takes the
+ * zone holding its centre (the box's own zone outside all zone bounds). */
+function zonePieces(
+  s: { position: Vec3; size: Vec3; zone: string },
+  zones: Level['zones'],
+) {
+  const cuts = (axis: 'x' | 'z') => {
+    const lo = s.position[axis] - s.size[axis] / 2,
+      hi = s.position[axis] + s.size[axis] / 2;
+    return [
+      ...new Set([
+        lo,
+        hi,
+        ...zones
+          .flatMap((z) =>
+            z.bounds ? [z.bounds.min[axis], z.bounds.max[axis]] : [],
+          )
+          .filter((v) => v > lo && v < hi),
+      ]),
+    ].sort((a, b) => a - b);
+  };
+  const xs = cuts('x'),
+    zs = cuts('z'),
+    pieces: { zone: string; position: Vec3; size: Vec3 }[] = [];
+  for (let i = 1; i < xs.length; i++)
+    for (let j = 1; j < zs.length; j++) {
+      const x = (xs[i - 1]! + xs[i]!) / 2,
+        z = (zs[j - 1]! + zs[j]!) / 2;
+      pieces.push({
+        zone:
+          zones.find(
+            (zn) =>
+              zn.bounds &&
+              x >= zn.bounds.min.x &&
+              x <= zn.bounds.max.x &&
+              z >= zn.bounds.min.z &&
+              z <= zn.bounds.max.z,
+          )?.id ?? s.zone,
+        position: { x, y: s.position.y, z },
+        size: { x: xs[i]! - xs[i - 1]!, y: s.size.y, z: zs[j]! - zs[j - 1]! },
+      });
+    }
+  return pieces;
 }

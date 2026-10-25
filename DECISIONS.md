@@ -1,3 +1,31 @@
+## Asset pipeline and dressing pass (Prompt 3.7) — 2026-10-24
+
+- **Scope:**
+  - Allowed and done: the asset scripts and manifest, procedural forge use for props, dressing placement, materials and HDRIs, and tests.
+  - Untouched: movement, netcode, weapons, AI, UI, menus and match flow.
+  - No layout or route was moved. New props add box colliders only where they block, and the converted 3.6 cover blocks keep their colliders.
+  - The level schema gained optional `prop`/`fallback`/`yaw`/`tint` fields.
+- **Area mapping:** the five areas cover the seven layout zones:
+  - spawn street = entrance
+  - rooftops = tenements, plus every room roof
+  - container yard = rail
+  - smokestack yard = slag + pumps
+  - foundry hall = hall + core
+- **Collision contract:** a prop's collision stays the shared solid's nominal primitive. The client keeps that primitive as a hidden, solid-tagged mesh, so the existing sweep audits it unchanged, and fits the model inside the footprint. Ground slabs follow the same contract and are drawn in per-zone pieces.
+- **Batching:**
+  - Imported models are instanced per 48 m cell.
+  - Procedural props share 11 recipe materials, so they are merged per cell and material.
+  - LOW culls props at 55 m (100 and 140 m on MEDIUM and HIGH).
+  - Texture tiers apply at LOW: 512 px, 256 px for props under 1 m, and no prop normal maps.
+- **HDRI:** used only for environment lighting and reflections. It is graded at load: desaturated, sun soft-clipped, made azimuthally uniform, and set to the brightness of the procedural sky. The fogged procedural sky stays the visible background.
+- **Picker:** imported models stretch at most 1.6× per axis, forge props 2.5×. Picks are least-used first, followed by a coverage pass. Every downloaded asset must be placed or used, or it is removed from the list (a test enforces this).
+- **Caps** are derived from the pre-dressing Intel UHD LOW run (`docs/perf/redesign-low.json`), plus a 96 MiB per-zone texture budget. The capture script exits 1 on any breach. UHD itself was not available on this machine.
+- **Pre-existing bugs fixed because measurement depended on them:**
+  - The perf path index went negative on its first frame, which killed the render loop at HIGH.
+  - A preset change dropped the zone materials.
+  - Two prop shaders were compiled only on first sight.
+- **Ports:** the dev server here ran on 5173. The scripts take `GAME_URL`/`TEST_URL` and default to the documented 5175.
+
 ## Final redesign review — 2026-10-23
 
 The actual screenshot review does not support accepting the full visual brief. Criteria 1, 5 and 6 are FAIL; see docs/layout/REVIEW.md. In particular, technical overhead clearance is not enough to make separated crowns and roof skins visually believable. Repetitive partition massing, limited ground-level landmark readability, hall pit omission and shared ambient treatments remain in-scope shortcomings. They are not represented as optional future-stage features or hidden by passing count/histogram tests. The rest of the requested engineering validation is recorded separately in ACCEPTANCE.md. No commit or push.

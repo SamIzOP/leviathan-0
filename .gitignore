@@ -3,3 +3,4 @@ dist/
 .env
 test-results/
 *.log
+tools/assets/.cache/
