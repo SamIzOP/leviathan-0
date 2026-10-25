@@ -15,6 +15,18 @@ export interface AssetManifest {
   >;
   hdri: string[];
   audio: Record<string, string>;
+  /** CC0 surface sets keyed by material key (see ZONE_MATERIALS). */
+  materials?: Record<
+    string,
+    {
+      id?: string;
+      tile?: number;
+      maps: Partial<Record<'albedo' | 'normal' | 'roughness' | 'ao', string>>;
+      low?: Partial<Record<'albedo' | 'normal' | 'roughness' | 'ao', string>>;
+    }
+  >;
+  /** Source, URL, licence and author per external asset. */
+  catalog?: Record<string, Record<string, unknown>>;
 }
 export const emptyManifest: AssetManifest = {
   models: {},
@@ -161,4 +173,65 @@ export class WorldAssets {
     this.objects = [];
     this.textures = [];
   }
+}
+/** Grade a downloaded HDRI to the level's overcast look before it lights the
+ * world: desaturate, soft-clip the sun, and pull each row most of the way to
+ * its azimuthal mean so wet ground mirrors a sky that varies with elevation
+ * (as overcast does) rather than one bright side. Returns the environment
+ * intensity at which its upper hemisphere matches the procedural sky dome. */
+export function gradeOvercast(
+  texture: T.Texture,
+  sky: { sky: string; horizon: string },
+  desaturate = 0.75,
+  azimuthal = 0.8,
+) {
+  const img = texture.image as {
+    data: Uint16Array | Float32Array;
+    width: number;
+    height: number;
+  };
+  const half = img.data instanceof Uint16Array,
+    stride = img.data.length / (img.width * img.height),
+    get = (i: number) =>
+      half ? T.DataUtils.fromHalfFloat(img.data[i]!) : img.data[i]!,
+    set = (i: number, v: number) =>
+      (img.data[i] = half ? T.DataUtils.toHalfFloat(v) : v);
+  const row = new Float32Array(img.width * 3);
+  let upper = 0,
+    weight = 0;
+  for (let y = 0; y < img.height; y++) {
+    const mean = [0, 0, 0];
+    for (let x = 0; x < img.width; x++) {
+      const i = (y * img.width + x) * stride,
+        r = get(i),
+        g = get(i + 1),
+        b = get(i + 2),
+        l = 0.2126 * r + 0.7152 * g + 0.0722 * b,
+        k = 1 / (1 + l / 1.5);
+      for (const [c, v] of [r, g, b].entries()) {
+        const graded = (v + (l - v) * desaturate) * k;
+        row[x * 3 + c] = graded;
+        mean[c]! += graded / img.width;
+      }
+    }
+    const lat = Math.cos(((y + 0.5) / img.height - 0.5) * Math.PI);
+    for (let x = 0; x < img.width; x++)
+      for (let c = 0; c < 3; c++)
+        set(
+          (y * img.width + x) * stride + c,
+          row[x * 3 + c]! + (mean[c]! - row[x * 3 + c]!) * azimuthal,
+        );
+    if (y < img.height / 2) {
+      upper +=
+        (0.2126 * mean[0]! + 0.7152 * mean[1]! + 0.0722 * mean[2]!) * lat;
+      weight += lat;
+    }
+  }
+  texture.needsUpdate = true;
+  const lum = (hex: string) => {
+    const c = new T.Color(hex);
+    return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+  };
+  const target = (lum(sky.sky) + lum(sky.horizon)) / 2;
+  return Math.min(0.75, Math.max(0.1, target / Math.max(1e-4, upper / weight)));
 }

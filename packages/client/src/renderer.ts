@@ -28,6 +28,13 @@ export class Renderer {
   offset = 0;
   world?: WorldView;
   feel = new CameraFeel();
+  /** Server tick of the interpolated remote view (sent with inputs for lag
+   * compensation) and the alpha between the bracketing snapshots. */
+  viewTick = 0;
+  viewAlpha = 0;
+  pair?: { from: Entity[]; to: Entity[]; alpha: number };
+  /** Drawn after the world each frame (the first-person viewmodel pass). */
+  overlay?: (renderer: THREE.WebGLRenderer, now: number) => void;
   private loadVersion = 0;
   private loading = document.createElement('section');
   private cameraY = NaN;
@@ -60,7 +67,14 @@ export class Renderer {
           if (version === this.loadVersion)
             this.loading.querySelector('progress')!.value = v;
         })
-        .then(() => {
+        .then(async () => {
+          if (version !== this.loadVersion) return;
+          world.ready = false;
+          await this.renderer.compileAsync(this.scene, this.camera);
+          if (version !== this.loadVersion) return;
+          // Warm the merged post pass while the loading screen still covers the scene.
+          world.render(this.camera);
+          world.ready = true;
           if (version === this.loadVersion) this.loading.hidden = true;
         });
     }, 0);
@@ -163,9 +177,10 @@ export class Renderer {
     localId: string,
     names: Map<string, string>,
     correction: Vec3,
+    position = local?.position,
+    now = performance.now(),
   ) {
-    const now = performance.now(),
-      poseDt = Math.min(0.1, (now - this.poseAt) / 1000);
+    const poseDt = Math.max(0, Math.min(0.1, (now - this.poseAt) / 1000));
     this.poseAt = now;
     const latest = this.snapshots.at(-1);
     if (latest) {
@@ -183,7 +198,15 @@ export class Renderer {
         0,
         Math.min(1, (target - a.time) / Math.max(1, b.time - a.time)),
       );
-      const ids = new Set(latest.entities.map((e) => e.id));
+      this.viewTick = a.tick + (b.tick - a.tick) * alpha;
+      this.viewAlpha = alpha;
+      this.pair = { from: a.entities, to: b.entities, alpha };
+      // Capsules for operators and robots only; combat entities draw elsewhere.
+      const ids = new Set(
+        latest.entities
+          .filter((e) => e.type === 'player' || e.type === 'robot')
+          .map((e) => e.id),
+      );
       for (const [id, v] of this.avatars)
         if (!ids.has(id)) {
           this.scene.remove(v.group);
@@ -194,7 +217,7 @@ export class Renderer {
           this.avatars.delete(id);
         }
       for (const e of latest.entities) {
-        if (e.id === localId) continue;
+        if (e.id === localId || !ids.has(e.id)) continue;
         let v = this.avatars.get(e.id);
         const name = names.get(e.id) ?? 'DIAGNOSTIC UNIT';
         if (!v) {
@@ -231,8 +254,8 @@ export class Renderer {
         v.body.material.opacity = e.flags & FLAG.disconnected ? 0.25 : 1;
       }
     }
-    if (local && (!this.world || this.world.mode === 'player')) {
-      const targetY = local.position.y + correction.y;
+    if (local && position && (!this.world || this.world.mode === 'player')) {
+      const targetY = position.y + correction.y;
       const stair =
         !!(local.flags & FLAG.grounded) &&
         Number.isFinite(this.cameraY) &&
@@ -242,12 +265,20 @@ export class Renderer {
           (targetY - this.cameraY) * (1 - Math.exp(-(now - this.cameraAt) / 95))
         : targetY;
       this.cameraAt = now;
-      this.feel.apply(this.camera, local, {
-        x: local.position.x + correction.x,
-        y: this.cameraY,
-        z: local.position.z + correction.z,
-      });
+      this.feel.apply(
+        this.camera,
+        local,
+        {
+          x: position.x + correction.x,
+          y: this.cameraY,
+          z: position.z + correction.z,
+        },
+        poseDt,
+      );
     }
-    if (this.world?.ready) this.world.render(this.camera);
+    if (this.world?.ready) {
+      this.world.render(this.camera, now, local?.move?.mode);
+      this.overlay?.(this.renderer, now);
+    }
   }
 }

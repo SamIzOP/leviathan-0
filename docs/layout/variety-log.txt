@@ -1,0 +1,517 @@
+{
+  "pass": true,
+  "comparisons": [
+    {
+      "a": "entrance-player",
+      "b": "entrance-high",
+      "meanPixelDifference": 23.382221788194524
+    },
+    {
+      "a": "entrance-player",
+      "b": "tenements-player",
+      "meanPixelDifference": 18.328287326388992
+    },
+    {
+      "a": "entrance-player",
+      "b": "tenements-high",
+      "meanPixelDifference": 21.994715798611224
+    },
+    {
+      "a": "entrance-player",
+      "b": "rail-player",
+      "meanPixelDifference": 23.021051562500187
+    },
+    {
+      "a": "entrance-player",
+      "b": "rail-high",
+      "meanPixelDifference": 29.204734114583452
+    },
+    {
+      "a": "entrance-player",
+      "b": "pumps-player",
+      "meanPixelDifference": 28.615223784722236
+    },
+    {
+      "a": "entrance-player",
+      "b": "pumps-high",
+      "meanPixelDifference": 28.31826762152782
+    },
+    {
+      "a": "entrance-player",
+      "b": "slag-player",
+      "meanPixelDifference": 35.12699418402762
+    },
+    {
+      "a": "entrance-player",
+      "b": "slag-high",
+      "meanPixelDifference": 28.18306571180572
+    },
+    {
+      "a": "entrance-player",
+      "b": "hall-player",
+      "meanPixelDifference": 22.263435329861167
+    },
+    {
+      "a": "entrance-player",
+      "b": "hall-high",
+      "meanPixelDifference": 28.999489670138942
+    },
+    {
+      "a": "entrance-player",
+      "b": "core-player",
+      "meanPixelDifference": 22.70820625000018
+    },
+    {
+      "a": "entrance-player",
+      "b": "core-high",
+      "meanPixelDifference": 21.104857378472317
+    },
+    {
+      "a": "entrance-high",
+      "b": "tenements-player",
+      "meanPixelDifference": 31.006250781250124
+    },
+    {
+      "a": "entrance-high",
+      "b": "tenements-high",
+      "meanPixelDifference": 15.256313802083335
+    },
+    {
+      "a": "entrance-high",
+      "b": "rail-player",
+      "meanPixelDifference": 22.747247482639054
+    },
+    {
+      "a": "entrance-high",
+      "b": "rail-high",
+      "meanPixelDifference": 22.69558940972232
+    },
+    {
+      "a": "entrance-high",
+      "b": "pumps-player",
+      "meanPixelDifference": 23.824599565972385
+    },
+    {
+      "a": "entrance-high",
+      "b": "pumps-high",
+      "meanPixelDifference": 24.401807638888933
+    },
+    {
+      "a": "entrance-high",
+      "b": "slag-player",
+      "meanPixelDifference": 26.305729513888863
+    },
+    {
+      "a": "entrance-high",
+      "b": "slag-high",
+      "meanPixelDifference": 21.666099999999997
+    },
+    {
+      "a": "entrance-high",
+      "b": "hall-player",
+      "meanPixelDifference": 21.17752986111112
+    },
+    {
+      "a": "entrance-high",
+      "b": "hall-high",
+      "meanPixelDifference": 17.549997048611164
+    },
+    {
+      "a": "entrance-high",
+      "b": "core-player",
+      "meanPixelDifference": 30.70647543402778
+    },
+    {
+      "a": "entrance-high",
+      "b": "core-high",
+      "meanPixelDifference": 28.929087673611207
+    },
+    {
+      "a": "tenements-player",
+      "b": "tenements-high",
+      "meanPixelDifference": 29.100731076389017
+    },
+    {
+      "a": "tenements-player",
+      "b": "rail-player",
+      "meanPixelDifference": 28.77617690972226
+    },
+    {
+      "a": "tenements-player",
+      "b": "rail-high",
+      "meanPixelDifference": 35.78651137152765
+    },
+    {
+      "a": "tenements-player",
+      "b": "pumps-player",
+      "meanPixelDifference": 33.99582135416658
+    },
+    {
+      "a": "tenements-player",
+      "b": "pumps-high",
+      "meanPixelDifference": 36.03578463541657
+    },
+    {
+      "a": "tenements-player",
+      "b": "slag-player",
+      "meanPixelDifference": 39.71961762152784
+    },
+    {
+      "a": "tenements-player",
+      "b": "slag-high",
+      "meanPixelDifference": 34.60145737847214
+    },
+    {
+      "a": "tenements-player",
+      "b": "hall-player",
+      "meanPixelDifference": 28.80966102430565
+    },
+    {
+      "a": "tenements-player",
+      "b": "hall-high",
+      "meanPixelDifference": 35.926626996527744
+    },
+    {
+      "a": "tenements-player",
+      "b": "core-player",
+      "meanPixelDifference": 24.11706111111135
+    },
+    {
+      "a": "tenements-player",
+      "b": "core-high",
+      "meanPixelDifference": 16.72402144097225
+    },
+    {
+      "a": "tenements-high",
+      "b": "rail-player",
+      "meanPixelDifference": 28.452717187500056
+    },
+    {
+      "a": "tenements-high",
+      "b": "rail-high",
+      "meanPixelDifference": 17.43247491319452
+    },
+    {
+      "a": "tenements-high",
+      "b": "pumps-player",
+      "meanPixelDifference": 25.063784548611014
+    },
+    {
+      "a": "tenements-high",
+      "b": "pumps-high",
+      "meanPixelDifference": 20.50627821180557
+    },
+    {
+      "a": "tenements-high",
+      "b": "slag-player",
+      "meanPixelDifference": 31.57550251736115
+    },
+    {
+      "a": "tenements-high",
+      "b": "slag-high",
+      "meanPixelDifference": 16.699865885416703
+    },
+    {
+      "a": "tenements-high",
+      "b": "hall-player",
+      "meanPixelDifference": 18.27006397569458
+    },
+    {
+      "a": "tenements-high",
+      "b": "hall-high",
+      "meanPixelDifference": 16.86341102430565
+    },
+    {
+      "a": "tenements-high",
+      "b": "core-player",
+      "meanPixelDifference": 30.942257118055505
+    },
+    {
+      "a": "tenements-high",
+      "b": "core-high",
+      "meanPixelDifference": 27.853110156250022
+    },
+    {
+      "a": "rail-player",
+      "b": "rail-high",
+      "meanPixelDifference": 33.40864869791659
+    },
+    {
+      "a": "rail-player",
+      "b": "pumps-player",
+      "meanPixelDifference": 27.491759722222202
+    },
+    {
+      "a": "rail-player",
+      "b": "pumps-high",
+      "meanPixelDifference": 33.16767109374994
+    },
+    {
+      "a": "rail-player",
+      "b": "slag-player",
+      "meanPixelDifference": 24.200479253472206
+    },
+    {
+      "a": "rail-player",
+      "b": "slag-high",
+      "meanPixelDifference": 31.5620559895832
+    },
+    {
+      "a": "rail-player",
+      "b": "hall-player",
+      "meanPixelDifference": 26.828293489583444
+    },
+    {
+      "a": "rail-player",
+      "b": "hall-high",
+      "meanPixelDifference": 29.077155989583453
+    },
+    {
+      "a": "rail-player",
+      "b": "core-player",
+      "meanPixelDifference": 26.267072222222414
+    },
+    {
+      "a": "rail-player",
+      "b": "core-high",
+      "meanPixelDifference": 28.709696614583393
+    },
+    {
+      "a": "rail-high",
+      "b": "pumps-player",
+      "meanPixelDifference": 23.358297135416578
+    },
+    {
+      "a": "rail-high",
+      "b": "pumps-high",
+      "meanPixelDifference": 14.753868576388824
+    },
+    {
+      "a": "rail-high",
+      "b": "slag-player",
+      "meanPixelDifference": 33.37303836805547
+    },
+    {
+      "a": "rail-high",
+      "b": "slag-high",
+      "meanPixelDifference": 11.065517534722167
+    },
+    {
+      "a": "rail-high",
+      "b": "hall-player",
+      "meanPixelDifference": 18.307269791666787
+    },
+    {
+      "a": "rail-high",
+      "b": "hall-high",
+      "meanPixelDifference": 16.09668923611111
+    },
+    {
+      "a": "rail-high",
+      "b": "core-player",
+      "meanPixelDifference": 34.84781397569429
+    },
+    {
+      "a": "rail-high",
+      "b": "core-high",
+      "meanPixelDifference": 32.823542534722236
+    },
+    {
+      "a": "pumps-player",
+      "b": "pumps-high",
+      "meanPixelDifference": 18.86228359374999
+    },
+    {
+      "a": "pumps-player",
+      "b": "slag-player",
+      "meanPixelDifference": 34.29505251736128
+    },
+    {
+      "a": "pumps-player",
+      "b": "slag-high",
+      "meanPixelDifference": 24.664310677083318
+    },
+    {
+      "a": "pumps-player",
+      "b": "hall-player",
+      "meanPixelDifference": 28.44005842013902
+    },
+    {
+      "a": "pumps-player",
+      "b": "hall-high",
+      "meanPixelDifference": 25.15812196180563
+    },
+    {
+      "a": "pumps-player",
+      "b": "core-player",
+      "meanPixelDifference": 33.23757899305546
+    },
+    {
+      "a": "pumps-player",
+      "b": "core-high",
+      "meanPixelDifference": 29.791415538194414
+    },
+    {
+      "a": "pumps-high",
+      "b": "slag-player",
+      "meanPixelDifference": 33.08051579861114
+    },
+    {
+      "a": "pumps-high",
+      "b": "slag-high",
+      "meanPixelDifference": 17.949841493055537
+    },
+    {
+      "a": "pumps-high",
+      "b": "hall-player",
+      "meanPixelDifference": 24.316457291666666
+    },
+    {
+      "a": "pumps-high",
+      "b": "hall-high",
+      "meanPixelDifference": 20.018708854166796
+    },
+    {
+      "a": "pumps-high",
+      "b": "core-player",
+      "meanPixelDifference": 31.634533420138723
+    },
+    {
+      "a": "pumps-high",
+      "b": "core-high",
+      "meanPixelDifference": 30.630857291666636
+    },
+    {
+      "a": "slag-player",
+      "b": "slag-high",
+      "meanPixelDifference": 35.25838124999999
+    },
+    {
+      "a": "slag-player",
+      "b": "hall-player",
+      "meanPixelDifference": 35.02414392361119
+    },
+    {
+      "a": "slag-player",
+      "b": "hall-high",
+      "meanPixelDifference": 28.04546562500005
+    },
+    {
+      "a": "slag-player",
+      "b": "core-player",
+      "meanPixelDifference": 32.464193663194436
+    },
+    {
+      "a": "slag-player",
+      "b": "core-high",
+      "meanPixelDifference": 33.06978767361121
+    },
+    {
+      "a": "slag-high",
+      "b": "hall-player",
+      "meanPixelDifference": 14.349710416666596
+    },
+    {
+      "a": "slag-high",
+      "b": "hall-high",
+      "meanPixelDifference": 13.72215468749991
+    },
+    {
+      "a": "slag-high",
+      "b": "core-player",
+      "meanPixelDifference": 35.20349904513883
+    },
+    {
+      "a": "slag-high",
+      "b": "core-high",
+      "meanPixelDifference": 32.9020625000001
+    },
+    {
+      "a": "hall-player",
+      "b": "hall-high",
+      "meanPixelDifference": 15.86050781249995
+    },
+    {
+      "a": "hall-player",
+      "b": "core-player",
+      "meanPixelDifference": 34.108141406249814
+    },
+    {
+      "a": "hall-player",
+      "b": "core-high",
+      "meanPixelDifference": 31.566763020833314
+    },
+    {
+      "a": "hall-high",
+      "b": "core-player",
+      "meanPixelDifference": 34.06926223958326
+    },
+    {
+      "a": "hall-high",
+      "b": "core-high",
+      "meanPixelDifference": 31.864453298611238
+    },
+    {
+      "a": "core-player",
+      "b": "core-high",
+      "meanPixelDifference": 20.51751675347235
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "water-tower",
+      "distance": 165,
+      "visibleSamples": 20,
+      "probes": 60
+    },
+    {
+      "id": "bracken-signal",
+      "distance": 165,
+      "visibleSamples": 8,
+      "probes": 19
+    },
+    {
+      "id": "freight-gantry",
+      "distance": 165,
+      "visibleSamples": 21,
+      "probes": 37
+    },
+    {
+      "id": "vale-gasholder",
+      "distance": 165,
+      "visibleSamples": 5,
+      "probes": 50
+    },
+    {
+      "id": "stack-0",
+      "distance": 165,
+      "visibleSamples": 7,
+      "probes": 42
+    },
+    {
+      "id": "stack-1",
+      "distance": 165,
+      "visibleSamples": 6,
+      "probes": 42
+    },
+    {
+      "id": "stack-2",
+      "distance": 165,
+      "visibleSamples": 6,
+      "probes": 42
+    },
+    {
+      "id": "ore-bridge",
+      "distance": 165,
+      "visibleSamples": 2,
+      "probes": 51
+    },
+    {
+      "id": "vesper-furnace",
+      "distance": 165,
+      "visibleSamples": 1,
+      "probes": 32
+    }
+  ],
+  "failures": []
+}

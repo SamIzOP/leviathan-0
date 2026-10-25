@@ -29,8 +29,8 @@ try {
     );
     manifest.models['prop.water-tower'] =
       '/assets/models/generated/water-tower-1.glb';
-    manifest.models['prop.container'] =
-      '/assets/models/generated/container-1.glb';
+    manifest.models['prop.gantry-crane'] =
+      '/assets/models/generated/gantry-crane-1.glb';
     await page.route('**/asset-manifest.json', (route) =>
       route.fulfill({
         contentType: 'application/json',
@@ -71,8 +71,8 @@ try {
       '/assets/models/generated/water-tower-1.glb',
     );
     assert.equal(
-      world.assets['prop.container'],
-      '/assets/models/generated/container-1.glb',
+      world.assets['prop.gantry-crane'],
+      '/assets/models/generated/gantry-crane-1.glb',
     );
   }
   assert.deepEqual(errors, []);

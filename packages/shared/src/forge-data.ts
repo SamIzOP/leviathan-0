@@ -1,5 +1,6 @@
 import type { Box, Vec3 } from './types';
 import { stairRun } from './stairs';
+import { INDUSTRIAL_FAMILIES, industrialParts } from './forge-industrial';
 export type Recipe =
   | 'steel'
   | 'rust'
@@ -13,7 +14,17 @@ export type Recipe =
   | 'tarp'
   | 'pale';
 export type Primitive =
-  'box' | 'bevel' | 'cylinder' | 'tube' | 'lathe' | 'cabin';
+  | 'box'
+  | 'bevel'
+  | 'cylinder'
+  | 'cylinderZ'
+  | 'tube'
+  | 'lathe'
+  | 'cabin'
+  | 'cooling'
+  | 'arch'
+  | 'gable'
+  | 'sag';
 export interface Part {
   shape: Primitive;
   position: Vec3;
@@ -21,6 +32,7 @@ export interface Part {
   recipe: Recipe;
   rotation?: Vec3;
   detail?: boolean;
+  collision?: 'solid' | 'decor';
 }
 export interface ForgeAsset {
   key: string;
@@ -32,6 +44,7 @@ export interface ForgeAsset {
   large: boolean;
 }
 export const FORGE_CATALOG = [
+  ...INDUSTRIAL_FAMILIES,
   'container',
   'crate',
   'pallet',
@@ -135,6 +148,7 @@ export function forgeAsset(
       size: v(w, h, d),
       recipe,
       detail,
+      collision: detail ? 'decor' : 'solid',
       ...(rotation ? { rotation } : {}),
     });
   };
@@ -215,18 +229,22 @@ export function forgeAsset(
   const vehicle = /^(sedan|hatchback|pickup|small-truck|van)(-wreck)?$/.test(
     key,
   );
-  const large = [
-    'tank',
-    'vat',
-    'boiler',
-    'gantry',
-    'overhead-crane',
-    'gantry-crane',
-    'water-tower',
-    'smokestack',
-    'stair-run',
-  ].includes(key);
-  if (vehicle) {
+  const large =
+    (INDUSTRIAL_FAMILIES as readonly string[]).includes(key) ||
+    [
+      'tank',
+      'vat',
+      'boiler',
+      'gantry',
+      'overhead-crane',
+      'gantry-crane',
+      'water-tower',
+      'smokestack',
+      'stair-run',
+    ].includes(key);
+  const industrial = industrialParts(key, variant, seed, lod);
+  if (industrial) parts.push(...industrial);
+  else if (vehicle) {
     const base = key.replace('-wreck', ''),
       wreck = key.endsWith('-wreck');
     const width = base === 'small-truck' ? 2.3 : base === 'van' ? 2.1 : 1.8;
@@ -836,6 +854,10 @@ export function forgeAsset(
             let x = (sx * p.size.x) / 2,
               y = (sy * p.size.y) / 2,
               z = (sz * p.size.z) / 2;
+            if (p.shape === 'cabin' && sy > 0) {
+              x *= 0.84;
+              z *= 0.72;
+            }
             [x, y] = [
               x * Math.cos(r.z) - y * Math.sin(r.z),
               x * Math.sin(r.z) + y * Math.cos(r.z),

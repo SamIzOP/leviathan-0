@@ -1,0 +1,24 @@
+┌─────────┬──────────────────────┬───────┬────────┬─────────────┬────────┬──────────────────────────┐
+│ (index) │ measure              │ value │ unit   │ range       │ result │ note                     │
+├─────────┼──────────────────────┼───────┼────────┼─────────────┼────────┼──────────────────────────┤
+│ 0       │ 'walkTopSpeed'       │ 5     │ 'm/s'  │ '4.95–5.05' │ 'PASS' │ ''                       │
+│ 1       │ 'sprintTopSpeed'     │ 8     │ 'm/s'  │ '7.95–8.05' │ 'PASS' │ ''                       │
+│ 2       │ 'sprintAccelSeconds' │ 0.25  │ 's'    │ '0.2–0.32'  │ 'PASS' │ 'walk → 8 m/s'           │
+│ 3       │ 'jumpApex'           │ 1.279 │ 'm'    │ '1.2–1.35'  │ 'PASS' │ ''                       │
+│ 4       │ 'doubleJumpApex'     │ 2.265 │ 'm'    │ '2.2–2.6'   │ 'PASS' │ 'press at apex'          │
+│ 5       │ 'sprintJumpDistance' │ 5.333 │ 'm'    │ '4.8–6.2'   │ 'PASS' │ ''                       │
+│ 6       │ 'slideEntrySpeed'    │ 9.138 │ 'm/s'  │ '9–9.4'     │ 'PASS' │ 'from 8 m/s sprint'      │
+│ 7       │ 'slideSeconds'       │ 1.4   │ 's'    │ '1.2–1.6'   │ 'PASS' │ 'decays to 4 m/s'        │
+│ 8       │ 'slideDistance'      │ 9.277 │ 'm'    │ '8–12'      │ 'PASS' │ ''                       │
+│ 9       │ 'slideJumpSpeed'     │ 9.275 │ 'm/s'  │ '9–12.5'    │ 'PASS' │ 'jump 0.25 s into slide' │
+│ 10      │ 'wallRunSeconds'     │ 2.2   │ 's'    │ '2–2.25'    │ 'PASS' │ 'to time limit'          │
+│ 11      │ 'wallRunExitSpeed'   │ 9     │ 'm/s'  │ '8.5–9.5'   │ 'PASS' │ ''                       │
+│ 12      │ 'wallRunPeakRise'    │ 0.875 │ 'm'    │ '0.3–1'     │ 'PASS' │ ''                       │
+│ 13      │ 'wallJumpAway'       │ 4.903 │ 'm/s'  │ '4.5–5.5'   │ 'PASS' │ ''                       │
+│ 14      │ 'wallJumpUp'         │ 6.8   │ 'm/s'  │ '6.5–7.5'   │ 'PASS' │ ''                       │
+│ 15      │ 'wallJumpAlong'      │ 9.053 │ 'm/s'  │ '8–9.5'     │ 'PASS' │ ''                       │
+│ 16      │ 'mantleSeconds'      │ 0.45  │ 's'    │ '0.43–0.48' │ 'PASS' │ ''                       │
+│ 17      │ 'mantleInset'        │ 0.45  │ 'm'    │ '0.4–0.5'   │ 'PASS' │ 'top y=1.500'            │
+│ 18      │ 'lowCeilingCrouched' │ 1     │ 'bool' │ '1–1'       │ 'PASS' │ '93 ticks under'         │
+│ 19      │ 'stairStepUp'        │ 1.8   │ 'm'    │ '1.79–1.81' │ 'PASS' │ 'grounded throughout'    │
+└─────────┴──────────────────────┴───────┴────────┴─────────────┴────────┴──────────────────────────┘

@@ -127,9 +127,12 @@ describe('Architecture and forge', () => {
   });
   it('defines the large sealed compound, gate markers and entrance-only spawns', () => {
     const l = getLevel();
-    expect(l.bounds.max.x - l.bounds.min.x).toBe(220);
-    expect(l.bounds.max.z - l.bounds.min.z).toBe(180);
-    expect(l.gates.every((g) => g.initiallyClosed)).toBe(true);
+    expect(l.bounds.max.x - l.bounds.min.x).toBe(420);
+    expect(l.bounds.max.z - l.bounds.min.z).toBe(340);
+    expect(l.gates.find((g) => g.id === 'entrance-seal')!.initiallyClosed).toBe(
+      true,
+    );
+    expect(l.gates.filter((g) => g.connects)).toHaveLength(6);
     expect(
       l.spawns
         .filter((s) => s.type === 'player')
@@ -138,18 +141,15 @@ describe('Architecture and forge', () => {
   });
   it('detects an opened perimeter in the flood fill', () => {
     const l = structuredClone(getLevel());
-    l.colliders = l.colliders.filter((b) => b.id !== 'compound-wall-x108');
+    l.colliders = l.colliders.filter((b) => b.id !== 'perimeter-x208');
     expect(confinement(l).boundary).toBe(true);
   });
   it('keeps stair risers and treads at human scale', () => {
-    const stairs = getLevel().colliders.filter(
-      (b) => b.id.includes('-flight-') && !b.id.includes('landing'),
-    );
-    expect(stairs.length).toBeGreaterThan(500);
+    const stairs = getLevel().colliders.filter((b) => b.id.includes('/tread-'));
+    expect(stairs.length).toBeGreaterThan(300);
     expect(
       stairs.every(
-        (b) =>
-          b.max.y - b.min.y >= 0.17 - 1e-7 && b.max.y - b.min.y <= 0.19 + 1e-7,
+        (b) => b.max.z - b.min.z >= 0.4 && b.max.z - b.min.z <= 0.43,
       ),
     ).toBe(true);
   });

@@ -3,57 +3,57 @@
   "qualitySamples": [
     {
       "preset": "HIGH",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12138644
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34164144
     },
     {
       "preset": "LOW",
-      "textureMiB": 12.7,
-      "textures": 19,
-      "heap": 12346808
+      "textureMiB": 10,
+      "textures": 54,
+      "heap": 34175196
     },
     {
       "preset": "MEDIUM",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12333756
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34245296
     },
     {
       "preset": "HIGH",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12322924
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34224472
     },
     {
       "preset": "LOW",
-      "textureMiB": 12.7,
-      "textures": 19,
-      "heap": 12481556
+      "textureMiB": 10,
+      "textures": 54,
+      "heap": 34314596
     },
     {
       "preset": "MEDIUM",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12446040
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34295380
     },
     {
       "preset": "HIGH",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12390572
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34341560
     },
     {
       "preset": "LOW",
-      "textureMiB": 12.7,
-      "textures": 19,
-      "heap": 12468144
+      "textureMiB": 10,
+      "textures": 54,
+      "heap": 34235788
     },
     {
       "preset": "MEDIUM",
-      "textureMiB": 36.6,
-      "textures": 19,
-      "heap": 12559144
+      "textureMiB": 33.9,
+      "textures": 54,
+      "heap": 34260744
     }
   ]
 }

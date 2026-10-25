@@ -1,0 +1,30 @@
+npm notice run build
+npm notice run npm run typecheck && npm run build -w @leviathan/client && npm run build -w @leviathan/server
+npm notice run typecheck
+npm notice run tsc --noEmit
+npm notice run @leviathan/client@0.1.0 build
+npm notice run vite build
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 81 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             0.89 kB │ gzip:   0.45 kB
+dist/assets/world-materials-1GgIgzUB.css   17.01 kB │ gzip:   4.29 kB
+dist/assets/index-eFXC6LH9.js               2.53 kB │ gzip:   1.26 kB
+dist/assets/collision-sweep-6zkobITa.js     2.77 kB │ gzip:   1.42 kB
+dist/assets/gallery-Cx99bHh0.js            24.90 kB │ gzip:   6.93 kB
+dist/assets/main-BX7UA8Zn.js              287.27 kB │ gzip: 103.11 kB
+dist/assets/world-materials-B6jLf0Gr.js   695.73 kB │ gzip: 184.94 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.92s
+npm notice run @leviathan/server@0.1.0 build
+npm notice run esbuild src/index.ts --bundle --platform=node --format=esm --external:ws --external:dotenv --outfile=dist/index.js
+
+  dist\index.js  236.5kb
+
+Done in 112ms

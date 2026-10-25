@@ -1,5 +1,26 @@
 # LEVIATHAN 0 — multiplayer foundation
 
+## Foundry Row redesign
+
+The active world is a sealed 420 × 340 m, seven-zone compound. [Layout and map](docs/layout/LAYOUT.md), [baseline critique](docs/layout/CRITIQUE.md), [visual review](docs/layout/REVIEW.md) and [acceptance](ACCEPTANCE.md) describe the current implementation and its limits.
+
+- `npm run level:map` writes the current SVG map and a data snapshot under `docs/layout/`.
+- `npm run level:layout-check` checks reserved lanes and runs the actual sprint bot along the 2,251 m route.
+- `npm run level:collision-audit` runs coverage, straight-line bot and real client mesh-ray checks. It expects the development game at `http://localhost:5175`; set `TEST_URL` when using another port and `CHROMIUM_PATH` for a nondefault Chromium installation.
+- `npx tsx scripts/progression-bots.ts` tests district seams with the full movement set.
+- `npx tsx scripts/view-variety.ts` tests the fixed zone views and distant landmark visibility.
+- `npm run forge:export` and `npm run assets:check` exercise the procedural export and optional asset fallback workflow.
+
+In development, use `/?solo=1&camera=entrance-player` (or `tenements-player`, `rail-player`, `pumps-player`, `slag-player`, `hall-player`, `core-player`). Replace `-player` with `-high` for an elevated view. F4 → WORLD / LOOK provides free-fly and the **MARKERS / ROUTES / ENCOUNTERS** overlay. `/?gallery=1` opens the full forge catalog. These inspection tools remain hidden in production.
+
+## Movement diagnostics and chain courses
+
+In development, F4 → DEBUG DRAW → INPUT DIAGNOSTICS shows a five-second frame graph, slow-frame counts, simulation ticks/frame, raw mouse events/frame totals, yaw/pitch deltas, correction frequency/magnitude, discarded spikes, quality/resolution changes and wall-latch rejection details. F3 includes a compact summary. These diagnostics are hidden in production.
+
+Movement Lab adds parallel lanes with 6, 8 and 10 m clear gaps in the eastern strip, plus staggered walls. Existing L-corner and interrupted-wall courses remain available. A used double jump does not prevent wall entry; Space at a valid face attaches before consuming the air jump. Only the wall just left is locked for 0.6 s (grounding clears it). Entry needs 4.5 m/s along the wall and at least 0.4 m above the floor.
+
+Reproducible checks: `npx tsx scripts/wall-latch-harness.ts after`, `npx tsx scripts/wall-chain-harness.ts`, and `npx tsx scripts/movement-fix-browser.ts after` (set TEST_URL to the development server). The browser hook supplies fixed-rate raw input through the same accumulator as real mouse events. Reports and diagnostics captures are under `docs/screens/movement/`; acceptance limitations are recorded in ACCEPTANCE.md. No commit or push was made.
+
 Browser co-op foundation for 2–8 Kainos operators. Rooms, authoritative movement, prediction, reconnect, rematches and audio are implemented. Foundry Row adds a playable industrial world, procedural weather/materials and environment audio. The movement stage adds sprint, crouch, slide, slide-jump, air jump, wall-run, wall-jump and mantle. Weapons and combat AI remain deferred.
 
 ## Run locally

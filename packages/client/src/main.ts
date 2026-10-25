@@ -1,23 +1,37 @@
 import './style.css';
 import {
   CONFIG,
+  DEFAULT_RULES,
   DEV_LEVELS,
+  FIRE_BUTTON,
+  STATUS,
+  combatMatches,
+  combatRules,
   getLevel,
   levelWorld,
   predictionMatches,
   resolveTuning,
-  stepPlayer,
+  stepCombatant,
 } from '@leviathan/shared';
 import type {
+  CombatRules,
+  CombatStep,
+  DevState,
   Entity,
   Input,
   MoveMode,
   RoomView,
   ServerMessage,
 } from '@leviathan/shared';
+import { CombatClient } from './combat';
+import { adsLookScale } from './weapon-settings';
+import { graphics } from './graphics';
 import { applyTheme } from './theme';
 import { Network } from './network';
 import { InputReader, type InjectedInput } from './input';
+import { InputDiagnostics } from './input-diagnostics';
+import { interpolatePosition } from './look-pipeline';
+import type { WallLatchDiagnostic } from '../../shared/src/movement';
 import { Renderer } from './renderer';
 import { AudioManager } from './audio';
 import { MenuBackground } from './menu-background';
@@ -34,6 +48,8 @@ const app = document.querySelector<HTMLDivElement>('#app')!,
   debug = document.querySelector<HTMLPreElement>('#debug')!;
 const audio = new AudioManager(),
   renderer = new Renderer(canvas);
+const combat = new CombatClient(renderer.scene, audio);
+renderer.overlay = (r) => combat.overlay(r);
 const background = new MenuBackground(),
   debugDraw = new DebugDraw();
 const urlParams = new URLSearchParams(location.search);
@@ -69,8 +85,15 @@ let reconciliations = 0,
   matchedSnapshots = 0,
   maxPredictionError = 0;
 const reached = new Set<MoveMode>();
+const playerNames = new Map<string, string>();
 let restoreLook = false;
 const correction = { x: 0, y: 0, z: 0 };
+let previousPosition: Entity['position'] | undefined;
+const renderPosition = { x: 0, y: 0, z: 0 };
+let wallDiagnostic: WallLatchDiagnostic | undefined;
+const inputDiagnostics = import.meta.env.DEV
+  ? new InputDiagnostics()
+  : undefined;
 const input = new InputReader(
   canvas,
   (action) => {
@@ -86,9 +109,10 @@ const network = new Network(receive, (value) => {
   offline = value;
   document.querySelector<HTMLElement>('#reconnecting')!.hidden = !value;
 });
+input.onMouse = (x, y) => inputDiagnostics?.mouse(x, y);
 const devPanel = new DevPanel(
   (m) => network.send(m),
-  (lag, loss) => network.setDevFaults(lag, loss),
+  (lag, loss, jitter) => network.setDevFaults(lag, loss, jitter),
   (ms) => network.simulateDisconnect(ms),
   () => toggleOverlay('dev'),
   () => void audio.play('ui_click'),
@@ -105,17 +129,56 @@ if (urlFaults) {
   devPanel.preferences.loss = network.loss;
 }
 const world = () => levelWorld(getLevel(room?.levelId));
-/** The one shared step, with the room's dev tuning when present. */
-function step(state: Entity, command: Input) {
-  return stepPlayer(
+let rulesFor: DevState | undefined,
+  rulesCache: CombatRules = DEFAULT_RULES;
+/** Weapon rules: data plus a dev room's live overrides and infinite-ammo toggle,
+ * exactly what the server steps with. */
+function rules(): CombatRules {
+  const state = dev ? devPanel.state : undefined;
+  if (state !== rulesFor) {
+    rulesFor = state;
+    rulesCache = state?.combat
+      ? combatRules(state.combat.weapons, state.combat.infiniteAmmo)
+      : DEFAULT_RULES;
+  }
+  return rulesCache;
+}
+/** The one shared step (movement unchanged inside it), with the room's dev tuning
+ * when present. */
+function step(state: Entity, command: Input): CombatStep {
+  return stepCombatant(
     state,
     command,
     1 / tickRate,
     world(),
     dev && devPanel.state ? resolveTuning(devPanel.state.tuning) : undefined,
+    rules(),
+    dev
+      ? (sample) => {
+          wallDiagnostic = sample;
+        }
+      : undefined,
   );
 }
+const dead = (e?: Entity) => !!((e?.status ?? 0) & STATUS.dead);
+let authoritativeLocal: Entity | undefined;
+let lastLook = { yaw: 0, pitch: 0 };
+let hitDebugRequested = false;
+let lastMismatch = '';
+/** Predicted shots per movement state (dev acceptance: firing in every state). */
+const shotsByMode: Partial<Record<MoveMode | 'SPRINT', number>> = {};
+let shotsFired = 0,
+  hitsConfirmed = 0,
+  sprintPull = false;
+const rewinds: {
+  requested: number;
+  applied: number;
+  x?: number;
+  z?: number;
+  view?: number;
+}[] = [];
 function resetPrediction() {
+  previousPosition = undefined;
   pending = [];
   history = new Map();
   correction.x = correction.y = correction.z = 0;
@@ -190,6 +253,7 @@ function draw() {
       renderer.setLevel();
       disposeAudio();
       predicted = undefined;
+      combat.reset();
       soloEntry = false;
       draw();
     },
@@ -211,6 +275,8 @@ function vote(value: 'REPLAY' | 'NEXT') {
   void audio.play('vote_cast');
 }
 function setRoom(value: RoomView) {
+  playerNames.clear();
+  for (const player of value.players) playerNames.set(player.id, player.name);
   const old = room?.phase;
   const comparable = (r: RoomView | undefined) =>
     r
@@ -302,6 +368,16 @@ function receive(m: ServerMessage) {
     case 'dev-state':
       if (!dev) break;
       devPanel.update(m.state);
+      // A saved hit-ray overlay asks the server for its debug events once.
+      if (
+        devPanel.preferences.draw.hitRays &&
+        !m.state.combat?.hitDebug &&
+        !hitDebugRequested &&
+        room?.hostId === playerId
+      ) {
+        hitDebugRequested = true;
+        network.send({ type: 'dev', action: 'hit-debug', enabled: true });
+      }
       debugDraw.tuning = resolveTuning(m.state.tuning);
       if (m.state.solo && !soloEntry) {
         soloEntry = true;
@@ -311,6 +387,7 @@ function receive(m: ServerMessage) {
         const reset = m.reset.find((r) => r.entity.id === playerId);
         if (reset) {
           predicted = reset.entity;
+          previousPosition = undefined;
           pending = pending.filter((i) => i.seq > reset.ack);
           history = new Map();
           correction.x = correction.y = correction.z = 0;
@@ -322,6 +399,39 @@ function receive(m: ServerMessage) {
       break;
     case 'snapshot': {
       renderer.push(m);
+      if (m.events?.length) {
+        combat.events(m.events, playerId, playerNames, world());
+        debugDraw.hitDebug(m.events);
+        for (const e of m.events) {
+          if (
+            e.t === 'hit' &&
+            e.source === playerId &&
+            typeof e.cause === 'number'
+          )
+            hitsConfirmed++;
+          if (e.t === 'debug' && e.shooter === playerId) {
+            const body = e.boxes.find((b) => b.max.y - b.min.y > 1);
+            rewinds.push({
+              requested:
+                e.view === undefined
+                  ? 0
+                  : ((e.tick - e.view) * 1000) / tickRate,
+              applied: ((e.tick - e.rewindTick) * 1000) / tickRate,
+              ...(body
+                ? {
+                    x: (body.min.x + body.max.x) / 2,
+                    z: (body.min.z + body.max.z) / 2,
+                  }
+                : {}),
+              view: e.view,
+            });
+            if (rewinds.length > 60) rewinds.shift();
+          }
+        }
+        // A respawn teleports the operator: adopt it without a smoothing slide.
+        if (m.events.some((e) => e.t === 'respawn' && e.player === playerId))
+          resetPrediction();
+      }
       movementAudio?.remote(m.entities, playerId);
       tick = m.tick;
       const now = performance.now();
@@ -338,9 +448,13 @@ function receive(m: ServerMessage) {
       totalSnapshots++;
       const entity = m.entities.find((e) => e.id === playerId);
       if (entity) {
-        const authoritative: Entity = m.move
-          ? { ...entity, move: m.move }
-          : entity;
+        const authoritative: Entity = {
+          ...entity,
+          ...(m.move ? { move: m.move } : {}),
+          ...(m.combat ? { combat: m.combat } : {}),
+        };
+        authoritativeLocal = authoritative;
+        input.owned = authoritative.combat?.owned ?? input.owned;
         if (restoreLook) {
           input.yaw = authoritative.yaw;
           input.pitch = authoritative.pitch;
@@ -351,15 +465,44 @@ function receive(m: ServerMessage) {
         pending = pending.filter((i) => i.seq > ack);
         for (const key of history.keys()) if (key <= ack) history.delete(key);
         const playing = !!predicted && room?.phase === 'PLAYING';
-        if (playing && local && predictionMatches(local, authoritative)) {
+        if (dead(authoritative)) {
+          // Dead operators do not predict; the server owns the respawn.
+          predicted = authoritative;
+          history = new Map();
+          previousPosition = undefined;
+        } else if (
+          playing &&
+          local &&
+          predictionMatches(local, authoritative) &&
+          combatMatches(local.combat, authoritative.combat)
+        ) {
           matchedSnapshots++;
           predictionError = 0;
         } else {
+          if (dev && playing && local) {
+            // Dev diagnostic: which part of the prediction diverged.
+            const moveOk = predictionMatches(local, authoritative);
+            const a = local.combat,
+              b = authoritative.combat;
+            lastMismatch = moveOk
+              ? `combat ${
+                  a && b
+                    ? Object.keys(a)
+                        .filter(
+                          (k) =>
+                            JSON.stringify(a[k as keyof typeof a]) !==
+                            JSON.stringify(b[k as keyof typeof b]),
+                        )
+                        .join(',')
+                    : 'missing'
+                }`
+              : 'movement';
+          }
           // Any mismatch, including a sub-state field: rewind to authority and replay.
           let state = authoritative;
           history = new Map();
           for (const command of pending) {
-            state = step(state, command);
+            state = step(state, command).entity;
             history.set(command.seq, state);
           }
           if (playing && predicted) {
@@ -370,11 +513,22 @@ function receive(m: ServerMessage) {
             );
             maxPredictionError = Math.max(maxPredictionError, predictionError);
             reconciliations++;
-            for (const axis of ['x', 'y', 'z'] as const)
+            inputDiagnostics?.correction(predictionError);
+            for (const axis of ['x', 'y', 'z'] as const) {
               correction[axis] +=
                 predicted.position[axis] - state.position[axis];
+              if (previousPosition)
+                previousPosition[axis] +=
+                  state.position[axis] - predicted.position[axis];
+            }
           }
           predicted = state;
+          if (!playing) previousPosition = undefined;
+        }
+        // Health and status bits are authoritative only (never predicted).
+        if (predicted) {
+          predicted.health = authoritative.health;
+          predicted.status = authoritative.status;
         }
       }
       break;
@@ -428,6 +582,7 @@ setInterval(() => {
   accumulator += Math.min(now - previousSimulation, 250);
   previousSimulation = now;
   while (accumulator >= 1000 / tickRate) {
+    if (inputDiagnostics) inputDiagnostics.ticks++;
     accumulator -= 1000 / tickRate;
     if (
       room?.phase === 'PLAYING' &&
@@ -440,6 +595,8 @@ setInterval(() => {
         toast('Uplink delayed. Resynchronizing.');
       }
       const command = input.command(++seq, tick + pending.length + 1);
+      // Lag compensation: the server rewinds targets to what this client rendered.
+      if (renderer.viewTick) command.view = renderer.viewTick;
       if (dev && renderer.world && renderer.world.mode !== 'player') {
         command.x = 0;
         command.z = 0;
@@ -449,8 +606,35 @@ setInterval(() => {
       }
       pending.push(command);
       const before = predicted;
-      predicted = step(predicted, command);
+      previousPosition = { ...before.position };
+      if (dead(predicted)) {
+        history.set(command.seq, predicted);
+        network.send({
+          type: 'inputs',
+          inputs: pending.slice(-CONFIG.maxBatch),
+        });
+        continue;
+      }
+      const out = step(predicted, command);
+      predicted = out.entity;
       history.set(command.seq, predicted);
+      shotsFired += out.shots.length;
+      // A trigger pull from a lowered (sprinting) weapon fires after the
+      // sprint-to-fire raise; that shot is counted as fired out of a sprint.
+      if (before.combat?.lowered && command.buttons & FIRE_BUTTON.fire)
+        sprintPull = true;
+      for (const shot of out.shots) {
+        void shot;
+        const mode = sprintPull ? 'SPRINT' : modeOf(before);
+        sprintPull = false;
+        shotsByMode[mode] = (shotsByMode[mode] ?? 0) + 1;
+      }
+      // Predicted shots: muzzle, tracers and recoil now; the server confirms hits.
+      const kick = combat.local(out, before, rules(), world());
+      if (kick.yaw || kick.pitch) {
+        input.yaw += kick.yaw;
+        input.pitch = Math.max(-1.5, Math.min(1.5, input.pitch + kick.pitch));
+      }
       network.send({ type: 'inputs', inputs: pending.slice(-CONFIG.maxBatch) });
       const was = modeOf(before),
         is = modeOf(predicted);
@@ -474,6 +658,12 @@ setInterval(() => {
   }
 }, 4);
 function frame(now: number) {
+  const lookBefore = { yaw: input.yaw, pitch: input.pitch };
+  input.frameLook();
+  lastLook = {
+    yaw: input.yaw - lookBefore.yaw,
+    pitch: input.pitch - lookBefore.pitch,
+  };
   const elapsed = Math.min(now - previous, 250);
   previous = now;
   if (predicted && (!renderer.world || renderer.world.mode === 'player')) {
@@ -502,11 +692,38 @@ function frame(now: number) {
       movementAudio?.frame(predicted);
     }
     renderer.world?.control(input, renderer.camera, elapsed);
+    if (renderer.pair) combat.entities({ ...renderer.pair, localId: playerId });
+    combat.frame({
+      dt: elapsed / 1000,
+      now,
+      camera: renderer.camera,
+      local: predicted,
+      authoritative: authoritativeLocal,
+      rules: rules(),
+      look: lastLook,
+      playing: room?.phase === 'PLAYING' && !!predicted,
+      quality:
+        renderer.world?.preset ??
+        (graphics.quality === 'AUTO' ? 'MEDIUM' : graphics.quality),
+      names: playerNames,
+    });
+    renderer.feel.zoom = combat.zoom;
+    input.lookScale = adsLookScale(combat.ads, combat.zoom);
     renderer.render(
       room?.phase === 'PLAYING' ? predicted : undefined,
       playerId,
-      new Map(room?.players.map((p) => [p.id, p.name]) ?? []),
+      playerNames,
       correction,
+      predicted
+        ? interpolatePosition(
+            previousPosition ?? predicted.position,
+            predicted.position,
+            (accumulator + Math.max(0, now - previousSimulation)) /
+              (1000 / tickRate),
+            renderPosition,
+          )
+        : undefined,
+      now,
     );
     debugDraw.render(
       renderer.camera,
@@ -519,6 +736,16 @@ function frame(now: number) {
   } else {
     background.start();
     debugDraw.canvas.hidden = true;
+    combat.frame({
+      dt: elapsed / 1000,
+      now,
+      camera: renderer.camera,
+      rules: rules(),
+      look: lastLook,
+      playing: false,
+      quality: 'MEDIUM',
+      names: playerNames,
+    });
   }
   devPanel.live(room, renderer.snapshots.at(-1)?.entities.length ?? 0);
   if (room) {
@@ -569,6 +796,27 @@ function frame(now: number) {
   }
   debug.hidden = !input.debug;
   debug.textContent = `SERVER TICK ${tick}\nSNAPSHOTS ${(snapshotTimes.length / 2).toFixed(1)} / ${snapshotRate} Hz\nPING ${room?.players.find((p) => p.id === playerId)?.ping ?? 0} ms\nLOSS EST. ${((100 * missingSnapshots) / Math.max(1, totalSnapshots + missingSnapshots)).toFixed(1)}%\nPREDICTION ERROR ${predictionError.toFixed(4)} m\nUNACKNOWLEDGED ${pending.length}\nENTITIES ${renderer.snapshots.at(-1)?.entities.length ?? 0}\nMOVE STATE ${mode}${predicted?.move?.crouched ? ' / CROUCHED' : ''}\nSPEED ${speed.toFixed(2)} m/s\nRECONCILED ${reconciliations} / MATCHED ${matchedSnapshots}`;
+  inputDiagnostics?.frame(
+    performance.now(),
+    elapsed,
+    renderer.camera.rotation.y,
+    renderer.camera.rotation.x,
+  );
+  if (inputDiagnostics && dev) {
+    inputDiagnostics.enabled = !!devPanel.preferences.draw.inputDiagnostics;
+    // F3 collects the same bounded history even when the dedicated panel is hidden.
+    inputDiagnostics.update(
+      now,
+      renderer.world?.preset ?? 'NONE',
+      canvas.width,
+      canvas.height,
+      input.look.discarded,
+      wallDiagnostic
+        ? `WALL ${wallDiagnostic.reason}\nALONG ${wallDiagnostic.speed.toFixed(2)} / ANGLE ${wallDiagnostic.angle.toFixed(1)}° / HEIGHT ${wallDiagnostic.height.toFixed(2)}\nGAP ${wallDiagnostic.distance.toFixed(2)} / SAME LOCK ${wallDiagnostic.lockout.toFixed(2)}s / GLOBAL 0s`
+        : 'WALL —',
+    );
+    if (input.debug) debug.textContent += '\n' + inputDiagnostics.summary;
+  }
   requestAnimationFrame(frame);
 }
 // Read-only diagnostics used by the browser acceptance harness and future netcode tools.
@@ -595,6 +843,7 @@ Object.defineProperty(window, 'leviathan', {
     devTools: dev,
     devState: devPanel.state,
     devPanelOpen: devPanel.open,
+    wallDiagnostic,
     background: background.stats,
     world: renderer.world?.stats(),
     environmentAudio: {
@@ -616,8 +865,37 @@ Object.defineProperty(window, 'leviathan', {
       poses: renderer.poses(),
     },
     perf: renderer.world?.perfReport,
+    combat: {
+      state: predicted?.combat,
+      health: authoritativeLocal?.health,
+      status: authoritativeLocal?.status,
+      viewTick: renderer.viewTick,
+      fx: combat.stats(),
+      lastMismatch,
+      shotsByMode: { ...shotsByMode },
+      shotsFired,
+      hitsConfirmed,
+      rewinds: [...rewinds],
+    },
     worldDebug: dev
       ? {
+          collisionAudit: async () =>
+            renderer.world
+              ? (await import('./collision-sweep')).collisionSweep(
+                  renderer.world,
+                )
+              : undefined,
+          landmarkVisibility: (id?: string) =>
+            renderer.world?.landmarkVisibility(renderer.camera, id),
+          view: (
+            position: { x: number; y: number; z: number },
+            target: { x: number; y: number; z: number },
+          ) => {
+            if (!renderer.world) return;
+            renderer.world.mode = 'free';
+            renderer.camera.position.set(position.x, position.y, position.z);
+            renderer.camera.lookAt(target.x, target.y, target.z);
+          },
           camera: (name: string) => {
             if (
               name === 'player' ||
@@ -636,6 +914,11 @@ Object.defineProperty(window, 'leviathanTest', {
   get: () =>
     dev
       ? {
+          mouse: (x: number, y: number) => input.mouse(x, y),
+          inputDiagnostics,
+          diagnostics: (enabled: boolean) => {
+            devPanel.preferences.draw.inputDiagnostics = enabled;
+          },
           inject: (steps: InjectedInput[]) => {
             input.injected.push(...steps.map((s) => ({ ...s })));
           },

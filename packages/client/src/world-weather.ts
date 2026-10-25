@@ -15,6 +15,10 @@ export class WorldWeather {
     smokeCount: number,
   ) {
     const rng = randomSeed(level.seed + 99);
+    const stacks =
+      level.landmarks?.filter((l) => l.id.startsWith('stack-')) ?? [];
+    const steam = level.audio.emitters.find((e) => e.kind === 'steam')
+      ?.position ?? { x: -60, y: 0, z: -63 };
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 128;
     const c = canvas.getContext('2d')!,
@@ -81,10 +85,20 @@ export class WorldWeather {
           type === 0
             ? new T.Vector3((rng() - 0.5) * 65, rng() * 26, (rng() - 0.5) * 65)
             : type === 1
-              ? new T.Vector3([-10, 0, 10][i % 3]!, 83.6 + (i % 3) * 15, -12)
+              ? stacks.length
+                ? new T.Vector3(
+                    stacks[i % stacks.length]!.position.x,
+                    stacks[i % stacks.length]!.height,
+                    stacks[i % stacks.length]!.position.z,
+                  )
+                : new T.Vector3([-10, 0, 10][i % 3]!, 83.6 + (i % 3) * 15, -12)
               : type === 2
                 ? new T.Vector3((rng() - 0.5) * 18, 0, (rng() - 0.5) * 18)
-                : new T.Vector3(-60 + rng(), 0.3, -63 + rng());
+                : new T.Vector3(
+                    steam.x + rng(),
+                    steam.y + 0.3,
+                    steam.z + rng(),
+                  );
         matrix.makeScale(0.1 + rng() * 0.9, 1, 1);
         matrix.setPosition(p);
         mesh.setMatrixAt(i, matrix);

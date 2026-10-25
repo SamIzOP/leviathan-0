@@ -1,0 +1,54 @@
+{
+  "routeErrors": [],
+  "run": {
+    "passed": true,
+    "elapsed": 284.05,
+    "reached": 31,
+    "waypoints": 32,
+    "length": 2251,
+    "capSeconds": 140.6875,
+    "sprintSeconds": 281.375,
+    "stalls": []
+  },
+  "rooms": 11,
+  "archetypes": 28,
+  "cover": 168,
+  "markers": 110,
+  "dressing": [
+    {
+      "id": "entrance",
+      "solid": 528,
+      "decor": 1045
+    },
+    {
+      "id": "tenements",
+      "solid": 634,
+      "decor": 3271
+    },
+    {
+      "id": "rail",
+      "solid": 532,
+      "decor": 3216
+    },
+    {
+      "id": "pumps",
+      "solid": 389,
+      "decor": 2274
+    },
+    {
+      "id": "slag",
+      "solid": 285,
+      "decor": 1411
+    },
+    {
+      "id": "hall",
+      "solid": 687,
+      "decor": 6792
+    },
+    {
+      "id": "core",
+      "solid": 325,
+      "decor": 1889
+    }
+  ]
+}

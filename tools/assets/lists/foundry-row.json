@@ -1,0 +1,619 @@
+{
+  "name": "foundry-row",
+  "description": "Foundry Row: rainy, foggy, near-monochrome brutalist industrial district. CC0 only (Poly Haven models/HDRIs, ambientCG materials).",
+  "assets": [
+    {
+      "id": "Barrel_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "barrel",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Worn red oil drum with hazard decal."
+    },
+    {
+      "id": "barrel_03",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "drum",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Painted steel fuel drum."
+    },
+    {
+      "id": "barrel_stove",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "drum",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Rusted burn barrel."
+    },
+    {
+      "id": "old_military_crate",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "crate",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "a",
+      "pick": [
+        "old_military_crate_a",
+        "old_military_crate_lid_a",
+        "old_military_crate_loop_a",
+        "old_military_crate_latch_a"
+      ],
+      "notes": "Source holds two crates; keeps the closed one."
+    },
+    {
+      "id": "wooden_military_crate",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "crate",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "wooden_crate_02",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "crate",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "cardboard_box_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "box",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "plastic_container",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "box",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Black storage tub."
+    },
+    {
+      "id": "modular_industrial_pipes_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "pipe",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "bend",
+      "pick": ["modular_industrial_pipes_01_pipe03"],
+      "fallback": "curved-pipe",
+      "notes": "One piece of a modular pipe kit."
+    },
+    {
+      "id": "modular_industrial_pipes_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "pipe",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "valve",
+      "pick": ["modular_industrial_pipes_01_pipe08"],
+      "fallback": "valve",
+      "notes": "Valve piece of the modular pipe kit."
+    },
+    {
+      "id": "modular_metal_gutter",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "pipe",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "downspout",
+      "pick": ["modular_metal_gutter_section"],
+      "notes": "1 m downspout section from the gutter kit (kit pieces are laid out unassembled)."
+    },
+    {
+      "id": "small_lpg_tank",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "gas-cylinder",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "portable_welding_cart",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "gas-cylinder",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Oxy/acetylene cylinders on a hand cart."
+    },
+    {
+      "id": "utility_box_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "electrical",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "utility_box_02",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "electrical",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "power_box_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "electrical",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Open fuse box."
+    },
+    {
+      "id": "modular_electricity_poles",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "electrical",
+      "triCap": 5000,
+      "textureSize": 1024,
+      "variant": "pole",
+      "pick": ["preset_02_*"],
+      "fallback": "power-pole",
+      "notes": "Assembled 6 m pole preset with cross-arms."
+    },
+    {
+      "id": "modular_chainlink_fence",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "fence",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "panel",
+      "pick": ["modular_chainlink_fence_double"],
+      "notes": "Double-width panel; wire uses alpha blending."
+    },
+    {
+      "id": "modular_chainlink_fence",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "fence",
+      "triCap": 4000,
+      "textureSize": 512,
+      "variant": "gate",
+      "pick": [
+        "modular_chainlink_fence_door_frame",
+        "modular_chainlink_fence_door_gate",
+        "modular_chainlink_fence_door_latch"
+      ],
+      "fallback": "gate"
+    },
+    {
+      "id": "security_light",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "light",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "hanging_industrial_lamp",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "light",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Transmission glass converted to alpha blend."
+    },
+    {
+      "id": "caged_hanging_light",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "light",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "industrial_caged_sconce",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "light",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "a",
+      "pick": ["industrial_caged_sconce_a"],
+      "notes": "Single caged lamp head from the sconce kit."
+    },
+    {
+      "id": "hand_truck",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "trolley",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "industrial_storage_cart",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "trolley",
+      "triCap": 5000,
+      "textureSize": 1024,
+      "notes": "Thin tube frame + castors; needs a higher cap to keep the castors."
+    },
+    {
+      "id": "tool_cart",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "workbench",
+      "triCap": 3000,
+      "textureSize": 1024,
+      "fallback": "workstation"
+    },
+    {
+      "id": "old_drill_press",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "machinery",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "old_military_compressor",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "machinery",
+      "triCap": 5000,
+      "textureSize": 1024,
+      "fallback": "generator"
+    },
+    {
+      "id": "concrete_road_barrier",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "barrier",
+      "triCap": 3000,
+      "textureSize": 1024,
+      "fallback": "concrete-block"
+    },
+    {
+      "id": "concrete_road_barrier_02",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "barrier",
+      "triCap": 3000,
+      "textureSize": 1024,
+      "fallback": "jersey-barrier"
+    },
+    {
+      "id": "metal_trash_can",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "dumpster",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "rusted",
+      "pick": [
+        "metal_trash_can_rust",
+        "metal_trash_can_rust_handle_left",
+        "metal_trash_can_rust_handle_right"
+      ],
+      "fallback": "wheelie-bin",
+      "notes": "Rusted street bin without lid (closest vocabulary category: dumpster)."
+    },
+    {
+      "id": "old_tyre",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "tire",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "rusted_wheel_rim_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "tire",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "wooden_ladder",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "ladder",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "modular_fire_escape",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "misc",
+      "triCap": 4000,
+      "textureSize": 1024,
+      "variant": "stairs",
+      "pick": ["modular_fire_escape_stairs"],
+      "fallback": "stair-run",
+      "notes": "Fire-escape stair flight."
+    },
+    {
+      "id": "exterior_aircon_unit",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "vent",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "rusted",
+      "pick": ["exterior_aircon_unit_rusted"]
+    },
+    {
+      "id": "modular_airduct_circular_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "vent",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "fan",
+      "pick": ["modular_airduct_circular_fan"]
+    },
+    {
+      "id": "modular_airduct_rectangular_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "vent",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "straight",
+      "pick": ["modular_airduct_rectangular_01_tripple_01"],
+      "fallback": "duct"
+    },
+    {
+      "id": "Shelf_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "shelf",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "steel_frame_shelves_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "shelf",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Source glTF is authored at 10x scale; auto-rescaled from published dimensions."
+    },
+    {
+      "id": "worn_metal_rack",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "shelf",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "metal_toolbox",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "toolbox",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "metal_tool_chest",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "toolbox",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "can_rusted",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "bucket",
+      "triCap": 3000,
+      "textureSize": 512,
+      "notes": "Rusted paint tin."
+    },
+    {
+      "id": "portable_generator",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "generator",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "trashbag",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "debris",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "cement_bag",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "sack",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "metal_office_desk",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "furniture",
+      "triCap": 3000,
+      "textureSize": 1024
+    },
+    {
+      "id": "metal_stool_03",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "furniture",
+      "triCap": 3000,
+      "textureSize": 512,
+      "fallback": "crate"
+    },
+    {
+      "id": "fire_hydrant",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "hydrant",
+      "triCap": 3000,
+      "textureSize": 512,
+      "variant": "aged",
+      "pick": ["fire_hydrant_aged", "fire_hydrant_cap_0*_aged"],
+      "notes": "Aged variant without the 14k-triangle chain."
+    },
+    {
+      "id": "water_manhole_cover",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "misc",
+      "triCap": 3000,
+      "textureSize": 512
+    },
+    {
+      "id": "security_camera_01",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "misc",
+      "triCap": 3000,
+      "textureSize": 512,
+      "fallback": "floodlight"
+    },
+    {
+      "id": "metal_jerrycan",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "misc",
+      "triCap": 3000,
+      "textureSize": 512,
+      "fallback": "gas-cylinder"
+    },
+    {
+      "id": "rollershutter_door",
+      "source": "polyhaven",
+      "kind": "model",
+      "category": "misc",
+      "triCap": 3000,
+      "textureSize": 1024,
+      "variant": "plain",
+      "pick": ["rollershutter_door"],
+      "fallback": "roller-shutter"
+    },
+    {
+      "id": "Asphalt025C",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "asphalt.wet",
+      "textureSize": 1024
+    },
+    {
+      "id": "Concrete046",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "concrete.clean",
+      "textureSize": 1024
+    },
+    {
+      "id": "Concrete035",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "concrete.stained",
+      "textureSize": 1024
+    },
+    {
+      "id": "Concrete047A",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "concrete.floor",
+      "textureSize": 1024
+    },
+    {
+      "id": "Bricks097",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "brick.red",
+      "textureSize": 1024
+    },
+    {
+      "id": "Bricks058",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "brick.soot",
+      "textureSize": 1024
+    },
+    {
+      "id": "Metal053C",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "metal.rusted",
+      "textureSize": 1024
+    },
+    {
+      "id": "PaintedMetal014",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "metal.painted",
+      "textureSize": 1024
+    },
+    {
+      "id": "MetalPlates013",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "metal.plates",
+      "textureSize": 1024
+    },
+    {
+      "id": "CorrugatedSteel005",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "metal.corrugated",
+      "textureSize": 1024
+    },
+    {
+      "id": "Metal046B",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "metal.dark",
+      "textureSize": 1024
+    },
+    {
+      "id": "Wood080",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "wood.planks",
+      "textureSize": 1024
+    },
+    {
+      "id": "Ground111",
+      "source": "ambientcg",
+      "kind": "material",
+      "key": "rock.rubble",
+      "textureSize": 1024
+    },
+    {
+      "id": "abandoned_slipway",
+      "source": "polyhaven",
+      "kind": "hdri",
+      "notes": "Flat overcast industrial waterfront; default sky."
+    },
+    {
+      "id": "petit_port",
+      "source": "polyhaven",
+      "kind": "hdri",
+      "notes": "Overcast harbour with crane."
+    }
+  ]
+}

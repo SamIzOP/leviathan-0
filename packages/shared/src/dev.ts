@@ -1,6 +1,7 @@
 import { BUTTON, MOVE, type MoveTuning } from './config';
 import { stepPlayer } from './movement';
 import type { Entity, Input, World } from './types';
+import type { WeaponOverrides } from './weapons';
 
 /** Every movement constant is tunable by name in a dev room. */
 export type DevTuning = MoveTuning;
@@ -38,7 +39,29 @@ export interface DevState {
   frozen: boolean;
   remainingMs: number;
   tuning: DevTuning;
+  /** Weapon dev tools. The client predicts with the same overrides and ammo rule. */
+  combat: DevCombat;
 }
+export interface DevCombat {
+  infiniteAmmo: boolean;
+  damageScale: number;
+  friendlyFire: boolean;
+  hitDebug: boolean;
+  botsFire: boolean;
+  lagCompensation: boolean;
+  movingDummies: boolean;
+  weapons: WeaponOverrides;
+}
+export const DEFAULT_DEV_COMBAT: Readonly<DevCombat> = Object.freeze({
+  infiniteAmmo: false,
+  damageScale: 1,
+  friendlyFire: false,
+  hitDebug: false,
+  botsFire: false,
+  lagCompensation: true,
+  movingDummies: false,
+  weapons: {},
+});
 export const DEV_ACTIONS = [
   'end',
   'restart',
@@ -53,6 +76,21 @@ export const DEV_ACTIONS = [
   'reset-player',
   'tune',
   'reset-tuning',
+  'give-weapon',
+  'give-all-weapons',
+  'infinite-ammo',
+  'damage-scale',
+  'friendly-fire',
+  'hit-debug',
+  'bots-fire',
+  'lag-compensation',
+  'moving-dummies',
+  'spawn-range',
+  'weapon-tune',
+  'reset-weapons',
+  'fill-fingers',
+  'refill-ammo',
+  'hurt-self',
 ] as const;
 /** Deterministic six-second traversal routine for synthetic and harness bots:
  * sprint, slide, slide-jump, air jump, then a wandering walk; heading changes per cycle. */

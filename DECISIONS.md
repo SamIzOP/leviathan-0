@@ -1,4 +1,80 @@
+## Weapons and combat core (Prompt 4) — 2026-10-25
+
+- **Scope:**
+  - Done: weapons data, the shared weapon step, server authority, hit detection, lag compensation, ammo, health and death, oil/fire, Fingers of God, crates, combat HUD, viewmodel, effects, audio, dev tools and tests.
+  - Untouched: `movement.ts`, robot AI, level layout, menus, match flow and progression. The only movement hook is weapon-related: firing or aiming strips the sprint bit on the ground, and weapon speed multipliers scale walk/sprint/crouch through tuning.
+- **Design gaps:** the design notes were blank. Every gap is an `ASSUMPTION` in `weapons.ts` and in the report (roster, oil/fire, Fingers of God, crates, loadout, team damage, health).
+- **Protocol 3:**
+  - Inputs carry combat bits, the wanted slot and the lag-compensation `view` tick.
+  - Snapshots carry owner weapon state, combat entities and events.
+  - Weapon state is predicted and reconciled exactly like movement, using integer-tick timers and seeded spread.
+- **Weapon clock:** the weapon is clocked by real inputs only. Server filler ticks for a starved link step movement but never fire or advance weapon timers.
+- **Lag compensation:**
+  - The server keeps 40 ticks of history and rewinds hitscan targets only (not the shooter, not walls) to the client view tick, capped at 300 ms.
+  - Projectiles are simulated in real time against current positions.
+- **Input-queue fix (predates this stage):** client hitches used to leave a permanent ~300 ms input backlog.
+  - Idle ticks now earn catch-up credit, which lets a backlog drain up to two extra inputs per tick.
+  - A per-operator wall-clock token bucket (the weapon's rate, capacity 2) rejects any shot faster than real time. Ammo is still spent, matching prediction.
+- **Team damage:** a match-mode rule in data (co-op: off), overridable by a dev toggle.
+- **Performance:**
+  - Presentation is pooled and instanced, with no dynamic lights and shaders prewarmed.
+  - Effect caps scale with the quality preset.
+
+## Asset pipeline and dressing pass (Prompt 3.7) — 2026-10-24
+
+- **Scope:**
+  - Allowed and done: the asset scripts and manifest, procedural forge use for props, dressing placement, materials and HDRIs, and tests.
+  - Untouched: movement, netcode, weapons, AI, UI, menus and match flow.
+  - No layout or route was moved. New props add box colliders only where they block, and the converted 3.6 cover blocks keep their colliders.
+  - The level schema gained optional `prop`/`fallback`/`yaw`/`tint` fields.
+- **Area mapping:** the five areas cover the seven layout zones:
+  - spawn street = entrance
+  - rooftops = tenements, plus every room roof
+  - container yard = rail
+  - smokestack yard = slag + pumps
+  - foundry hall = hall + core
+- **Collision contract:** a prop's collision stays the shared solid's nominal primitive. The client keeps that primitive as a hidden, solid-tagged mesh, so the existing sweep audits it unchanged, and fits the model inside the footprint. Ground slabs follow the same contract and are drawn in per-zone pieces.
+- **Batching:**
+  - Imported models are instanced per 48 m cell.
+  - Procedural props share 11 recipe materials, so they are merged per cell and material.
+  - LOW culls props at 55 m (100 and 140 m on MEDIUM and HIGH).
+  - Texture tiers apply at LOW: 512 px, 256 px for props under 1 m, and no prop normal maps.
+- **HDRI:** used only for environment lighting and reflections. It is graded at load: desaturated, sun soft-clipped, made azimuthally uniform, and set to the brightness of the procedural sky. The fogged procedural sky stays the visible background.
+- **Picker:** imported models stretch at most 1.6× per axis, forge props 2.5×. Picks are least-used first, followed by a coverage pass. Every downloaded asset must be placed or used, or it is removed from the list (a test enforces this).
+- **Caps** are derived from the pre-dressing Intel UHD LOW run (`docs/perf/redesign-low.json`), plus a 96 MiB per-zone texture budget. The capture script exits 1 on any breach. UHD itself was not available on this machine.
+- **Pre-existing bugs fixed because measurement depended on them:**
+  - The perf path index went negative on its first frame, which killed the render loop at HIGH.
+  - A preset change dropped the zone materials.
+  - Two prop shaders were compiled only on first sight.
+- **Ports:** the dev server here ran on 5173. The scripts take `GAME_URL`/`TEST_URL` and default to the documented 5175.
+
+## Final redesign review — 2026-10-23
+
+The actual screenshot review does not support accepting the full visual brief. Criteria 1, 5 and 6 are FAIL; see docs/layout/REVIEW.md. In particular, technical overhead clearance is not enough to make separated crowns and roof skins visually believable. Repetitive partition massing, limited ground-level landmark readability, hall pit omission and shared ambient treatments remain in-scope shortcomings. They are not represented as optional future-stage features or hidden by passing count/histogram tests. The rest of the requested engineering validation is recorded separately in ACCEPTANCE.md. No commit or push.
+
 # Engineering decisions
+
+## Seven-beat world redesign — 2026-10-23
+
+- Work is confined to `C:\Users\Affan's\Desktop\leviathan-0`. No commit or push. The large level rewrite supersedes `foundry-layout.ts` through the level factory, preserving the old source and baseline screenshots for comparison. Unrelated movement changes already present in this shared repository were retained.
+- The requested 420 × 340 m compound cannot fit the existing ±120 coordinate clamp. **Explicit scope exception:** `PHYSICS.arena` is 260 so the unchanged movement integrator can address the new level. This is a world-coordinate guard change; every `MOVE` feel value and `movement.ts` remain unchanged. The movement module SHA256 remains `A65413AEEC523805C492B5FCA2010ABDBAD160B6F59753DD5CB677735A6F3D58`. The movement harness was rerun.
+- Terrain uses flat slabs, steps and ledges. Sloped ground/collision remains a future option; no slope solver was added.
+- Gates remain metadata. Tall physical partitions enforce the seven-zone sequence without adding combat locks or network semantics. The intended route is 2,251 m; its timing is not represented as a global optimal speedrun. Full-movement escape/progression searches are adversarial samples, not exhaustive proofs over arbitrary input histories.
+- `platform` means a required conservative navigation destination. It does not mean an unflagged physical top is collision-free or automatically unreachable. A late audit found that overhead clearance was initially using this flag too loosely. The final rule checks all physical tops across each decoration footprint and raises overhead assemblies with thin stand-offs when necessary.
+- The visual audit is explicit about camera height: several 165 m landmark stations require elevated free-fly views because the partition walls occlude ground sightlines. The image-difference test detects duplicate-looking views, not artistic quality. It must not substitute for visual review.
+- The initial development stress run failed the RSS-growth limit while Vite rebuilt files. A separate production-server run passed with 25 reconnects and matching snapshots. Its report is retained separately; the failed run is not relabeled as passing.
+- No weapons, health, robot behavior, new menus, networking changes or deployment work were added. Any remaining presentation limitations and pre-existing repository formatting failures belong in the acceptance report rather than being concealed by unrelated edits.
+
+## Movement fix pass — 2026-10-22
+
+- Worked only in `leviathan-0`; no commit, push, production geometry, weapons, AI, menu, deployment or transport changes. Repaired installed workspace links with `npm install`. Isolated test servers use 5175/3003; single-port production verification uses 3004.
+- The steady-mouse baseline was already lossless: 500 events, correlation 1.0, zero mismatched frames, worst frame 17.1 ms. General intermittent jitter was **not reproduced**. Do not claim GPU saturation or a proven single root cause. Confirmed code defects were stepped local position, mantle feedback directly changing pitch, and AUTO rebuilding materials/weather during play. These paths are fixed; attribution of the original random symptom remains unconfirmed.
+- No look smoothing. The adaptive spike guard requires an event above both 2048 pixels and 32 times the recent median. It withholds only extreme candidates for one frame, preserving corroborated sustained flicks. A legitimate isolated event indistinguishable from a browser spike can still be rejected; the conservative floor and discard counter make this tradeoff explicit. Normal events are never deferred.
+- Wall entry previously followed double-jump steering and collision velocity removal. There was no explicit used-air-jump gate or global lockout. Entry now precedes air-jump consumption and uses original tangential momentum. Contact memory lives in deterministic movement state, not a client-only cache.
+- Authorized defaults: minimum tangential speed 5.5 → 4.5 m/s; angle 70 → 80 degrees; floor height 0.5 → 0.4 m; reach 0.10 → 0.25 m; same-wall lockout 1.2 → 0.6 s; grace added at 0.08 s. All twenty existing measured outcomes still fit their original ranges; no ranges were widened to conceal failures.
+- The 384-case baseline seeds airborne entry states at the specified angles, speeds and gaps, with used-air-jump, simultaneous Space, same-wall and different-wall cases. Baseline reject labels are inferred, not historical shared telemetry. Final runs use shared telemetry. Browser checks separately exercise real sprint/slide/jump/double-jump/wall-run/wall-jump/mantle sequences. The 200 randomized approaches use non-embedded starts, yaw ±10 degrees and position ±0.5 m; all eight failures remain in the denominator (96%).
+- The 10 m chain needs stronger cross-wall steering and an earlier air jump than 6/8 m lanes. Controller parameters, not gameplay tuning, differ and are recorded in `chains.json`. Same-wall re-entry follows a wall jump and double jump after 1.1 s. The harness uses authored Lab wall extents translated to a local origin.
+- Outside scope: Git status reports this checkout is not a work tree despite its `.git` directory; no Git metadata was modified. Full lint finds repository-wide pre-existing formatting differences, left untouched to avoid a broad shared-repository diff. Initial parallel tests hit existing 5 s flood-test timeouts; all pass serially with a 30 s timeout. The large Three.js chunk warning remains.
 
 ## Foundation decisions (historical; later scope sections supersede them)
 

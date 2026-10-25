@@ -11,6 +11,8 @@ import {
   missionLevel,
   spawnEntity,
   stepDev,
+  stepCombatant,
+  resolveTuning,
   makeEntity,
   decodeClient,
 } from '@leviathan/shared';
@@ -166,13 +168,14 @@ describe('dev-only room controls', () => {
         pitch: 0,
         buttons: seq === 1 ? 1 : 0,
       };
-      client = stepDev(
+      // The server steps the shared combat wrapper (movement unchanged inside it).
+      client = stepCombatant(
         client,
         command,
         1 / 60,
         levelWorld(missionLevel(peer.room!.mission)),
-        tuning,
-      );
+        resolveTuning(tuning),
+      ).entity;
       send({ type: 'inputs', inputs: [command] });
       game.step();
       expect(peer.player!.entity).toEqual(client);

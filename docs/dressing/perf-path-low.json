@@ -1,0 +1,723 @@
+{
+  "preset": "LOW",
+  "resolution": [1280, 720],
+  "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "zones": [
+    {
+      "name": "composition",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 385,
+      "triangles": 202755,
+      "textureMiB": 22.6,
+      "gpuMs": 1.753952,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1048,
+      "textures": 200,
+      "mode": "composition",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "entrance-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 368,
+      "triangles": 184875,
+      "textureMiB": 22.6,
+      "gpuMs": 2.48768,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1052,
+      "textures": 200,
+      "mode": "entrance-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "tenements-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 335,
+      "triangles": 141801,
+      "textureMiB": 22.6,
+      "gpuMs": 0.364128,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1146,
+      "textures": 202,
+      "mode": "tenements-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "rail-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 360,
+      "triangles": 191132,
+      "textureMiB": 22.6,
+      "gpuMs": 0.32368,
+      "frameMs": 3.571111111111107,
+      "particles": 464,
+      "geometries": 1229,
+      "textures": 202,
+      "mode": "rail-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "pumps-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 256,
+      "triangles": 214062,
+      "textureMiB": 22.6,
+      "gpuMs": 2.482048,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1280,
+      "textures": 202,
+      "mode": "pumps-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "slag-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 273,
+      "triangles": 227588,
+      "textureMiB": 22.6,
+      "gpuMs": 2.562048,
+      "frameMs": 3.5716666666666748,
+      "particles": 464,
+      "geometries": 1322,
+      "textures": 202,
+      "mode": "slag-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "hall-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 329,
+      "triangles": 208808,
+      "textureMiB": 22.6,
+      "gpuMs": 0.429536,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1356,
+      "textures": 202,
+      "mode": "hall-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    {
+      "name": "core-player",
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 308,
+      "triangles": 170693,
+      "textureMiB": 22.6,
+      "gpuMs": 2.566304,
+      "frameMs": 3.5722222222222224,
+      "particles": 464,
+      "geometries": 1412,
+      "textures": 202,
+      "mode": "core-player",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    }
+  ],
+  "path": {
+    "preset": "LOW",
+    "durationMs": 60002.90000000075,
+    "frames": 16799,
+    "averageMs": 3.572063813322222,
+    "worstMs": 4.2000000000116415,
+    "drawCalls": 390,
+    "triangles": 255982,
+    "gpuMs": 2.468288
+  },
+  "errors": [],
+  "lastState": {
+    "perf": {
+      "preset": "LOW",
+      "durationMs": 60002.90000000075,
+      "frames": 16799,
+      "averageMs": 3.572063813322222,
+      "worstMs": 4.2000000000116415,
+      "drawCalls": 390,
+      "triangles": 255982,
+      "gpuMs": 2.468288
+    },
+    "world": {
+      "props": {
+        "zones": {
+          "entrance": {
+            "props": 216,
+            "types": 55,
+            "drawCalls": 108,
+            "triangles": 170570
+          },
+          "tenements": {
+            "props": 394,
+            "types": 51,
+            "drawCalls": 171,
+            "triangles": 236654
+          },
+          "rail": {
+            "props": 489,
+            "types": 40,
+            "drawCalls": 195,
+            "triangles": 263666
+          },
+          "pumps": {
+            "props": 412,
+            "types": 43,
+            "drawCalls": 151,
+            "triangles": 251670
+          },
+          "slag": {
+            "props": 376,
+            "types": 41,
+            "drawCalls": 126,
+            "triangles": 226042
+          },
+          "hall": {
+            "props": 576,
+            "types": 46,
+            "drawCalls": 185,
+            "triangles": 325326
+          },
+          "core": {
+            "props": 452,
+            "types": 44,
+            "drawCalls": 190,
+            "triangles": 245550
+          }
+        },
+        "prototypes": 182,
+        "meshes": 1126,
+        "textureMiB": 127,
+        "assets": 54
+      },
+      "zoneTextureMiB": {
+        "rail": 74.5,
+        "pumps": 62.2,
+        "hall": 80.1,
+        "slag": 63.2,
+        "tenements": 80.1,
+        "core": 71.2,
+        "entrance": 89.4,
+        "boundary": 4
+      },
+      "preset": "LOW",
+      "drawCalls": 308,
+      "triangles": 170693,
+      "textureMiB": 22.6,
+      "gpuMs": 2.63824,
+      "frameMs": 3.5716666666666343,
+      "particles": 464,
+      "geometries": 1473,
+      "textures": 202,
+      "mode": "perf",
+      "ready": true,
+      "loadedAt": 281.59999999962747,
+      "level": "foundry-row",
+      "assets": {}
+    },
+    "phase": "PLAYING"
+  }
+}

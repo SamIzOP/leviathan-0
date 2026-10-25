@@ -1,0 +1,34 @@
+npm notice run npx
+npm notice run tsx scripts/level-check.ts
+{
+  "level": "foundry-row",
+  "colliders": 8114,
+  "spawns": 12,
+  "errors": [
+    "Elevated escape route bracken-tenement/roof",
+    "Elevated escape route court-roof-access/landing-4",
+    "Elevated escape route court-roof-access/landing-5",
+    "Elevated escape route court-roof-link",
+    "Elevated escape route gallery-west-18",
+    "Elevated escape route gallery-east-18",
+    "Elevated escape route gallery-link-18",
+    "Elevated escape route hall-gallery-access/landing-4",
+    "Elevated escape route hall-gallery-access/landing-5"
+  ]
+}
+{
+  "level": "foundry-row-overcast",
+  "colliders": 8114,
+  "spawns": 12,
+  "errors": [
+    "Elevated escape route bracken-tenement/roof",
+    "Elevated escape route court-roof-access/landing-4",
+    "Elevated escape route court-roof-access/landing-5",
+    "Elevated escape route court-roof-link",
+    "Elevated escape route gallery-west-18",
+    "Elevated escape route gallery-east-18",
+    "Elevated escape route gallery-link-18",
+    "Elevated escape route hall-gallery-access/landing-4",
+    "Elevated escape route hall-gallery-access/landing-5"
+  ]
+}

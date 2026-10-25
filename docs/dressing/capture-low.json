@@ -1,0 +1,308 @@
+{
+  "preset": "LOW",
+  "resolution": [1280, 720],
+  "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "loadSeconds": 3.29,
+  "caps": {
+    "drawCalls": 406,
+    "triangles": 475000,
+    "zoneTextureMiB": 96
+  },
+  "overCaps": [],
+  "cameras": [
+    {
+      "name": "entrance-player",
+      "drawCalls": 368,
+      "triangles": 184875,
+      "frameMs": 3.57,
+      "gpuMs": 2.564128,
+      "textures": 200,
+      "geometries": 1049,
+      "preset": "LOW"
+    },
+    {
+      "name": "tenements-player",
+      "drawCalls": 335,
+      "triangles": 141801,
+      "frameMs": 3.57,
+      "gpuMs": 0.3824,
+      "textures": 202,
+      "geometries": 1143,
+      "preset": "LOW"
+    },
+    {
+      "name": "rail-player",
+      "drawCalls": 360,
+      "triangles": 191132,
+      "frameMs": 3.57,
+      "gpuMs": 0.48848,
+      "textures": 202,
+      "geometries": 1226,
+      "preset": "LOW"
+    },
+    {
+      "name": "pumps-player",
+      "drawCalls": 256,
+      "triangles": 214062,
+      "frameMs": 3.57,
+      "gpuMs": 2.45488,
+      "textures": 202,
+      "geometries": 1277,
+      "preset": "LOW"
+    },
+    {
+      "name": "slag-player",
+      "drawCalls": 273,
+      "triangles": 227588,
+      "frameMs": 3.57,
+      "gpuMs": 2.422304,
+      "textures": 202,
+      "geometries": 1319,
+      "preset": "LOW"
+    },
+    {
+      "name": "hall-player",
+      "drawCalls": 329,
+      "triangles": 208808,
+      "frameMs": 3.57,
+      "gpuMs": 1.000096,
+      "textures": 202,
+      "geometries": 1353,
+      "preset": "LOW"
+    },
+    {
+      "name": "core-player",
+      "drawCalls": 308,
+      "triangles": 170693,
+      "frameMs": 3.57,
+      "gpuMs": 2.646592,
+      "textures": 202,
+      "geometries": 1410,
+      "preset": "LOW"
+    },
+    {
+      "name": "composition",
+      "drawCalls": 385,
+      "triangles": 202755,
+      "frameMs": 3.57,
+      "gpuMs": 2.615456,
+      "textures": 202,
+      "geometries": 1412,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-street-1",
+      "drawCalls": 374,
+      "triangles": 191677,
+      "frameMs": 3.57,
+      "gpuMs": 2.87408,
+      "textures": 202,
+      "geometries": 1412,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-street-2",
+      "drawCalls": 237,
+      "triangles": 179671,
+      "frameMs": 3.57,
+      "gpuMs": 2.432544,
+      "textures": 202,
+      "geometries": 1422,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-street-3",
+      "drawCalls": 345,
+      "triangles": 191281,
+      "frameMs": 3.57,
+      "gpuMs": 2.610272,
+      "textures": 202,
+      "geometries": 1426,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-roofs-1",
+      "drawCalls": 254,
+      "triangles": 184070,
+      "frameMs": 3.57,
+      "gpuMs": 0.9336,
+      "textures": 202,
+      "geometries": 1437,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-roofs-2",
+      "drawCalls": 287,
+      "triangles": 172713,
+      "frameMs": 3.57,
+      "gpuMs": 3.098944,
+      "textures": 202,
+      "geometries": 1442,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-roofs-3",
+      "drawCalls": 174,
+      "triangles": 149197,
+      "frameMs": 3.57,
+      "gpuMs": 2.205664,
+      "textures": 202,
+      "geometries": 1442,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-yard-1",
+      "drawCalls": 157,
+      "triangles": 144313,
+      "frameMs": 3.57,
+      "gpuMs": 3.628416,
+      "textures": 202,
+      "geometries": 1449,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-yard-2",
+      "drawCalls": 276,
+      "triangles": 157175,
+      "frameMs": 3.57,
+      "gpuMs": 2.539296,
+      "textures": 202,
+      "geometries": 1450,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-yard-3",
+      "drawCalls": 169,
+      "triangles": 152994,
+      "frameMs": 3.57,
+      "gpuMs": 2.309312,
+      "textures": 202,
+      "geometries": 1450,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-stacks-1",
+      "drawCalls": 285,
+      "triangles": 237985,
+      "frameMs": 3.57,
+      "gpuMs": 0.45792,
+      "textures": 202,
+      "geometries": 1450,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-stacks-2",
+      "drawCalls": 312,
+      "triangles": 188101,
+      "frameMs": 3.57,
+      "gpuMs": 2.660736,
+      "textures": 202,
+      "geometries": 1458,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-stacks-3",
+      "drawCalls": 331,
+      "triangles": 252796,
+      "frameMs": 3.57,
+      "gpuMs": 2.255456,
+      "textures": 202,
+      "geometries": 1460,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-hall-1",
+      "drawCalls": 144,
+      "triangles": 187971,
+      "frameMs": 3.57,
+      "gpuMs": 2.227264,
+      "textures": 202,
+      "geometries": 1468,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-hall-2",
+      "drawCalls": 172,
+      "triangles": 192317,
+      "frameMs": 3.57,
+      "gpuMs": 2.41168,
+      "textures": 202,
+      "geometries": 1468,
+      "preset": "LOW"
+    },
+    {
+      "name": "dress-hall-3",
+      "drawCalls": 257,
+      "triangles": 241496,
+      "frameMs": 3.57,
+      "gpuMs": 0.343744,
+      "textures": 202,
+      "geometries": 1477,
+      "preset": "LOW"
+    }
+  ],
+  "props": {
+    "zones": {
+      "entrance": {
+        "props": 216,
+        "types": 55,
+        "drawCalls": 108,
+        "triangles": 170570
+      },
+      "tenements": {
+        "props": 394,
+        "types": 51,
+        "drawCalls": 171,
+        "triangles": 236654
+      },
+      "rail": {
+        "props": 489,
+        "types": 40,
+        "drawCalls": 195,
+        "triangles": 263666
+      },
+      "pumps": {
+        "props": 412,
+        "types": 43,
+        "drawCalls": 151,
+        "triangles": 251670
+      },
+      "slag": {
+        "props": 376,
+        "types": 41,
+        "drawCalls": 126,
+        "triangles": 226042
+      },
+      "hall": {
+        "props": 576,
+        "types": 46,
+        "drawCalls": 185,
+        "triangles": 325326
+      },
+      "core": {
+        "props": 452,
+        "types": 44,
+        "drawCalls": 190,
+        "triangles": 245550
+      }
+    },
+    "prototypes": 182,
+    "meshes": 1126,
+    "textureMiB": 127,
+    "assets": 54
+  },
+  "zoneTextureMiB": {
+    "rail": 74.5,
+    "pumps": 62.2,
+    "hall": 80.1,
+    "slag": 63.2,
+    "tenements": 80.1,
+    "core": 71.2,
+    "entrance": 89.4,
+    "boundary": 4
+  },
+  "textureMiB": 22.6,
+  "assets": {},
+  "errors": [],
+  "failed": []
+}

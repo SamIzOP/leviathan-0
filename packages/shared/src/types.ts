@@ -1,5 +1,6 @@
 export type Vec3 = { x: number; y: number; z: number };
-export type EntityType = 'player' | 'robot' | 'projectile' | 'pickup';
+export type EntityType =
+  'player' | 'robot' | 'projectile' | 'pickup' | 'hazard' | 'strike';
 export type MoveMode =
   'GROUND' | 'CROUCH' | 'SLIDE' | 'AIR' | 'WALLRUN' | 'MANTLE';
 /** Wall-run contact. `dir` points from the player into the wall along `axis`. */
@@ -33,6 +34,14 @@ export interface MoveState {
   wall: WallContact | null;
   lockouts: { id: string; ticks: number }[];
   mantle: MantleState | null;
+  /** Short deterministic contact memory; never a jump/global latch lockout. */
+  latchGrace?: {
+    id: string;
+    axis: 'x' | 'z';
+    dir: 1 | -1;
+    plane: number;
+    ticks: number;
+  };
 }
 export interface Entity {
   id: string;
@@ -47,6 +56,15 @@ export interface Entity {
   motion?: number;
   /** Full movement state. Stripped from snapshot entities; sent to its owner only. */
   move?: MoveState;
+  /** Weapon state. Owner-only, predicted and reconciled like `move`. */
+  combat?: import('./combat').CombatState;
+  /** Public: held weapon tier index, STATUS bits, and combat-entity details. */
+  slot?: number;
+  status?: number;
+  kind?: string;
+  owner?: string;
+  radius?: number;
+  timer?: number;
 }
 export interface Input {
   seq: number;
@@ -56,6 +74,10 @@ export interface Input {
   yaw: number;
   pitch: number;
   buttons: number;
+  /** Wanted weapon slot (tier index). */
+  weapon?: number;
+  /** Server tick the client was rendering remote entities at (lag compensation). */
+  view?: number;
 }
 export interface Box {
   min: Vec3;
@@ -109,7 +131,48 @@ export interface Snapshot {
   acks: Record<string, number>;
   /** The recipient's own full movement state, for exact reconciliation. */
   move?: MoveState;
+  combat?: import('./combat').CombatState;
+  /** Combat events since the previous snapshot (shots, hits, blasts, pickups). */
+  events?: CombatEvent[];
 }
+export type HitCause = number | 'blast' | 'fire' | 'fingers';
+export type CombatEvent =
+  | {
+      t: 'shot';
+      shooter: string;
+      weapon: number;
+      origin: Vec3;
+      /** Pellet end points and whether each stopped on an entity (else world/air). */
+      ends: Vec3[];
+      flesh: boolean[];
+      normals: (Vec3 | null)[];
+    }
+  | {
+      t: 'hit';
+      source: string;
+      target: string;
+      amount: number;
+      zone: 'body' | 'head' | 'weak';
+      kill: boolean;
+      at: Vec3;
+      from: Vec3;
+      cause: HitCause;
+    }
+  | { t: 'blast'; at: Vec3; radius: number; kind: 'slag' | 'fingers' | 'flask' }
+  | { t: 'ignite'; at: Vec3 }
+  | { t: 'pickup'; player: string; at: Vec3 }
+  | { t: 'respawn'; player: string }
+  | {
+      t: 'debug';
+      shooter: string;
+      origin: Vec3;
+      ends: Vec3[];
+      tick: number;
+      rewindTick: number;
+      /** The view tick the client asked for (before the rewind cap). */
+      view?: number;
+      boxes: { id: string; min: Vec3; max: Vec3 }[];
+    };
 export type ServerMessage =
   | {
       type: 'hello';

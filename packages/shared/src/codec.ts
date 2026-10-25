@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { CONFIG, MOVE_LIMITS, type MoveTuning } from './config';
 import type { ServerMessage } from './types';
 import { DEV_ACTIONS } from './dev';
+import { WEAPONS, WEAPON_LIMITS } from './weapons';
 const finite = z.number().finite();
 // Any subset of movement constants, each inside its dev bounds.
 const tuning = z
@@ -12,6 +13,18 @@ const tuning = z
         z.number().min(min).max(max),
       ]),
     ) as Record<keyof MoveTuning, z.ZodNumber>,
+  )
+  .partial()
+  .strict();
+// Any subset of one weapon's numeric stats, each inside its live-edit bounds.
+const weaponStats = z
+  .object(
+    Object.fromEntries(
+      Object.entries(WEAPON_LIMITS).map(([key, [min, max]]) => [
+        key,
+        z.number().min(min).max(max),
+      ]),
+    ) as Record<keyof typeof WEAPON_LIMITS, z.ZodNumber>,
   )
   .partial()
   .strict();
@@ -26,6 +39,13 @@ const input = z
     yaw: finite,
     pitch: finite,
     buttons: z.number().int().min(0).max(255),
+    weapon: z
+      .number()
+      .int()
+      .min(0)
+      .max(WEAPONS.length - 1)
+      .optional(),
+    view: finite.optional(),
   })
   .strict();
 export const clientSchema = z.discriminatedUnion('type', [
@@ -44,6 +64,15 @@ export const clientSchema = z.discriminatedUnion('type', [
       enabled: z.boolean().optional(),
       count: z.number().int().min(1).max(10).optional(),
       tuning: tuning.optional(),
+      weapon: z
+        .number()
+        .int()
+        .min(0)
+        .max(WEAPONS.length - 1)
+        .optional(),
+      value: z.number().min(0).max(10).optional(),
+      stats: weaponStats.optional(),
+      weaponId: z.string().max(32).optional(),
     })
     .strict(),
   z

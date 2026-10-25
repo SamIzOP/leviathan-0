@@ -1,5 +1,27 @@
 # Architecture
 
+## Shared world redesign — 2026-10-23
+
+`foundry-redesign.ts`, `level-kit.ts` and `foundry-dressing.ts` replace the active layout builder. The former layout file is retained as historical source. Schema additions are optional so Movement Lab still works: solid visuals and collider references, route reservations, room openings, landmarks, zone bounds/materials/fog/density, enemy and pickup/objective markers, cover classes, encounters and critical-path waypoints.
+
+`LevelKit` owns both rendered solids and authoritative collision. The renderer skips its legacy facade/street detail generators for layout version 2, removing the original source of uncollided reachable facade additions. Cylinders use inset dodecagon strip decompositions. `collision-audit.ts` checks coverage and straight-line walk blocking; the dynamically loaded client sweep inspects real meshes. `layout-audit.ts` drives the sprint bot and checks clearance; `progression-audit.ts` tests gate separation. `redesign.test.ts` includes deliberate missing-collider, breached-partition and blocked-route regressions.
+
+Rendering batches by primitive, material, detail class and spatial cell. Distance culling retains large silhouettes while dropping remote small details by preset. Construction yields during decoration and batch building behind the loading screen. Optional GLB overrides still replace procedural instances only after successful loading. The forge adds 26 families and curved, vaulted, tapered and sagging primitives; all 89 catalog families retain three deterministic variants, export and gallery support.
+
+The marker overlay displays category colors, route lines and encounter bounds. The generated map includes those same shared records. No networking messages, movement integration, AI, combat or deployment semantics were changed. The coordinate guard exception is recorded in DECISIONS.md.
+
+## Movement fix pass — 2026-10-22
+
+This section supersedes the presentation and latch details below. One `mousemove` path feeds `LookPipeline`; rAF consumes accumulated deltas once before rendering, and the independent 60 Hz command timer samples the latest angles. Native capture requests unadjusted movement with ordinary-capture fallback. Reconciliation never writes input-owned angles. Mantle feedback offsets eye height instead of pitch; roll, bob, dip, crouch and FOV remain presentation offsets.
+
+Local position interpolates the preceding/current fixed-step positions with a clamped accumulator alpha. Reconciliation translates both endpoints and applies the existing decaying positional correction. Remote interpolation, transport and authoritative input processing are unchanged. The rAF timestamp drives camera effects and world rendering. Scene shaders and the merged post pass warm behind the loading screen.
+
+AUTO requires ten continuous slow seconds, at least thirty seconds between reductions, and a state other than slide, wall-run or mantle. Automatic reductions retain textures/targets, reduce existing particle instance counts and change post uniforms without rebuilding resources. Explicit user-selected quality changes retain their existing behavior.
+
+Wall entry runs before air-jump consumption and again after movement. It uses pre-contact/pre-air-jump tangential momentum, current/swept endpoint probes, and five ticks (about 0.08 s) of deterministic contact memory. Optional `MoveState.latchGrace` is copied and reconciled with other movement fields. Entry requires a flagged face, 4.5 m/s tangential speed, angle at most 80 degrees from the plane, 0.4 m floor clearance and standing clearance. Reach is radius plus 0.25 m. Forward input is unnecessary; crouch and clear away input reject entry. Only the departed wall is locked, for 0.6 s or until grounding. Used air jumps, ascent and descent do not block entry. Duration, gravity, corner and launch rules are unchanged.
+
+An optional sixth `stepPlayer` argument receives diagnostic samples without affecting gameplay: reason, tangential speed, angle, height, gap and same-wall lockout. Development-only `InputDiagnostics` supplies bounded histories, an F4 panel and F3 summary. Test injection requires server dev permission. Lab geometry adds 6/8/10 m parallel lanes and staggered walls alongside the existing L-corner and interrupted-wall courses; production imports no Lab geometry.
+
 ## Packages and ownership
 
 - `packages/shared/src`: configuration, wire types, codec/schema, entity/world interfaces, pure `stepPlayer`, reconciliation helper. No browser or Node dependency except the Zod codec.

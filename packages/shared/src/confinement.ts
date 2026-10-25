@@ -8,6 +8,13 @@ import { BUTTON, FLAG } from './config';
  * Narrow barriers are tested along the connecting segment as well as at endpoints.
  */
 export function confinement(level: Level) {
+  const inset = level.layoutVersion ? 4 : 3;
+  const inner = {
+    minX: level.bounds.min.x + inset,
+    maxX: level.bounds.max.x - inset,
+    minZ: level.bounds.min.z + inset,
+    maxZ: level.bounds.max.z - inset,
+  };
   const world = spatialWorld(
     level.bounds.min.y,
     level.colliders.filter((b) => !b.decor),
@@ -137,7 +144,12 @@ export function confinement(level: Level) {
       b.platform &&
       b.max.y > 12 &&
       Math.min(b.max.x - b.min.x, b.max.z - b.min.z) >= 1.4 &&
-      Math.min(b.min.x + 107, 107 - b.max.x, b.min.z + 87, 87 - b.max.z) < 22,
+      Math.min(
+        b.min.x - inner.minX,
+        inner.maxX - b.max.x,
+        b.min.z - inner.minZ,
+        inner.maxZ - b.max.z,
+      ) < 22,
   )) {
     for (const x of [b.min.x + 0.5, (b.min.x + b.max.x) / 2, b.max.x - 0.5])
       for (const z of [b.min.z + 0.5, (b.min.z + b.max.z) / 2, b.max.z - 0.5]) {
@@ -176,8 +188,10 @@ export function confinement(level: Level) {
               world,
             );
             if (
-              Math.abs(entity.position.x) >= 107 ||
-              Math.abs(entity.position.z) >= 87
+              entity.position.x <= inner.minX ||
+              entity.position.x >= inner.maxX ||
+              entity.position.z <= inner.minZ ||
+              entity.position.z >= inner.maxZ
             ) {
               elevatedEscapes.push(b.id);
               break;
@@ -190,7 +204,7 @@ export function confinement(level: Level) {
     boundary,
     unreachable,
     visited: seen.size,
-    highest: Math.max(...queue.map((p) => p.y)),
+    highest: queue.reduce((top, p) => Math.max(top, p.y), 0),
     elevatedProbes,
     elevatedEscapes: [...new Set(elevatedEscapes)],
     entranceRoofAccess: queue

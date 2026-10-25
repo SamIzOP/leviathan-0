@@ -13,7 +13,8 @@ export class CameraFeel {
   private bobPhase = 0;
   private bobAmount = 0;
   private fov = 0;
-  private last = performance.now();
+  /** ADS zoom factor (1 = hip), eased by the weapon presentation. */
+  zoom = 1;
   /** Sim-rate events: landing impacts and stride phase. */
   tick(before: Entity, after: Entity) {
     const was = before.move?.mode ?? 'GROUND',
@@ -34,10 +35,8 @@ export class CameraFeel {
     camera: THREE.PerspectiveCamera,
     local: Entity,
     position: { x: number; y: number; z: number },
+    dt: number,
   ) {
-    const now = performance.now(),
-      dt = Math.min(0.1, (now - this.last) / 1000);
-    this.last = now;
     const ease = (current: number, target: number, tau: number) =>
       current + (target - current) * (1 - Math.exp(-dt / tau));
     const m = local.move,
@@ -55,7 +54,13 @@ export class CameraFeel {
     const kickTarget =
       Math.max(0, Math.min(1, (speed - 5.5) / 7)) * 8 * effect('fovKick');
     this.kick = ease(this.kick, kickTarget, 0.25);
-    const fov = this.verticalFov(movementSettings.fov + this.kick);
+    // Aiming down sights narrows the view by the weapon zoom (tangent-space).
+    const base = this.verticalFov(movementSettings.fov + this.kick);
+    const fov =
+      this.zoom === 1
+        ? base
+        : (2 * Math.atan(Math.tan((base * Math.PI) / 360) / this.zoom) * 180) /
+          Math.PI;
     this.fov = fov;
     if (Math.abs(camera.fov - fov) > 1e-3) {
       camera.fov = fov;
@@ -105,11 +110,11 @@ export class CameraFeel {
       bobX = Math.sin(this.bobPhase) * this.bobAmount * 0.5;
     camera.position.set(
       position.x + Math.cos(local.yaw) * bobX,
-      position.y + this.eye + this.dip + bobY,
+      position.y + this.eye + this.dip + bobY + this.pull,
       position.z - Math.sin(local.yaw) * bobX,
     );
     camera.rotation.order = 'YXZ';
-    camera.rotation.set(local.pitch + this.pull, local.yaw, this.roll);
+    camera.rotation.set(local.pitch, local.yaw, this.roll);
   }
   stats() {
     return {

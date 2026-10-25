@@ -5,7 +5,7 @@ import { PRESETS, graphics, type Preset } from './graphics';
 import { WorldMaterials } from './world-materials';
 import { WorldWeather } from './world-weather';
 import { WorldPost } from './world-post';
-import { WorldAssets } from './world-assets';
+import { WorldAssets, gradeOvercast } from './world-assets';
 import { GpuTimer } from './gpu-timer';
 import { worldPalette } from './theme';
 import { forgeAsset, type Primitive } from '../../shared/src/forge-data';
@@ -13,6 +13,8 @@ import { primitive, partMatrix, RECIPES } from './forge';
 import { facadeDetails } from './building-visuals';
 import { streetDetails } from './street-details';
 import type { InputReader } from './input';
+import { AutoQuality } from './auto-quality';
+import { PropLayer } from './prop-layer';
 export class WorldView {
   gpu: GpuTimer;
   root = new T.Group();
@@ -49,11 +51,15 @@ export class WorldView {
   benchmark: number[] = [];
   slowSince = 0;
   autoChanges = 0;
+  private autoQuality = new AutoQuality();
   private last = performance.now();
   private lastStat = 0;
   private lamps: T.Sprite[] = [];
   private meshes: T.Object3D[] = [];
   private details: T.InstancedMesh[] = [];
+  props: PropLayer;
+  private proxyMaterial = new T.MeshBasicMaterial({ visible: false });
+  private warmed = false;
   private propInstances = new Map<
     string,
     { mesh: T.InstancedMesh; index: number }[]
@@ -85,6 +91,10 @@ export class WorldView {
       a.horizon,
     );
     this.assets = new WorldAssets(renderer);
+    this.props = new PropLayer(this.root, this.materials, this.level.seed, {
+      heightFog: a.heightFog,
+      horizon: a.horizon,
+    });
     this.root.add(new T.HemisphereLight(a.sky, '#343a3c', 2.1));
     const light = new T.DirectionalLight('#bbc6cb', 0.65);
     light.position.set(-30, 70, 30);
@@ -111,7 +121,6 @@ export class WorldView {
     scene.environment = this.environment.texture;
     pmrem.dispose();
     this.post.material.uniforms.tint!.value.set(a.tint);
-    this.build();
     this.weather = new WorldWeather(this.level, p.rain, p.smoke);
     this.root.add(this.weather.group);
     const roadGeo = new T.PlaneGeometry(12.8, 99);
@@ -149,8 +158,8 @@ export class WorldView {
   get hasStreet() {
     return this.level.buildings.length > 0;
   }
-  build() {
-    if (this.hasStreet) {
+  async build() {
+    if (this.hasStreet && !this.level.layoutVersion) {
       const street = streetDetails(this.level);
       this.root.add(...street.objects);
       this.geometries.push(...street.geometries);
@@ -162,6 +171,7 @@ export class WorldView {
       {
         kind: string;
         detail: boolean;
+        proxy: boolean;
         material: T.Material;
         items: {
           position: Vec3;
@@ -173,6 +183,9 @@ export class WorldView {
     >();
     let source = '';
     let detail = false;
+    // Hidden nominal primitives of blocking props: the collision sweep audits these
+    // against the shared colliders; the visible model is fitted inside them.
+    let proxy = false;
     const add = (
       kind: string,
       material: T.Material,
@@ -180,15 +193,21 @@ export class WorldView {
       size: Vec3,
       rotation?: T.Quaternion,
     ) => {
-      const key = `${kind}-${detail}-${material.uuid}-${Math.floor(position.x / 80)}-${Math.floor(position.z / 80)}`;
+      const key = `${kind}-${detail}-${proxy}-${material.uuid}-${Math.floor(position.x / 80)}-${Math.floor(position.z / 80)}`;
       let b = buckets.get(key);
       if (!b) {
-        b = { kind, detail, material, items: [] };
+        b = { kind, detail, proxy, material, items: [] };
         buckets.set(key, b);
       }
       b.items.push({ position, size, source, rotation });
     };
-    const forge = (key: string, position: Vec3, size: Vec3, id: string) => {
+    const forge = (
+      key: string,
+      position: Vec3,
+      size: Vec3,
+      id: string,
+      rotation?: Vec3,
+    ) => {
       const variant = [...id].reduce((sum, c) => sum + c.charCodeAt(0), 0) % 3;
       const asset = forgeAsset(key, variant, this.level.seed, 0);
       const bounds = new T.Box3();
@@ -208,6 +227,11 @@ export class WorldView {
       );
       const fit = new T.Matrix4()
         .makeTranslation(position.x, position.y, position.z)
+        .multiply(
+          new T.Matrix4().makeRotationFromEuler(
+            new T.Euler(rotation?.x ?? 0, rotation?.y ?? 0, rotation?.z ?? 0),
+          ),
+        )
         .multiply(new T.Matrix4().makeScale(scale.x, scale.y, scale.z))
         .multiply(
           new T.Matrix4().makeTranslation(-center.x, -center.y, -center.z),
@@ -238,7 +262,7 @@ export class WorldView {
     });
     this.extraMaterials.push(shadow);
     for (const b of this.level.colliders) {
-      if (b.clip) continue;
+      if (b.clip || b.visualId) continue;
       source = b.prop ? b.id : '';
       const size = {
           x: b.max.x - b.min.x,
@@ -284,18 +308,129 @@ export class WorldView {
         );
     }
     const window = new T.MeshStandardMaterial({
-      color: '#202d35',
+      color: '#516872',
       roughness: 0.82,
       metalness: 0,
-      emissive: '#747260',
-      emissiveIntensity: 0.035,
+      emissive: '#65757b',
+      emissiveIntensity: 0.08,
     });
     this.extraMaterials.push(window);
     source = '';
-    for (const d of [...this.level.decor, ...facadeDetails(this.level)]) {
+    for (const s of this.level.solids ?? []) {
+      if (s.prop) {
+        this.props.add({
+          id: s.id,
+          key: s.prop,
+          fallback: s.fallback,
+          min: {
+            x: s.position.x - s.size.x / 2,
+            y: s.position.y - s.size.y / 2,
+            z: s.position.z - s.size.z / 2,
+          },
+          max: {
+            x: s.position.x + s.size.x / 2,
+            y: s.position.y + s.size.y / 2,
+            z: s.position.z + s.size.z / 2,
+          },
+          yaw: s.yaw ?? 0,
+          zone: s.zone,
+          solid: true,
+          tint: s.tint ?? 0.5,
+        });
+        source = s.id;
+        proxy = true;
+        add(s.shape, this.proxyMaterial, s.position, s.size);
+        proxy = false;
+        continue;
+      }
+      // Ground slabs span several zones: the slab stays the hidden collision
+      // proxy and each zone's part is drawn with that zone's ground material.
+      if (this.level.layoutVersion && /^ground-/.test(s.id)) {
+        source = s.id;
+        proxy = true;
+        add(s.shape, this.proxyMaterial, s.position, s.size);
+        proxy = false;
+        source = '';
+        detail = false;
+        for (const piece of zonePieces(s, this.level.zones))
+          add(
+            s.shape,
+            this.materials.getZoned(s.surface, piece.zone, s.color),
+            piece.position,
+            piece.size,
+          );
+        continue;
+      }
+      source = s.id;
+      detail = false;
+      add(
+        s.shape,
+        this.level.layoutVersion
+          ? this.materials.getZoned(s.surface, s.zone, s.color)
+          : this.materials.get(s.surface, s.color),
+        s.position,
+        s.size,
+      );
+    }
+    let decorationsBuilt = 0;
+    for (const d of [
+      ...this.level.decor,
+      ...(this.level.layoutVersion ? [] : facadeDetails(this.level)),
+    ]) {
+      if (++decorationsBuilt % 256 === 0) {
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        if (this.disposed) return;
+      }
       source = d.prop ? d.id : '';
+      if (d.text) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d')!;
+        ctx.fillStyle = '#28353b';
+        ctx.fillRect(0, 0, 512, 128);
+        ctx.fillStyle = '#a9b3ad';
+        ctx.font = 'bold 28px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.text, 256, 70, 490);
+        const texture = new T.CanvasTexture(canvas);
+        this.materials.textures.push(texture);
+        const mat = new T.MeshBasicMaterial({
+          map: texture,
+          side: T.DoubleSide,
+        });
+        this.extraMaterials.push(mat);
+        const geo = new T.PlaneGeometry(d.size.x, d.size.y);
+        this.geometries.push(geo);
+        const sign = new T.Mesh(geo, mat);
+        sign.position.set(d.position.x, d.position.y, d.position.z);
+        this.root.add(sign);
+        continue;
+      }
+      if (d.prop && this.level.layoutVersion) {
+        this.props.add({
+          id: d.id,
+          key: d.prop,
+          fallback: d.fallback,
+          min: {
+            x: d.position.x - d.size.x / 2,
+            y: d.position.y - d.size.y / 2,
+            z: d.position.z - d.size.z / 2,
+          },
+          max: {
+            x: d.position.x + d.size.x / 2,
+            y: d.position.y + d.size.y / 2,
+            z: d.position.z + d.size.z / 2,
+          },
+          yaw: d.rotation?.y ?? 0,
+          zone: d.zone ?? 'boundary',
+          solid: false,
+          tint: d.tint ?? 0.5,
+        });
+        continue;
+      }
       if (d.prop) {
-        forge(d.prop, d.position, d.size, d.id);
+        forge(d.prop, d.position, d.size, d.id, d.rotation);
         continue;
       }
       detail =
@@ -323,6 +458,8 @@ export class WorldView {
             : undefined,
         );
     }
+    let built = 0;
+    const solidIds = new Set((this.level.solids ?? []).map((s) => s.id));
     for (const b of buckets.values()) {
       const geo = primitive(b.kind as Primitive);
       this.geometries.push(geo);
@@ -343,9 +480,21 @@ export class WorldView {
           ]);
       }
       mesh.computeBoundingSphere();
-      if (b.detail) this.details.push(mesh);
+      mesh.userData.solidIds = b.items.map((item) =>
+        solidIds.has(item.source) ? item.source : null,
+      );
+      mesh.userData.sources = b.items.map((item) => item.source);
       this.root.add(mesh);
+      if (b.proxy) {
+        mesh.visible = false;
+        continue;
+      }
+      if (b.detail) this.details.push(mesh);
       this.meshes.push(mesh);
+      if (++built % 32 === 0) {
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        if (this.disposed) return;
+      }
     }
     const c = document.createElement('canvas');
     c.width = c.height = 64;
@@ -372,37 +521,108 @@ export class WorldView {
       this.lamps.push(sprite);
       this.root.add(sprite);
     }
-    const markerMat = new T.MeshBasicMaterial({
-      color: '#aebdc5',
-      wireframe: true,
-    });
-    this.extraMaterials.push(markerMat);
-    for (const spawn of this.level.spawns) {
+    const markerColors: Record<string, string> = {
+      player: '#a5d4aa',
+      enemySpawn: '#db947b',
+      cover: '#79c9c7',
+      ammo: '#a7afff',
+      salvage: '#c9b793',
+      oil: '#a396c8',
+      burn: '#e2a86e',
+      exit: '#a4d681',
+      checkpoint: '#d5ce88',
+      path: '#d9d386',
+    };
+    const markerMaterials = new Map(
+      Object.entries(markerColors).map(([kind, color]) => {
+        const mat = new T.MeshBasicMaterial({
+          color,
+          wireframe: true,
+          depthTest: false,
+        });
+        this.extraMaterials.push(mat);
+        return [kind, mat];
+      }),
+    );
+    const markers = [
+      ...this.level.spawns
+        .filter((s) => s.type === 'player')
+        .map((s, i) => ({ ...s, kind: 'player', id: `player-${i}` })),
+      ...(this.level.markers ?? []),
+      ...(this.level.coverPoints ?? []).map((m) => ({ ...m, kind: 'cover' })),
+      ...(this.level.criticalPath ?? []).map((position, i) => ({
+        position,
+        kind: 'path',
+        id: `waypoint-${i}`,
+      })),
+    ];
+    for (const spawn of markers) {
       const geo = new T.ConeGeometry(0.3, 1, 4);
       this.geometries.push(geo);
-      const mesh = new T.Mesh(geo, markerMat);
+      const mesh = new T.Mesh(geo, markerMaterials.get(spawn.kind));
+      mesh.name = spawn.id;
       mesh.position.set(
         spawn.position.x,
         spawn.position.y + 1,
         spawn.position.z,
       );
       mesh.rotation.x = Math.PI / 2;
-      mesh.rotation.z = spawn.yaw;
       this.spawnGroup.add(mesh);
+    }
+    if (this.level.criticalPath) {
+      const geo = new T.BufferGeometry().setFromPoints(
+        this.level.criticalPath.map((p) => new T.Vector3(p.x, p.y + 0.1, p.z)),
+      );
+      const mat = new T.LineBasicMaterial({
+        color: markerColors.path,
+        depthTest: false,
+      });
+      this.geometries.push(geo);
+      this.extraMaterials.push(mat);
+      this.spawnGroup.add(new T.Line(geo, mat));
+    }
+    for (const encounter of this.level.encounters ?? []) {
+      const b = encounter.bounds,
+        helper = new T.Box3Helper(
+          new T.Box3(
+            new T.Vector3(b.min.x, 0, b.min.z),
+            new T.Vector3(b.max.x, 4, b.max.z),
+          ),
+          0xadc6d1,
+        );
+      helper.name = encounter.id;
+      this.geometries.push(helper.geometry);
+      this.extraMaterials.push(
+        ...(Array.isArray(helper.material)
+          ? helper.material
+          : [helper.material]),
+      );
+      this.spawnGroup.add(helper);
     }
   }
   async prepare(progress: (value: number) => void) {
+    await this.build();
+    if (this.disposed) return;
+    progress(0.2);
     await this.assets.init();
     progress(0.35);
     const sky = await this.assets.sky();
     if (sky && !this.disposed) {
+      const intensity = this.level.layoutVersion
+        ? gradeOvercast(sky, this.level.atmosphere)
+        : 1;
       const pmrem = new T.PMREMGenerator(this.renderer);
       this.environment?.dispose();
       this.environment = pmrem.fromEquirectangular(sky);
       this.scene.environment = this.environment.texture;
-      this.scene.background = sky;
-      this.scene.backgroundIntensity = 0.8;
-      this.sky.visible = false;
+      // Overcast HDRI drives lighting and reflections only; the fogged procedural
+      // sky dome stays the visible background so the rain/fog look is unchanged.
+      if (this.level.layoutVersion) this.scene.environmentIntensity = intensity;
+      else {
+        this.scene.background = sky;
+        this.scene.backgroundIntensity = 0.8;
+        this.sky.visible = false;
+      }
       pmrem.dispose();
     }
     let count = 0;
@@ -439,9 +659,28 @@ export class WorldView {
       }
       progress(0.35 + (0.2 * ++count) / Math.max(1, entries.length));
     }
+    progress(0.6);
+    let yielded = 0;
+    this.props.textureCap = this.preset === 'LOW' ? 512 : 0;
+    this.props.normals = this.preset !== 'LOW';
+    await this.props.build(this.assets, async () => {
+      if (++yielded % 64 === 0)
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      return this.disposed;
+    });
+    if (this.disposed) return;
+    await this.applyZoneMaterials();
+    if (this.disposed) return;
+    // Upload CC0 prop and zone maps now: distance-culled props would otherwise
+    // upload theirs mid-run, the first time they come into range.
+    for (const t of [...this.props.uploads, ...this.assets.textures])
+      this.renderer.initTexture(t);
+    progress(0.9);
     // Replacement meshes have the exact authored collider footprint. Hide their
     // procedural instance only after a replacement has successfully loaded.
-    for (const key of Object.keys(this.assets.manifest.models)) {
+    for (const key of this.level.layoutVersion
+      ? []
+      : Object.keys(this.assets.manifest.models)) {
       const path = this.assets.manifest.models[key];
       if (!path) continue;
       const placements = [
@@ -485,12 +724,109 @@ export class WorldView {
       this.ready = true;
     }
   }
+  /** CC0 surface sets per zone (LOW loads the 512 px copies). Each zoned material
+   * keeps its colour identity, softened so real albedo is not crushed. */
+  private async applyZoneMaterials() {
+    const sets = this.assets.manifest.materials ?? {},
+      loaded = new Map<string, Promise<T.Texture | null>>();
+    const load = (path?: string) => {
+      if (!path) return Promise.resolve(null);
+      let t = loaded.get(path);
+      if (!t) loaded.set(path, (t = this.assets.texture(path)));
+      return t;
+    };
+    for (const m of [
+      ...this.materials.materials.values(),
+      ...this.props.forgeMaterials,
+    ]) {
+      const key = m.userData.materialKey as string | undefined,
+        set = key ? sets[key] : undefined;
+      if (!set) continue;
+      const maps = this.preset === 'LOW' ? (set.low ?? set.maps) : set.maps;
+      const [albedo, rough] = await Promise.all([
+        load(maps.albedo),
+        load(maps.roughness),
+      ]);
+      if (this.disposed) return;
+      if (!albedo) continue;
+      albedo.colorSpace = T.SRGBColorSpace;
+      albedo.anisotropy = 4;
+      m.map = albedo;
+      m.bumpMap = albedo;
+      m.bumpScale = 0.004;
+      if (rough) m.roughnessMap = rough;
+      m.roughness = 0.95;
+      m.color.lerp(new T.Color('#ffffff'), 0.55);
+      m.userData.realMaps = true;
+      m.userData.worldTile = 1 / Math.max(0.25, set.tile ?? 2);
+      m.needsUpdate = true;
+    }
+  }
   resize() {
     const size = this.renderer.getDrawingBufferSize(new T.Vector2());
     this.post.resize(size.x, size.y);
     this.reflection
       ?.getRenderTarget()
       .setSize(Math.max(128, size.x / 2), Math.max(128, size.y / 2));
+  }
+  landmarkVisibility(camera: T.PerspectiveCamera, id?: string) {
+    const caster = new T.Raycaster(),
+      matrix = new T.Matrix4(),
+      point = new T.Vector3(),
+      direction = new T.Vector3();
+    this.root.updateMatrixWorld(true);
+    camera.updateMatrixWorld(true);
+    return (this.level.landmarks ?? [])
+      .filter((lm) => !id || lm.id === id)
+      .map((lm) => {
+        const source = `${lm.id}/crown`,
+          parts = this.propInstances.get(source) ?? [];
+        let visibleSamples = 0,
+          probes = 0;
+        for (
+          let i = 0;
+          i < parts.length;
+          i += Math.max(1, Math.floor(parts.length / 40))
+        ) {
+          const part = parts[i]!;
+          part.mesh.getMatrixAt(part.index, matrix);
+          point
+            .setFromMatrixPosition(matrix)
+            .applyMatrix4(part.mesh.matrixWorld);
+          const ndc = point.clone().project(camera);
+          if (
+            Math.abs(ndc.x) > 1 ||
+            Math.abs(ndc.y) > 1 ||
+            ndc.z > 1 ||
+            ndc.z < -1
+          )
+            continue;
+          direction.copy(point).sub(camera.position).normalize();
+          caster.set(camera.position, direction);
+          caster.far = 300;
+          const hit = caster.intersectObjects(
+            this.meshes.filter((m) => m.visible),
+            false,
+          )[0];
+          probes++;
+          if (
+            hit &&
+            (hit.object.userData.sources as string[] | undefined)?.[
+              hit.instanceId ?? -1
+            ] === source
+          )
+            visibleSamples++;
+        }
+        return {
+          id: lm.id,
+          distance: Math.hypot(
+            camera.position.x - lm.position.x,
+            camera.position.z - lm.position.z,
+          ),
+          visibleSamples,
+          probes,
+        };
+      });
   }
   cameraView(name: string, camera: T.PerspectiveCamera) {
     this.mode = name;
@@ -522,23 +858,29 @@ export class WorldView {
       .applyEuler(camera.rotation);
     camera.position.add(velocity);
   }
-  render(camera: T.PerspectiveCamera) {
-    const now = performance.now(),
-      ms = now - this.last;
+  render(
+    camera: T.PerspectiveCamera,
+    now = performance.now(),
+    moveMode = 'GROUND',
+  ) {
+    const ms = now - this.last;
     this.last = now;
     const time = (now - this.started) / 1000;
     if (this.mode === 'perf') {
-      const path = [
-          'composition',
-          'van',
-          'containers',
-          'stacks',
-          'hall',
-          'puddle',
-          'spawn',
-        ],
+      const path = this.level.layoutVersion
+          ? ['composition', ...this.level.zones.map((z) => `${z.id}-player`)]
+          : [
+              'composition',
+              'van',
+              'containers',
+              'stacks',
+              'hall',
+              'puddle',
+              'spawn',
+            ],
         t =
-          Math.min(0.99999, (now - this.perfStarted) / 60000) *
+          // rAF timestamps can precede perfStarted on the first frame.
+          Math.min(0.99999, Math.max(0, (now - this.perfStarted) / 60000)) *
           (path.length - 1),
         i = Math.floor(t),
         a = this.level.cameras[path[i]!]!,
@@ -556,12 +898,42 @@ export class WorldView {
       );
     }
     this.sky.position.copy(camera.position);
+    if (this.level.layoutVersion) {
+      for (const object of this.meshes) {
+        const mesh = object as T.InstancedMesh;
+        mesh.visible =
+          !mesh.boundingSphere ||
+          camera.position.distanceTo(mesh.boundingSphere.center) <
+            210 + mesh.boundingSphere.radius;
+      }
+      const zone = this.level.zones.find(
+        (z) =>
+          z.bounds &&
+          camera.position.x >= z.bounds.min.x &&
+          camera.position.x <= z.bounds.max.x &&
+          camera.position.z >= z.bounds.min.z &&
+          camera.position.z <= z.bounds.max.z,
+      );
+      if (zone?.fogTint)
+        (this.scene.fog as T.FogExp2).color.lerp(
+          new T.Color(zone.fogTint),
+          0.02,
+        );
+    }
+    // The loading warm-up frame draws every prop, so each one's post-pass
+    // program compiles behind the loading screen instead of on first sight.
+    if (this.level.layoutVersion && this.warmed)
+      this.props.cull(camera, this.preset);
+    this.warmed = true;
     for (const mesh of this.details)
       mesh.visible =
         !mesh.boundingSphere ||
         camera.position.distanceTo(mesh.boundingSphere.center) <
           (this.preset === 'LOW' ? 55 : 90) + mesh.boundingSphere.radius;
-    for (const m of this.materials.materials.values()) {
+    for (const m of [
+      ...this.materials.materials.values(),
+      ...this.props.forgeMaterials,
+    ]) {
       m.envMapIntensity = this.puddles ? 1 : 0.05;
       if (m.userData.heightDensity)
         m.userData.heightDensity.value =
@@ -600,19 +972,23 @@ export class WorldView {
       this.calls.push(this.drawCalls);
       if (this.calls.length > 180) this.calls.shift();
       if (graphics.quality === 'AUTO' && this.mode !== 'perf') {
-        this.benchmark.push(this.gpuMs ?? ms);
-        if (this.benchmark.length === 90) {
-          const avg = this.benchmark.reduce((a, b) => a + b, 0) / 90;
-          if (avg > 23) this.changePreset('LOW');
-        }
         const avg = this.frames.reduce((a, b) => a + b, 0) / this.frames.length;
-        if (avg > 21 && this.frames.length >= 60) {
-          if (!this.slowSince) this.slowSince = now;
-          if (now - this.slowSince > 3000) {
-            this.changePreset(this.preset === 'HIGH' ? 'MEDIUM' : 'LOW');
-            this.slowSince = now;
-          }
-        } else this.slowSince = 0;
+        if (
+          this.preset !== 'LOW' &&
+          this.autoQuality.sample(now, avg, moveMode)
+        ) {
+          // Retain existing textures/targets; counts and shader uniforms need no rebuild.
+          this.preset = this.preset === 'HIGH' ? 'MEDIUM' : 'LOW';
+          this.autoChanges++;
+          this.weather.rain.count = Math.min(
+            this.weather.rain.count,
+            PRESETS[this.preset].rain,
+          );
+          this.weather.smoke.count = Math.min(
+            this.weather.smoke.count,
+            PRESETS[this.preset].smoke,
+          );
+        }
       }
       if (this.mode === 'perf' && !this.perfReport) {
         this.perfFrames.push({
@@ -661,6 +1037,12 @@ export class WorldView {
           this.level.atmosphere.horizon,
         ),
         replacements = new Map<T.Material, T.Material>();
+      // Zone materials carry imported CC0 maps that do not depend on the preset.
+      for (const [key, material] of [...old.materials])
+        if (material.userData.realMaps) {
+          old.materials.delete(key);
+          next.materials.set(key, material);
+        }
       for (const material of old.materials.values()) {
         const replacement = next.get(
           material.userData.worldSurface,
@@ -697,6 +1079,7 @@ export class WorldView {
       next.textures.push(...retained);
       old.dispose();
       this.materials = next;
+      this.props.retexture(next);
     }
     this.root.remove(this.weather.group);
     this.weather.dispose();
@@ -706,8 +1089,38 @@ export class WorldView {
     this.renderer.setSize(innerWidth, innerHeight);
     this.resize();
   }
+  /** Decoded texture memory per zone: zone materials plus that zone's props.
+   * A texture shared by two zones counts in both. */
+  private zoneTextureMiB() {
+    const zones = new Map<string, Set<T.Texture>>();
+    const add = (zone: string, m: T.Material | T.Material[]) => {
+      const set = zones.get(zone) ?? zones.set(zone, new Set()).get(zone)!;
+      for (const material of [m].flat())
+        for (const value of Object.values(material))
+          if (value instanceof T.Texture) set.add(value);
+    };
+    for (const m of this.materials.materials.values())
+      if (m.userData.zone) add(m.userData.zone, m);
+    for (const mesh of this.props.meshes)
+      add(mesh.userData.zone, mesh.material);
+    return Object.fromEntries(
+      [...zones].map(([zone, set]) => [
+        zone,
+        Math.round(
+          ([...set].reduce((sum, t) => {
+            const img = t.image as { width?: number; height?: number } | null;
+            return sum + (img?.width ?? 0) * (img?.height ?? 0) * 4 * 1.33;
+          }, 0) /
+            1048576) *
+            10,
+        ) / 10,
+      ]),
+    );
+  }
   stats() {
     return {
+      props: this.props.stats(),
+      zoneTextureMiB: this.zoneTextureMiB(),
       preset: this.preset,
       drawCalls: this.drawCalls,
       triangles: this.triangles,
@@ -747,10 +1160,56 @@ export class WorldView {
     this.post.dispose();
     this.reflection.dispose();
     this.environment?.dispose();
+    this.props.dispose();
+    this.proxyMaterial.dispose();
     this.materials.dispose();
     this.geometries.forEach((g) => g.dispose());
     this.extraMaterials.forEach((m) => m.dispose());
     this.root.clear();
     this.renderer.renderLists.dispose();
   }
+}
+/** Split a box along every zone boundary that crosses it; each piece takes the
+ * zone holding its centre (the box's own zone outside all zone bounds). */
+function zonePieces(
+  s: { position: Vec3; size: Vec3; zone: string },
+  zones: Level['zones'],
+) {
+  const cuts = (axis: 'x' | 'z') => {
+    const lo = s.position[axis] - s.size[axis] / 2,
+      hi = s.position[axis] + s.size[axis] / 2;
+    return [
+      ...new Set([
+        lo,
+        hi,
+        ...zones
+          .flatMap((z) =>
+            z.bounds ? [z.bounds.min[axis], z.bounds.max[axis]] : [],
+          )
+          .filter((v) => v > lo && v < hi),
+      ]),
+    ].sort((a, b) => a - b);
+  };
+  const xs = cuts('x'),
+    zs = cuts('z'),
+    pieces: { zone: string; position: Vec3; size: Vec3 }[] = [];
+  for (let i = 1; i < xs.length; i++)
+    for (let j = 1; j < zs.length; j++) {
+      const x = (xs[i - 1]! + xs[i]!) / 2,
+        z = (zs[j - 1]! + zs[j]!) / 2;
+      pieces.push({
+        zone:
+          zones.find(
+            (zn) =>
+              zn.bounds &&
+              x >= zn.bounds.min.x &&
+              x <= zn.bounds.max.x &&
+              z >= zn.bounds.min.z &&
+              z <= zn.bounds.max.z,
+          )?.id ?? s.zone,
+        position: { x, y: s.position.y, z },
+        size: { x: xs[i]! - xs[i - 1]!, y: s.size.y, z: zs[j]! - zs[j - 1]! },
+      });
+    }
+  return pieces;
 }

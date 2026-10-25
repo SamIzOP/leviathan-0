@@ -1,0 +1,55 @@
+npm notice run npx
+npm notice run tsx scripts/bots.ts --count 8 --duration 180 --chaos --url ws://localhost:3004/ws --report redesign-production-stress
+Room 74QF: 8 bots, 180s, 150ms RTT / 3% loss, chaos=true
+{"seconds":11,"players":8,"reconnects":1,"memoryMiB":130,"snapshots":[312,315,303,295,304,303,296,293]}
+{"seconds":21,"players":8,"reconnects":2,"memoryMiB":149,"snapshots":[609,608,593,589,591,594,578,589]}
+{"seconds":31,"players":8,"reconnects":4,"memoryMiB":181,"snapshots":[888,902,889,885,873,883,869,880]}
+{"seconds":41,"players":8,"reconnects":5,"memoryMiB":183,"snapshots":[1181,1194,1184,1180,1163,1177,1145,1172]}
+{"seconds":51,"players":8,"reconnects":7,"memoryMiB":182,"snapshots":[1471,1477,1461,1473,1452,1471,1441,1460]}
+{"seconds":61,"players":8,"reconnects":8,"memoryMiB":185,"snapshots":[1768,1774,1752,1765,1742,1764,1723,1750]}
+{"seconds":71,"players":8,"reconnects":9,"memoryMiB":188,"snapshots":[2058,2067,2037,2043,2036,2056,2017,2039]}
+{"seconds":81,"players":8,"reconnects":11,"memoryMiB":188,"snapshots":[2350,2359,2315,2326,2325,2344,2309,2330]}
+{"seconds":91,"players":8,"reconnects":12,"memoryMiB":192,"snapshots":[2637,2649,2596,2621,2611,2633,2604,2617]}
+{"seconds":101,"players":8,"reconnects":14,"memoryMiB":208,"snapshots":[2928,2933,2886,2902,2908,2923,2895,2897]}
+{"seconds":111,"players":8,"reconnects":15,"memoryMiB":209,"snapshots":[3218,3220,3181,3188,3198,3218,3191,3178]}
+{"seconds":121,"players":8,"reconnects":17,"memoryMiB":209,"snapshots":[3512,3509,3460,3478,3490,3499,3480,3471]}
+{"seconds":131,"players":8,"reconnects":18,"memoryMiB":209,"snapshots":[3797,3803,3745,3772,3785,3788,3775,3765]}
+{"seconds":141,"players":8,"reconnects":19,"memoryMiB":209,"snapshots":[4086,4091,4019,4065,4075,4078,4069,4059]}
+{"seconds":151,"players":8,"reconnects":21,"memoryMiB":210,"snapshots":[4366,4385,4308,4353,4369,4353,4363,4344]}
+{"seconds":161,"players":8,"reconnects":22,"memoryMiB":210,"snapshots":[4661,4675,4597,4643,4649,4638,4657,4639]}
+{"seconds":171,"players":8,"reconnects":24,"memoryMiB":212,"snapshots":[4944,4965,4886,4933,4939,4924,4939,4930]}
+{"seconds":181,"players":8,"reconnects":25,"memoryMiB":212,"snapshots":[5235,5259,5167,5226,5232,5220,5231,5215]}
+{
+  durationSeconds: 181.142,
+  room: '74QF',
+  count: 8,
+  reconnects: 25,
+  syncComparisons: 36321,
+  rates: [
+    28.91897714655044,
+    29.068899759555595,
+    28.57774950913968,
+    28.92646611131099,
+    28.97202471925045,
+    28.922872340425535,
+    29.001336134966262,
+    28.934928314616716
+  ],
+  memoryMiB: [
+     129.7421875, 148.69921875,
+        181.0625,  183.0234375,
+    182.43359375, 185.43359375,
+    188.13671875, 188.41015625,
+     191.8203125,     208.1875,
+     208.5234375, 209.05078125,
+    208.91015625,      208.625,
+    210.02734375,       210.25,
+    211.76953125, 212.30859375
+  ],
+  memoryGrowthMiB: 82.56640625,
+  predictionErrorP95: 0,
+  predictionErrorMax: 1.1166953641520836,
+  statesReached: [ 'GROUND', 'CROUCH', 'SLIDE', 'AIR', 'MANTLE', 'WALLRUN' ],
+  failure: '',
+  pass: true
+}

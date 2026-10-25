@@ -1,82 +1,82 @@
 {
   "pass": true,
-  "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x000046A3) Direct3D11 vs_5_0 ps_5_0, D3D11)",
   "samples": [
     {
       "cycle": 0,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 9477972,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 30518912,
       "level": "foundry-row"
     },
     {
       "cycle": 1,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10026960,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 31675344,
       "level": "foundry-row-overcast"
     },
     {
       "cycle": 2,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10226532,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32031952,
       "level": "foundry-row-overcast"
     },
     {
       "cycle": 3,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10294336,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32250040,
       "level": "foundry-row"
     },
     {
       "cycle": 4,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10512284,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32384168,
       "level": "foundry-row"
     },
     {
       "cycle": 5,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10507324,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32538764,
       "level": "foundry-row"
     },
     {
       "cycle": 6,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10640836,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32551356,
       "level": "foundry-row"
     },
     {
       "cycle": 7,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10612304,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32605196,
       "level": "foundry-row"
     },
     {
       "cycle": 8,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10748704,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32701924,
       "level": "foundry-row"
     },
     {
       "cycle": 9,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10834780,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32839548,
       "level": "foundry-row"
     },
     {
       "cycle": 10,
-      "geometries": 239,
-      "textures": 18,
-      "heap": 10955732,
+      "geometries": 407,
+      "textures": 53,
+      "heap": 32919376,
       "level": "foundry-row"
     }
   ],

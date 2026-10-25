@@ -126,6 +126,27 @@ export function buildMovementLab(): Level {
     x += length;
   });
   // Floor rulers every 5 m and taller markers every 10 m.
+  // Dedicated chain lanes in the previously empty eastern strip. Widths are face-to-face.
+  for (const [k, width] of [6, 8, 10].entries()) {
+    const x = [36, 45, 56][k]!;
+    box(`lab-chain-${width}-left`, v(x, 0, -40), v(x + 1, 12, 40), 'metal', {
+      run: true,
+    });
+    box(
+      `lab-chain-${width}-right`,
+      v(x + 1 + width, 0, -40),
+      v(x + 2 + width, 12, 40),
+      'metal',
+      { run: true },
+    );
+  }
+  for (let k = 0; k < 3; k++) {
+    const x = 36 + k * 10,
+      z = 54 + (k % 2) * 6;
+    box(`lab-chain-stagger-${k}`, v(x, 0, z), v(x + 7, 12, z + 1), 'brick', {
+      run: true,
+    });
+  }
   for (let n = -65; n <= 65; n += 5) {
     decor.push(
       {

@@ -70,7 +70,7 @@ export function worldControls(
   for (const [label, key] of [
     ['SMOKE', 'smoke'],
     ['PUDDLE REFLECTION', 'puddles'],
-    ['SPAWN POINTS', 'spawns'],
+    ['MARKERS / ROUTES / ENCOUNTERS', 'spawns'],
   ] as const)
     panel.checkbox(
       section,

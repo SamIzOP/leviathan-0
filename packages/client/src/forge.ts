@@ -29,6 +29,73 @@ export const RECIPES: Record<
 };
 /** Unit primitives all have automatic UVs, ready for the existing PBR maps. */
 export function primitive(shape: Primitive, lod = 0): T.BufferGeometry {
+  if (shape === 'cylinderZ')
+    return new T.CylinderGeometry(0.5, 0.5, 1, lod ? 6 : 12).rotateX(
+      Math.PI / 2,
+    );
+  if (shape === 'cooling')
+    return new T.LatheGeometry(
+      [
+        new T.Vector2(0.5, -0.5),
+        new T.Vector2(0.41, -0.3),
+        new T.Vector2(0.29, 0),
+        new T.Vector2(0.32, 0.3),
+        new T.Vector2(0.39, 0.5),
+        new T.Vector2(0.35, 0.5),
+        new T.Vector2(0.25, 0),
+        new T.Vector2(0.46, -0.5),
+      ],
+      lod ? 8 : 16,
+    );
+  if (shape === 'arch') {
+    const s = new T.Shape();
+    s.absarc(0, 0, 0.5, 0, Math.PI, false);
+    s.lineTo(-0.46, 0);
+    s.absarc(0, 0, 0.46, Math.PI, 0, true);
+    s.closePath();
+    const g = new T.ExtrudeGeometry(s, {
+      depth: 1,
+      bevelEnabled: false,
+      curveSegments: lod ? 6 : 12,
+    });
+    g.translate(0, -0.25, -0.5);
+    g.scale(1, 2, 1);
+    return g;
+  }
+  if (shape === 'gable') {
+    const s = new T.Shape();
+    s.moveTo(-0.5, -0.5);
+    s.lineTo(0, 0.5);
+    s.lineTo(0.5, -0.5);
+    s.lineTo(0.5, -0.42);
+    s.lineTo(0, 0.42);
+    s.lineTo(-0.5, -0.42);
+    s.closePath();
+    return new T.ExtrudeGeometry(s, {
+      depth: 1,
+      bevelEnabled: false,
+    }).translate(0, 0, -0.5);
+  }
+  if (shape === 'sag') {
+    const g = new T.TubeGeometry(
+      new T.CatmullRomCurve3([
+        new T.Vector3(-0.48, 0.45, 0),
+        new T.Vector3(-0.2, -0.3, 0),
+        new T.Vector3(0.2, -0.3, 0),
+        new T.Vector3(0.48, 0.45, 0),
+      ]),
+      lod ? 8 : 16,
+      0.02,
+      5,
+      false,
+    );
+    g.computeBoundingBox();
+    const center = g.boundingBox!.getCenter(new T.Vector3()),
+      size = g.boundingBox!.getSize(new T.Vector3());
+    return g
+      .translate(-center.x, -center.y, -center.z)
+      .scale(1 / size.x, 1 / size.y, 1 / size.z);
+  }
   if (shape === 'cabin') {
     const geometry = new T.BoxGeometry(),
       positions = geometry.attributes.position!;

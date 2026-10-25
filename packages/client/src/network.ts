@@ -13,6 +13,10 @@ export class Network {
   timer?: ReturnType<typeof setTimeout>;
   lag: number;
   loss: number;
+  /** Extra one-way delay, uniform 0..jitter ms per message, order preserved. */
+  jitter = 0;
+  private sendAt = 0;
+  private receiveAt = 0;
   queuedJoin?: ClientMessage;
   devAllowed = false;
   private blockedUntil = 0;
@@ -22,10 +26,24 @@ export class Network {
     this.status(!!this.session);
     this.ws?.close();
   }
-  setDevFaults(lag: number, loss: number) {
+  setDevFaults(lag: number, loss: number, jitter = this.jitter) {
     if (!this.devAllowed) return;
     this.lag = Math.max(0, Math.min(400, lag));
     this.loss = Math.max(0, Math.min(20, loss));
+    this.jitter = Math.max(0, Math.min(100, jitter));
+  }
+  /** Half the round-trip lag plus jitter, never earlier than the previous message
+   * in the same direction (a WebSocket is ordered). */
+  private delay(direction: 'send' | 'receive') {
+    const now = performance.now(),
+      wanted = now + this.lag / 2 + Math.random() * this.jitter,
+      at = Math.max(
+        wanted,
+        direction === 'send' ? this.sendAt : this.receiveAt,
+      );
+    if (direction === 'send') this.sendAt = at;
+    else this.receiveAt = at;
+    return at - now;
   }
   constructor(
     public receive: (m: ServerMessage) => void,
@@ -104,7 +122,7 @@ export class Network {
         () => {
           if (this.generation === gen) this.receive(m);
         },
-        m.type === 'snapshot' ? this.lag / 2 : 0,
+        m.type === 'snapshot' ? this.delay('receive') : 0,
       );
     };
     ws.onclose = () => {
@@ -129,7 +147,7 @@ export class Network {
       () => {
         if (this.ws === ws && ws.readyState === WebSocket.OPEN) ws.send(wire);
       },
-      message.type === 'inputs' ? this.lag / 2 : 0,
+      message.type === 'inputs' ? this.delay('send') : 0,
     );
   }
 }

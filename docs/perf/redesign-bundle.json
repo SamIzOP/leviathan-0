@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "name": "collision-sweep-6zkobITa.js",
+      "bytes": 2766,
+      "gzipBytes": 1423
+    },
+    {
+      "name": "gallery-Cx99bHh0.js",
+      "bytes": 24899,
+      "gzipBytes": 6932
+    },
+    {
+      "name": "index-eFXC6LH9.js",
+      "bytes": 2526,
+      "gzipBytes": 1258
+    },
+    {
+      "name": "main-BX7UA8Zn.js",
+      "bytes": 287273,
+      "gzipBytes": 103107
+    },
+    {
+      "name": "world-materials-1GgIgzUB.css",
+      "bytes": 17009,
+      "gzipBytes": 4287
+    },
+    {
+      "name": "world-materials-B6jLf0Gr.js",
+      "bytes": 695726,
+      "gzipBytes": 184943
+    }
+  ],
+  "total": {
+    "bytes": 1030199,
+    "gzipBytes": 301950
+  },
+  "serverBytes": 242127,
+  "generatedAssets": {
+    "count": 267,
+    "totalBytes": 17111952,
+    "directory": "packages/client/public/assets/models/generated"
+  }
+}

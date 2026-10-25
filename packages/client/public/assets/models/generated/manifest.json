@@ -1,4 +1,394 @@
 {
+  "cooling-tower/1": {
+    "path": "/assets/models/generated/cooling-tower-1.glb",
+    "bytes": 125628,
+    "triangles": 1220
+  },
+  "cooling-tower/2": {
+    "path": "/assets/models/generated/cooling-tower-2.glb",
+    "bytes": 126072,
+    "triangles": 1220
+  },
+  "cooling-tower/3": {
+    "path": "/assets/models/generated/cooling-tower-3.glb",
+    "bytes": 126412,
+    "triangles": 1220
+  },
+  "gas-holder/1": {
+    "path": "/assets/models/generated/gas-holder-1.glb",
+    "bytes": 172144,
+    "triangles": 1644
+  },
+  "gas-holder/2": {
+    "path": "/assets/models/generated/gas-holder-2.glb",
+    "bytes": 172092,
+    "triangles": 1644
+  },
+  "gas-holder/3": {
+    "path": "/assets/models/generated/gas-holder-3.glb",
+    "bytes": 172848,
+    "triangles": 1644
+  },
+  "signal-tower/1": {
+    "path": "/assets/models/generated/signal-tower-1.glb",
+    "bytes": 32480,
+    "triangles": 270
+  },
+  "signal-tower/2": {
+    "path": "/assets/models/generated/signal-tower-2.glb",
+    "bytes": 32480,
+    "triangles": 270
+  },
+  "signal-tower/3": {
+    "path": "/assets/models/generated/signal-tower-3.glb",
+    "bytes": 33456,
+    "triangles": 270
+  },
+  "ore-bridge/1": {
+    "path": "/assets/models/generated/ore-bridge-1.glb",
+    "bytes": 67320,
+    "triangles": 612
+  },
+  "ore-bridge/2": {
+    "path": "/assets/models/generated/ore-bridge-2.glb",
+    "bytes": 67320,
+    "triangles": 612
+  },
+  "ore-bridge/3": {
+    "path": "/assets/models/generated/ore-bridge-3.glb",
+    "bytes": 68288,
+    "triangles": 612
+  },
+  "furnace/1": {
+    "path": "/assets/models/generated/furnace-1.glb",
+    "bytes": 108632,
+    "triangles": 1060
+  },
+  "furnace/2": {
+    "path": "/assets/models/generated/furnace-2.glb",
+    "bytes": 108588,
+    "triangles": 1060
+  },
+  "furnace/3": {
+    "path": "/assets/models/generated/furnace-3.glb",
+    "bytes": 109228,
+    "triangles": 1060
+  },
+  "vault-roof/1": {
+    "path": "/assets/models/generated/vault-roof-1.glb",
+    "bytes": 172712,
+    "triangles": 1776
+  },
+  "vault-roof/2": {
+    "path": "/assets/models/generated/vault-roof-2.glb",
+    "bytes": 172712,
+    "triangles": 1776
+  },
+  "vault-roof/3": {
+    "path": "/assets/models/generated/vault-roof-3.glb",
+    "bytes": 173644,
+    "triangles": 1776
+  },
+  "sawtooth-roof/1": {
+    "path": "/assets/models/generated/sawtooth-roof-1.glb",
+    "bytes": 155604,
+    "triangles": 1598
+  },
+  "sawtooth-roof/2": {
+    "path": "/assets/models/generated/sawtooth-roof-2.glb",
+    "bytes": 155604,
+    "triangles": 1598
+  },
+  "sawtooth-roof/3": {
+    "path": "/assets/models/generated/sawtooth-roof-3.glb",
+    "bytes": 156536,
+    "triangles": 1598
+  },
+  "sag-cable/1": {
+    "path": "/assets/models/generated/sag-cable-1.glb",
+    "bytes": 18764,
+    "triangles": 172
+  },
+  "sag-cable/2": {
+    "path": "/assets/models/generated/sag-cable-2.glb",
+    "bytes": 18764,
+    "triangles": 172
+  },
+  "sag-cable/3": {
+    "path": "/assets/models/generated/sag-cable-3.glb",
+    "bytes": 18764,
+    "triangles": 172
+  },
+  "curved-pipe/1": {
+    "path": "/assets/models/generated/curved-pipe-1.glb",
+    "bytes": 28176,
+    "triangles": 268
+  },
+  "curved-pipe/2": {
+    "path": "/assets/models/generated/curved-pipe-2.glb",
+    "bytes": 28176,
+    "triangles": 268
+  },
+  "curved-pipe/3": {
+    "path": "/assets/models/generated/curved-pipe-3.glb",
+    "bytes": 29052,
+    "triangles": 268
+  },
+  "arched-tunnel/1": {
+    "path": "/assets/models/generated/arched-tunnel-1.glb",
+    "bytes": 172716,
+    "triangles": 1776
+  },
+  "arched-tunnel/2": {
+    "path": "/assets/models/generated/arched-tunnel-2.glb",
+    "bytes": 172716,
+    "triangles": 1776
+  },
+  "arched-tunnel/3": {
+    "path": "/assets/models/generated/arched-tunnel-3.glb",
+    "bytes": 173648,
+    "triangles": 1776
+  },
+  "freight-car/1": {
+    "path": "/assets/models/generated/freight-car-1.glb",
+    "bytes": 55392,
+    "triangles": 516
+  },
+  "freight-car/2": {
+    "path": "/assets/models/generated/freight-car-2.glb",
+    "bytes": 55392,
+    "triangles": 516
+  },
+  "freight-car/3": {
+    "path": "/assets/models/generated/freight-car-3.glb",
+    "bytes": 55432,
+    "triangles": 516
+  },
+  "collapsed-overpass/1": {
+    "path": "/assets/models/generated/collapsed-overpass-1.glb",
+    "bytes": 69648,
+    "triangles": 624
+  },
+  "collapsed-overpass/2": {
+    "path": "/assets/models/generated/collapsed-overpass-2.glb",
+    "bytes": 69648,
+    "triangles": 624
+  },
+  "collapsed-overpass/3": {
+    "path": "/assets/models/generated/collapsed-overpass-3.glb",
+    "bytes": 70620,
+    "triangles": 624
+  },
+  "silo/1": {
+    "path": "/assets/models/generated/silo-1.glb",
+    "bytes": 87716,
+    "triangles": 840
+  },
+  "silo/2": {
+    "path": "/assets/models/generated/silo-2.glb",
+    "bytes": 87680,
+    "triangles": 840
+  },
+  "silo/3": {
+    "path": "/assets/models/generated/silo-3.glb",
+    "bytes": 87788,
+    "triangles": 840
+  },
+  "ladle/1": {
+    "path": "/assets/models/generated/ladle-1.glb",
+    "bytes": 52156,
+    "triangles": 492
+  },
+  "ladle/2": {
+    "path": "/assets/models/generated/ladle-2.glb",
+    "bytes": 52008,
+    "triangles": 492
+  },
+  "ladle/3": {
+    "path": "/assets/models/generated/ladle-3.glb",
+    "bytes": 52452,
+    "triangles": 492
+  },
+  "slag-pot/1": {
+    "path": "/assets/models/generated/slag-pot-1.glb",
+    "bytes": 52160,
+    "triangles": 492
+  },
+  "slag-pot/2": {
+    "path": "/assets/models/generated/slag-pot-2.glb",
+    "bytes": 52016,
+    "triangles": 492
+  },
+  "slag-pot/3": {
+    "path": "/assets/models/generated/slag-pot-3.glb",
+    "bytes": 52456,
+    "triangles": 492
+  },
+  "pump-house/1": {
+    "path": "/assets/models/generated/pump-house-1.glb",
+    "bytes": 22120,
+    "triangles": 198
+  },
+  "pump-house/2": {
+    "path": "/assets/models/generated/pump-house-2.glb",
+    "bytes": 22120,
+    "triangles": 198
+  },
+  "pump-house/3": {
+    "path": "/assets/models/generated/pump-house-3.glb",
+    "bytes": 23016,
+    "triangles": 198
+  },
+  "forklift/1": {
+    "path": "/assets/models/generated/forklift-1.glb",
+    "bytes": 24048,
+    "triangles": 216
+  },
+  "forklift/2": {
+    "path": "/assets/models/generated/forklift-2.glb",
+    "bytes": 24044,
+    "triangles": 216
+  },
+  "forklift/3": {
+    "path": "/assets/models/generated/forklift-3.glb",
+    "bytes": 24048,
+    "triangles": 216
+  },
+  "cart/1": {
+    "path": "/assets/models/generated/cart-1.glb",
+    "bytes": 20376,
+    "triangles": 180
+  },
+  "cart/2": {
+    "path": "/assets/models/generated/cart-2.glb",
+    "bytes": 20372,
+    "triangles": 180
+  },
+  "cart/3": {
+    "path": "/assets/models/generated/cart-3.glb",
+    "bytes": 20372,
+    "triangles": 180
+  },
+  "scaffold/1": {
+    "path": "/assets/models/generated/scaffold-1.glb",
+    "bytes": 30980,
+    "triangles": 276
+  },
+  "scaffold/2": {
+    "path": "/assets/models/generated/scaffold-2.glb",
+    "bytes": 30980,
+    "triangles": 276
+  },
+  "scaffold/3": {
+    "path": "/assets/models/generated/scaffold-3.glb",
+    "bytes": 31948,
+    "triangles": 276
+  },
+  "tarpaulin/1": {
+    "path": "/assets/models/generated/tarpaulin-1.glb",
+    "bytes": 23128,
+    "triangles": 198
+  },
+  "tarpaulin/2": {
+    "path": "/assets/models/generated/tarpaulin-2.glb",
+    "bytes": 23124,
+    "triangles": 198
+  },
+  "tarpaulin/3": {
+    "path": "/assets/models/generated/tarpaulin-3.glb",
+    "bytes": 22216,
+    "triangles": 198
+  },
+  "workstation/1": {
+    "path": "/assets/models/generated/workstation-1.glb",
+    "bytes": 22552,
+    "triangles": 192
+  },
+  "workstation/2": {
+    "path": "/assets/models/generated/workstation-2.glb",
+    "bytes": 22548,
+    "triangles": 192
+  },
+  "workstation/3": {
+    "path": "/assets/models/generated/workstation-3.glb",
+    "bytes": 22552,
+    "triangles": 192
+  },
+  "locker/1": {
+    "path": "/assets/models/generated/locker-1.glb",
+    "bytes": 20396,
+    "triangles": 180
+  },
+  "locker/2": {
+    "path": "/assets/models/generated/locker-2.glb",
+    "bytes": 20392,
+    "triangles": 180
+  },
+  "locker/3": {
+    "path": "/assets/models/generated/locker-3.glb",
+    "bytes": 20396,
+    "triangles": 180
+  },
+  "broken-container/1": {
+    "path": "/assets/models/generated/broken-container-1.glb",
+    "bytes": 34260,
+    "triangles": 300
+  },
+  "broken-container/2": {
+    "path": "/assets/models/generated/broken-container-2.glb",
+    "bytes": 34260,
+    "triangles": 300
+  },
+  "broken-container/3": {
+    "path": "/assets/models/generated/broken-container-3.glb",
+    "bytes": 34284,
+    "triangles": 300
+  },
+  "open-container/1": {
+    "path": "/assets/models/generated/open-container-1.glb",
+    "bytes": 32924,
+    "triangles": 288
+  },
+  "open-container/2": {
+    "path": "/assets/models/generated/open-container-2.glb",
+    "bytes": 32924,
+    "triangles": 288
+  },
+  "open-container/3": {
+    "path": "/assets/models/generated/open-container-3.glb",
+    "bytes": 32920,
+    "triangles": 288
+  },
+  "substation/1": {
+    "path": "/assets/models/generated/substation-1.glb",
+    "bytes": 56132,
+    "triangles": 540
+  },
+  "substation/2": {
+    "path": "/assets/models/generated/substation-2.glb",
+    "bytes": 56128,
+    "triangles": 540
+  },
+  "substation/3": {
+    "path": "/assets/models/generated/substation-3.glb",
+    "bytes": 56132,
+    "triangles": 540
+  },
+  "rubble/1": {
+    "path": "/assets/models/generated/rubble-1.glb",
+    "bytes": 17128,
+    "triangles": 144
+  },
+  "rubble/2": {
+    "path": "/assets/models/generated/rubble-2.glb",
+    "bytes": 17128,
+    "triangles": 144
+  },
+  "rubble/3": {
+    "path": "/assets/models/generated/rubble-3.glb",
+    "bytes": 17128,
+    "triangles": 144
+  },
   "container/1": {
     "path": "/assets/models/generated/container-1.glb",
     "bytes": 117808,

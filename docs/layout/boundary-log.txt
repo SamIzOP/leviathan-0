@@ -1,0 +1,1 @@
+{"pass":true,"simulationTicks":28800,"statesReached":["GROUND","AIR","SLIDE","WALLRUN","CROUCH"],"adversarial":{"probes":8472,"simulatedTicks":2795760,"seconds":46.7061069,"escapes":0},"flood":{"visited":119568,"elevatedProbes":24}}
